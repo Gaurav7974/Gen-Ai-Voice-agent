@@ -115,8 +115,8 @@ async def voice_agent_stream(request: VoiceAgentRequest):
         pitch = tts_config["pitch"]
         pace = tts_config["pace"]
         
-        # Step 2: Convert generated text to speech using Sarvam AI
-        url = "https://api.sarvam.ai/text-to-speech"
+        # Step 2: Convert generated text to speech using Sarvam AI (STREAMING)
+        url = "https://api.sarvam.ai/text-to-speech/stream"
         
         payload = {
             "text": generated_text,
@@ -125,6 +125,7 @@ async def voice_agent_stream(request: VoiceAgentRequest):
             "model": "bulbul:v3",
             "pace": pace,
             "enable_preprocessing": True,
+            "output_audio_codec": "mp3",
         }
         
         headers = {
@@ -132,31 +133,24 @@ async def voice_agent_stream(request: VoiceAgentRequest):
             "Content-Type": "application/json"
         }
         
-        async with httpx.AsyncClient() as client:
-            tts_response = await client.post(url, json=payload, headers=headers)
-            tts_response.raise_for_status()
-            
-            result = tts_response.json()
-            audio_url = result.get("audios", [{}])[0].get("audio_url", "")
-            
-            if not audio_url:
-                raise Exception("No audio URL in response")
-            
-            # Fetch the audio stream
-            audio_response = await client.get(audio_url)
-            audio_response.raise_for_status()
-            audio_data = audio_response.content
-        
-        # Create a streaming response with the audio data
-        def generate():
-            yield audio_data
+        # True streaming - yield audio chunks as they arrive
+        async def audio_stream():
+            try:
+                async with httpx.AsyncClient(timeout=120.0) as client:
+                    async with client.stream("POST", url, json=payload, headers=headers) as response:
+                        response.raise_for_status()
+                        async for chunk in response.aiter_bytes():
+                            if chunk:
+                                yield chunk
+            except httpx.HTTPError as exc:
+                raise HTTPException(status_code=502, detail=f"TTS streaming error: {exc}")
         
         return StreamingResponse(
-            generate(),
+            audio_stream(),
             media_type="audio/mpeg",
             headers={
                 "Content-Disposition": "inline; filename=response.mp3",
-                "X-Generated-Text": generated_text,  # Include text in header for client to parse
+                "X-Generated-Text": generated_text,
             }
         )
     except HTTPException as e:
@@ -213,8 +207,8 @@ async def voice_agent_combined(request: VoiceAgentRequest):
         pitch = tts_config["pitch"]
         pace = tts_config["pace"]
         
-        # Step 2: Convert generated text to speech using Sarvam AI
-        url = "https://api.sarvam.ai/text-to-speech"
+        # Step 2: Convert generated text to speech using Sarvam AI (STREAMING)
+        url = "https://api.sarvam.ai/text-to-speech/stream"
         
         payload = {
             "text": generated_text,
@@ -223,6 +217,7 @@ async def voice_agent_combined(request: VoiceAgentRequest):
             "model": "bulbul:v3",
             "pace": pace,
             "enable_preprocessing": True,
+            "output_audio_codec": "mp3",
         }
         
         headers = {
@@ -230,19 +225,21 @@ async def voice_agent_combined(request: VoiceAgentRequest):
             "Content-Type": "application/json"
         }
         
-        async with httpx.AsyncClient() as client:
-            tts_response = await client.post(url, json=payload, headers=headers)
-            tts_response.raise_for_status()
-            
-            result = tts_response.json()
-            audio_url = result.get("audios", [{}])[0].get("audio_url", "")
-            
-            if not audio_url:
-                raise Exception("No audio URL in response")
+        # Stream audio and collect all chunks
+        audio_chunks = []
+        async with httpx.AsyncClient(timeout=120.0) as client:
+            async with client.stream("POST", url, json=payload, headers=headers) as response:
+                response.raise_for_status()
+                async for chunk in response.aiter_bytes():
+                    if chunk:
+                        audio_chunks.append(chunk)
+        
+        # Combine all chunks into final audio
+        final_audio = b"".join(audio_chunks)
         
         return {
             "generated_text": generated_text,
-            "audio_url": audio_url,
+            "audio_data": final_audio.hex(),  # Send as hex for JSON response
             "llm_config_used": request.llm_config,
             "tts_config_used": request.tts_config,
         }
@@ -307,7 +304,7 @@ async def voice_agent_with_rag(request: VoiceAgentRequest):
         
         generated_text = message.content[0].text
         
-        # Step 2: Convert generated text to speech using Sarvam AI
+        # Step 2: Convert generated text to speech using Sarvam AI (STREAMING)
         tts_config = get_tts_config(request.tts_config)
         
         speaker = request.speaker or tts_config["speaker"]
@@ -315,7 +312,7 @@ async def voice_agent_with_rag(request: VoiceAgentRequest):
         pitch = tts_config["pitch"]
         pace = tts_config["pace"]
         
-        url = "https://api.sarvam.ai/text-to-speech"
+        url = "https://api.sarvam.ai/text-to-speech/stream"
         
         payload = {
             "text": generated_text,
@@ -324,6 +321,7 @@ async def voice_agent_with_rag(request: VoiceAgentRequest):
             "model": "bulbul:v3",
             "pace": pace,
             "enable_preprocessing": True,
+            "output_audio_codec": "mp3",
         }
         
         headers = {
@@ -331,19 +329,21 @@ async def voice_agent_with_rag(request: VoiceAgentRequest):
             "Content-Type": "application/json"
         }
         
-        async with httpx.AsyncClient() as client:
-            tts_response = await client.post(url, json=payload, headers=headers)
-            tts_response.raise_for_status()
-            
-            result = tts_response.json()
-            audio_url = result.get("audios", [{}])[0].get("audio_url", "")
-            
-            if not audio_url:
-                raise Exception("No audio URL in response")
+        # Stream audio and collect all chunks
+        audio_chunks = []
+        async with httpx.AsyncClient(timeout=120.0) as client:
+            async with client.stream("POST", url, json=payload, headers=headers) as response:
+                response.raise_for_status()
+                async for chunk in response.aiter_bytes():
+                    if chunk:
+                        audio_chunks.append(chunk)
+        
+        # Combine all chunks into final audio
+        final_audio = b"".join(audio_chunks)
         
         return {
             "generated_text": generated_text,
-            "audio_url": audio_url,
+            "audio_data": final_audio.hex(),
             "llm_config_used": request.llm_config,
             "tts_config_used": request.tts_config,
             "rag_chunks_used": rag_chunks,
