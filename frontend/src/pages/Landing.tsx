@@ -20,17 +20,27 @@ const LANG_LABELS: Record<string, string> = {
   en: 'English',
 };
 
-export default function Landing() {
+export default function Landing({ onNavigate }: { onNavigate?: (view: 'landing' | 'rag') => void }) {
   const [activeLang, setActiveLang] = useState('hi');
   const [demoRunning, setDemoRunning] = useState(false);
   const [demoPhase, setDemoPhase] = useState<'idle' | 'recording' | 'transcribing' | 'responding'>('idle');
   const [demoTranscript, setDemoTranscript] = useState('');
-  const [demoResponse, setDemoResponse] = useState('');
+const [demoResponse, setDemoResponse] = useState('');
   const [error, setError] = useState('');
-  const navRef = useRef<HTMLElement>(null);
+  
+  // Chat state
+  const [chatMessages, setChatMessages] = useState<{ role: 'user' | 'assistant'; content: string; }[]>([]);
+  const [chatInput, setChatInput] = useState('');
+  const [chatLoading, setChatLoading] = useState(false);
+  const [chatPhase, setChatPhase] = useState<'idle' | 'recording' | 'thinking' | 'speaking'>('idle');
+  const [chatAudioUrl, setChatAudioUrl] = useState('');
+  
+  const navRef = useRef<HTMLElement | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const cancelRef = useRef(false);
+  const chatInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -89,6 +99,7 @@ export default function Landing() {
 
   const runDemo = async () => {
     if (demoRunning) return;
+    cancelRef.current = false;
     setDemoRunning(true);
     setError('');
     setDemoTranscript('');
@@ -97,26 +108,21 @@ export default function Landing() {
     try {
       // Phase 1: Recording
       setDemoPhase('recording');
-      const audioBlob = await startRecording();
+      const audioBlobPromise = startRecording();
 
       // Auto-stop after 8 seconds
       const autoStop = setTimeout(() => stopRecording(), 8000);
 
-      // Wait for user to stop recording (click mic again) or auto-stop
-      await new Promise<void>((resolve) => {
-        const checkInterval = setInterval(() => {
-          if (mediaRecorderRef.current?.state === 'inactive') {
-            clearInterval(checkInterval);
-            resolve();
-          }
-        }, 100);
-      });
+      const audioBlob = await audioBlobPromise;
       clearTimeout(autoStop);
+      
+      if (cancelRef.current) return;
 
       // Phase 2: Transcribing (STT)
       setDemoPhase('transcribing');
       const languageCode = LANG_MAP[activeLang];
       const sttResult = await transcribeAudio(audioBlob, languageCode);
+      if (cancelRef.current) return;
       const transcript = sttResult.transcript;
       setDemoTranscript(transcript);
 
@@ -130,16 +136,26 @@ export default function Landing() {
       // Phase 3: Responding (LLM + TTS)
       setDemoPhase('responding');
       const voiceResult = await voiceAgentCombined(transcript, 'default', 'default', languageCode);
+      if (cancelRef.current) return;
       setDemoResponse(voiceResult.generated_text);
 
       // Play audio response
       if (voiceResult.audio_url) {
         if (audioRef.current) {
           audioRef.current.src = voiceResult.audio_url;
-          audioRef.current.play();
+          await new Promise<void>((resolve) => {
+            if (!audioRef.current) return resolve();
+            audioRef.current.onended = () => resolve();
+            audioRef.current.onerror = () => resolve();
+            audioRef.current.play().catch((e) => {
+              console.error('Audio play failed', e);
+              resolve();
+            });
+          });
         }
       }
     } catch (err: unknown) {
+      console.error('Demo error:', err);
       const message = err instanceof Error ? err.message : 'Something went wrong';
       setError(message);
     } finally {
@@ -148,7 +164,7 @@ export default function Landing() {
     }
   };
 
-  const stopDemo = () => {
+const stopDemo = () => {
     stopRecording();
     if (audioRef.current) {
       audioRef.current.pause();
@@ -156,6 +172,140 @@ export default function Landing() {
     }
     setDemoPhase('idle');
     setDemoRunning(false);
+  };
+
+  // ─── CHAT HANDLERS ───
+  const startChatRecording = async (): Promise<Blob> => {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    return new Promise((resolve, reject) => {
+      const recorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+      mediaRecorderRef.current = recorder;
+      chunksRef.current = [];
+
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) chunksRef.current.push(e.data);
+      };
+
+      recorder.onstop = () => {
+        const blob = new Blob(chunksRef.current, { type: 'audio/webm' });
+        stream.getTracks().forEach((t) => t.stop());
+        resolve(blob);
+      };
+
+      recorder.onerror = () => {
+        stream.getTracks().forEach((t) => t.stop());
+        reject(new Error('Recording failed'));
+      };
+
+      recorder.start();
+    });
+  };
+
+  const stopChatRecording = () => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      mediaRecorderRef.current.stop();
+    }
+  };
+
+  const handleChatVoiceInput = async () => {
+    if (chatPhase === 'recording') {
+      stopChatRecording();
+      return;
+    }
+    
+    setChatPhase('recording');
+    try {
+      const audioBlob = await startChatRecording();
+      
+      // Auto-stop after 8 seconds
+      const autoStop = setTimeout(() => stopChatRecording(), 8000);
+
+      await new Promise<void>((resolve) => {
+        const checkInterval = setInterval(() => {
+          if (mediaRecorderRef.current?.state === 'inactive') {
+            clearInterval(checkInterval);
+            resolve();
+          }
+        }, 100);
+      });
+      clearTimeout(autoStop);
+
+      // Transcribe
+      setChatPhase('thinking');
+      const languageCode = LANG_MAP[activeLang];
+      const sttResult = await transcribeAudio(audioBlob, languageCode);
+      const transcript = sttResult.transcript;
+
+      if (!transcript.trim()) {
+        setError('Could not understand speech. Please try again.');
+        setChatPhase('idle');
+        return;
+      }
+
+      // Add user message to chat
+      setChatMessages(prev => [...prev, { role: 'user', content: transcript }]);
+      setChatInput('');
+
+      // Get AI response
+      setChatPhase('speaking');
+      const voiceResult = await voiceAgentCombined(transcript, 'default', 'default', languageCode);
+      
+      // Add assistant message to chat
+      setChatMessages(prev => [...prev, { role: 'assistant', content: voiceResult.generated_text }]);
+      setChatAudioUrl(voiceResult.audio_url);
+      
+      // Play audio
+      if (audioRef.current) {
+        audioRef.current.src = voiceResult.audio_url;
+        audioRef.current.play();
+      }
+      
+      setChatPhase('idle');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Something went wrong';
+      setError(message);
+      setChatPhase('idle');
+    }
+  };
+
+  const handleChatSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!chatInput.trim() || chatLoading) return;
+
+    const userMessage = chatInput;
+    setChatInput('');
+    setChatLoading(true);
+    setChatPhase('thinking');
+
+    // Add user message
+    setChatMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+
+    try {
+      const languageCode = LANG_MAP[activeLang];
+      const result = await voiceAgentCombined(userMessage, 'default', 'default', languageCode);
+      
+      // Add assistant message
+      setChatMessages(prev => [...prev, { role: 'assistant', content: result.generated_text }]);
+      setChatAudioUrl(result.audio_url);
+      
+      // Play audio
+      if (audioRef.current) {
+        audioRef.current.src = result.audio_url;
+        audioRef.current.play();
+      }
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to get response';
+      setChatMessages(prev => [...prev, { role: 'assistant', content: `Error: ${message}` }]);
+    } finally {
+      setChatLoading(false);
+      setChatPhase('idle');
+    }
+  };
+
+  const playChatAudio = () => {
+    if (audioRef.current && chatAudioUrl) {
+      audioRef.current.play();
+    }
   };
 
   return (
@@ -173,13 +323,16 @@ export default function Landing() {
             <a href="#how">How it works</a>
           </li>
           <li>
+            <a href="#chatbot">Chat</a>
+          </li>
+          <li>
             <a href="#demo">Demo</a>
           </li>
           <li>
-            <a href="#features">Features</a>
+            <a href="#usecases">Use cases</a>
           </li>
           <li>
-            <a href="#usecases">Use cases</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); onNavigate?.('rag'); }}>RAG Data</a>
           </li>
         </ul>
         <button
@@ -199,76 +352,56 @@ export default function Landing() {
         <div className="hero-bg"></div>
         <div className="hero-grid"></div>
         <div className="hero-content">
-          <div className="hero-badge">
-            <span className="hero-badge-dot"></span>
-            Now in beta · 11 Indic languages
-          </div>
-          <h1>
-            Ask anything.<br />
-            <span className="line2">In your language.</span>
-            <br />
-            <span className="line3">Get instant answers.</span>
+          <h1 className="hero-title">
+            <span className="title-line">
+              Ask anything.
+              <span className="title-shape"></span>
+            </span>
+            <span className="title-line">
+              In your <span className="title-lang">{LANG_LABELS[activeLang]}</span>
+            </span>
+            <span className="title-line">Get instant answers.</span>
           </h1>
           <p className="hero-sub">
-            Gena is a <strong>voice-first AI</strong> that understands Hindi, Tamil, Telugu and 8 more Indic languages — powered by RAG for grounded, accurate answers.
+            Gena is a voice-first AI that understands Hindi, Tamil, Telugu, and 8+ Indic languages — with accurate, grounded answers.
           </p>
-          <div className="orb-wrap">
-            <div className="orb-ring"></div>
-            <div className="orb-ring"></div>
-            <div className="orb-ring"></div>
-            <button
-              className="orb"
-              onClick={() => {
-                const demoEl = document.getElementById('demo');
-                if (demoEl) demoEl.scrollIntoView({ behavior: 'smooth' });
-              }}
-              aria-label="Scroll to demo section"
-            >
-              <svg className="orb-icon" viewBox="0 0 24 24">
-                <path
-                  fill="white"
-                  d="M12 1a4 4 0 014 4v6a4 4 0 01-8 0V5a4 4 0 014-4zm-1 17.93A8 8 0 0112 3v-.07A8.001 8.001 0 014.07 11H2a10 10 0 009 9.93V23h2v-2.07A10 10 0 0022 11h-2.07A8.001 8.001 0 0113 18.93V19h-2v-.07z"
-                />
-              </svg>
-            </button>
-          </div>
-          <div className="waveform">
-            <div className="bar"></div>
-            <div className="bar"></div>
-            <div className="bar"></div>
-            <div className="bar"></div>
-            <div className="bar"></div>
-            <div className="bar"></div>
-            <div className="bar"></div>
-            <div className="bar"></div>
-            <div className="bar"></div>
-            <div className="bar"></div>
-            <div className="bar"></div>
-            <div className="bar"></div>
-          </div>
           <div className="hero-actions">
-             <button
+            <button
               className="btn-primary"
               onClick={() => {
+                // Route to login/signup page - placeholder for now
+                window.location.href = '/login';
+              }}
+              aria-label="Get started with Gena"
+            >
+              GET STARTED
+            </button>
+            <button 
+              className="btn-secondary" 
+              onClick={() => {
                 const demoEl = document.getElementById('demo');
                 if (demoEl) demoEl.scrollIntoView({ behavior: 'smooth' });
               }}
-              aria-label="Try the demo now"
+              aria-label="Watch demo video"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
-                <path d="M12 1a4 4 0 014 4v6a4 4 0 01-8 0V5a4 4 0 014-4z" />
-                <path d="M19.07 11H22a10 10 0 01-9 9.93V23h-2v-2.07A10 10 0 012 11h2.93A8 8 0 0112 19a8 8 0 007.07-8z" />
-              </svg>
-              Try it now
-            </button>
-            <button className="btn-secondary" aria-label="Watch demo video">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <polygon points="5 3 19 12 5 21 5 3" />
               </svg>
-              Watch demo
+              Watch Demo
             </button>
           </div>
-          <div className="hero-scroll-hint">scroll to explore ↓</div>
+          <div className="hero-lang-select">
+            <span className="hero-lang-label">Speaking:</span>
+            {Object.keys(LANG_LABELS).slice(0, 6).map((lang) => (
+              <button
+                key={lang}
+                className={`hero-lang-btn ${activeLang === lang ? 'active' : ''}`}
+                onClick={() => setActiveLang(lang)}
+              >
+                {LANG_LABELS[lang]}
+              </button>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -352,11 +485,15 @@ export default function Landing() {
              <div className="demo-controls">
                <button
                  className={`mic-btn ${demoPhase === 'recording' ? 'recording' : ''}`}
-                 onClick={demoRunning ? stopDemo : runDemo}
-                 aria-label={demoRunning ? 'Stop recording' : 'Start recording voice input'}
+                 onClick={() => {
+                   if (demoPhase === 'idle') runDemo();
+                   else if (demoPhase === 'recording') stopRecording();
+                   else stopDemo();
+                 }}
+                 aria-label={demoPhase !== 'idle' ? 'Stop recording or cancel demo' : 'Start recording voice input'}
                  aria-pressed={demoPhase === 'recording'}
                >
-                 {demoRunning ? '⏹️' : '🎙️'}
+                 {demoPhase === 'idle' ? '🎙️' : '⏹'}
               </button>
             </div>
             {error && <div className="demo-error">{error}</div>}
@@ -365,6 +502,118 @@ export default function Landing() {
               {demoPhase === 'recording' && 'Recording… click mic to stop'}
               {demoPhase === 'transcribing' && 'Transcribing…'}
               {demoPhase === 'responding' && 'Generating response…'}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* AI CHATBOT */}
+      <section id="chatbot" className="section chatbot-section">
+        <div className="chatbot-container">
+          <div className="chatbot-header fade-up">
+            <p className="section-label">AI Assistant</p>
+            <h2 className="section-title">Chat with Gena</h2>
+            <p className="section-sub">Type or speak — get instant voice responses in your language</p>
+          </div>
+          
+          <div className="chatbot-shell fade-up">
+            <div className="chatbot-topbar">
+              <div className="chatbot-dot"></div>
+              <div className="chatbot-dot"></div>
+              <div className="chatbot-dot"></div>
+              <span className="chatbot-title-bar">gena — chat</span>
+            </div>
+            
+            <div className="chatbot-body">
+              {/* Language selector */}
+              <div className="chatbot-lang-row">
+                {Object.keys(LANG_LABELS).slice(0, 6).map((lang) => (
+                  <button
+                    key={lang}
+                    className={`chatbot-lang-pill ${activeLang === lang ? 'active' : ''}`}
+                    onClick={() => setActiveLang(lang)}
+                  >
+                    {LANG_LABELS[lang]}
+                  </button>
+                ))}
+              </div>
+              
+              {/* Messages */}
+              <div className="chatbot-messages" ref={(el) => { if (el) el.scrollTop = el.scrollHeight; }}>
+                {chatMessages.length === 0 && (
+                  <div className="chatbot-empty">
+                    <div className="chatbot-empty-icon">💬</div>
+                    <div className="chatbot-empty-text">Start a conversation</div>
+                    <div className="chatbot-empty-sub">Type a message or tap the mic to speak</div>
+                  </div>
+                )}
+                {chatMessages.map((msg, idx) => (
+                  <div key={idx} className={`chat-message ${msg.role}`}>
+                    <div className="chat-message-avatar">
+                      {msg.role === 'user' ? '👤' : '✨'}
+                    </div>
+                    <div className="chat-message-content">
+                      {msg.content}
+                    </div>
+                  </div>
+                ))}
+                {chatLoading && (
+                  <div className="chat-message assistant loading">
+                    <div className="chat-message-avatar">✨</div>
+                    <div className="chat-message-content">
+                      <span className="typing-indicator">
+                        <span></span><span></span><span></span>
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              {/* Audio indicator */}
+              {chatAudioUrl && !chatLoading && (
+                <div className="chatbot-audio-bar">
+                  <button className="chatbot-audio-play" onClick={playChatAudio}>
+                    ▶ Play Voice Response
+                  </button>
+                </div>
+              )}
+              
+              {/* Input area */}
+              <form className="chatbot-input-area" onSubmit={handleChatSubmit}>
+                <input
+                  ref={chatInputRef}
+                  type="text"
+                  className="chatbot-input"
+                  placeholder="Type your message..."
+                  value={chatInput}
+                  onChange={(e) => setChatInput(e.target.value)}
+                  disabled={chatLoading}
+                />
+                <button
+                  type="button"
+                  className={`chatbot-mic ${chatPhase === 'recording' ? 'recording' : ''}`}
+                  onClick={handleChatVoiceInput}
+                  disabled={chatLoading}
+                  aria-label={chatPhase === 'recording' ? 'Stop recording' : 'Start voice input'}
+                >
+                  {chatPhase === 'recording' ? '⏹' : '🎙️'}
+                </button>
+                <button
+                  type="submit"
+                  className="chatbot-send"
+                  disabled={!chatInput.trim() || chatLoading}
+                >
+                  ➤
+                </button>
+              </form>
+              
+              {/* Status hint */}
+              <div className="chatbot-hint">
+                {chatPhase === 'recording' && 'Listening...'}
+                {chatPhase === 'thinking' && 'Gena is thinking...'}
+                {chatPhase === 'speaking' && 'Playing response...'}
+                {chatPhase === 'idle' && !chatLoading && 'Tap mic to speak or type to chat'}
+              </div>
             </div>
           </div>
         </div>
