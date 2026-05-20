@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { transcribeAudio, voiceAgentCombined } from '../api';
+import { transcribeAudio, voiceAgentCombined, voiceAgentStream } from '../api';
 import '../styles/landing.css';
 
 const LANG_MAP: Record<string, string> = {
@@ -133,26 +133,36 @@ const [demoResponse, setDemoResponse] = useState('');
         return;
       }
 
-      // Phase 3: Responding (LLM + TTS)
+      // Phase 3: Responding (LLM + TTS - STREAMING)
       setDemoPhase('responding');
-      const voiceResult = await voiceAgentCombined(transcript, 'default', 'default', languageCode);
+      
+      // Use streaming endpoint for true streaming audio
+      const { response, generatedText } = await voiceAgentStream(transcript, 'default', 'default', languageCode);
       if (cancelRef.current) return;
-      setDemoResponse(voiceResult.generated_text);
+      setDemoResponse(generatedText);
 
-      // Play audio response
-      if (voiceResult.audio_url) {
-        if (audioRef.current) {
-          audioRef.current.src = voiceResult.audio_url;
-          await new Promise<void>((resolve) => {
-            if (!audioRef.current) return resolve();
-            audioRef.current.onended = () => resolve();
-            audioRef.current.onerror = () => resolve();
-            audioRef.current.play().catch((e) => {
-              console.error('Audio play failed', e);
-              resolve();
-            });
+      // Play streaming audio response
+      if (audioRef.current && response.body) {
+        // Convert streaming response to blob
+        const audioBlob = await response.blob();
+        const audioUrl = URL.createObjectURL(audioBlob);
+        audioRef.current.src = audioUrl;
+        await new Promise<void>((resolve) => {
+          if (!audioRef.current) return resolve();
+          audioRef.current.onended = () => {
+            URL.revokeObjectURL(audioUrl); // Clean up
+            resolve();
+          };
+          audioRef.current.onerror = () => {
+            URL.revokeObjectURL(audioUrl); // Clean up
+            resolve();
+          };
+          audioRef.current.play().catch((e) => {
+            console.error('Audio play failed', e);
+            URL.revokeObjectURL(audioUrl);
+            resolve();
           });
-        }
+        });
       }
     } catch (err: unknown) {
       console.error('Demo error:', err);
@@ -246,17 +256,19 @@ const stopDemo = () => {
       setChatMessages(prev => [...prev, { role: 'user', content: transcript }]);
       setChatInput('');
 
-      // Get AI response
+      // Get AI response (STREAMING)
       setChatPhase('speaking');
-      const voiceResult = await voiceAgentCombined(transcript, 'default', 'default', languageCode);
+      const { response, generatedText } = await voiceAgentStream(transcript, 'default', 'default', languageCode);
       
       // Add assistant message to chat
-      setChatMessages(prev => [...prev, { role: 'assistant', content: voiceResult.generated_text }]);
-      setChatAudioUrl(voiceResult.audio_url);
+      setChatMessages(prev => [...prev, { role: 'assistant', content: generatedText }]);
       
-      // Play audio
-      if (audioRef.current) {
-        audioRef.current.src = voiceResult.audio_url;
+      // Play streaming audio
+      if (audioRef.current && response.body) {
+        const audioBlob = await response.blob();
+        const audioUrl = URL.createObjectURL(audioBlob);
+        setChatAudioUrl(audioUrl);
+        audioRef.current.src = audioUrl;
         audioRef.current.play();
       }
       
@@ -282,15 +294,18 @@ const stopDemo = () => {
 
     try {
       const languageCode = LANG_MAP[activeLang];
-      const result = await voiceAgentCombined(userMessage, 'default', 'default', languageCode);
+      // Use streaming endpoint for text input too
+      const { response, generatedText } = await voiceAgentStream(userMessage, 'default', 'default', languageCode);
       
       // Add assistant message
-      setChatMessages(prev => [...prev, { role: 'assistant', content: result.generated_text }]);
-      setChatAudioUrl(result.audio_url);
+      setChatMessages(prev => [...prev, { role: 'assistant', content: generatedText }]);
       
-      // Play audio
-      if (audioRef.current) {
-        audioRef.current.src = result.audio_url;
+      // Play streaming audio
+      if (audioRef.current && response.body) {
+        const audioBlob = await response.blob();
+        const audioUrl = URL.createObjectURL(audioBlob);
+        setChatAudioUrl(audioUrl);
+        audioRef.current.src = audioUrl;
         audioRef.current.play();
       }
     } catch (err: unknown) {
