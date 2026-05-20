@@ -4,6 +4,10 @@ from fastapi.responses import StreamingResponse
 from groq import Groq
 import httpx
 import io
+import subprocess
+import sys
+from pathlib import Path
+from typing import Optional
 from config import settings, get_model_config, get_tts_config
 from schemas import VoiceAgentRequest
 
@@ -11,6 +15,57 @@ router = APIRouter(prefix="/api", tags=["Voice Agent Stream"])
 
 # Initialize Groq client when configured.
 groq_client = Groq(api_key=settings.GROQ_API_KEY) if settings.GROQ_API_KEY else None
+
+# Resolve rag/ directory for RAG queries
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+RAG_DIR = PROJECT_ROOT / "rag"
+
+
+def _query_rag(question: str, n_results: int = 4) -> list[str]:
+    """Query RAG knowledge base and return list of chunk texts. Graceful fallback if RAG fails."""
+    try:
+        python_exe = sys.executable
+        script_path = RAG_DIR / "query.py"
+        if not script_path.exists():
+            # Silent fallback: RAG script not available
+            return []
+        
+        result = subprocess.run(
+            [python_exe, str(script_path), question, "--n-results", str(n_results)],
+            capture_output=True,
+            text=True,
+            cwd=str(RAG_DIR),
+            timeout=30,
+        )
+        
+        if result.returncode != 0:
+            # Silent fallback: query failed
+            return []
+        
+        # Parse results from output
+        # Format: "Result N\nSource: ... | chunk: ... | distance: ...\n<text>"
+        chunks = []
+        lines = result.stdout.strip().splitlines()
+        i = 0
+        while i < len(lines):
+            line = lines[i].strip()
+            if line.startswith("Result "):
+                # Skip metadata line, collect text lines until next Result or end
+                i += 2  # Skip "Result N" and metadata line
+                text_lines = []
+                while i < len(lines) and not lines[i].strip().startswith("Result "):
+                    text_lines.append(lines[i].strip())
+                    i += 1
+                text = "\n".join(text_lines).strip()
+                if text:
+                    chunks.append(text)
+            else:
+                i += 1
+        
+        return chunks
+    except Exception:
+        # Graceful fallback on any error (timeout, subprocess error, etc)
+        return []
 
 @router.post("/voice-agent-stream")
 async def voice_agent_stream(request: VoiceAgentRequest):
@@ -64,10 +119,10 @@ async def voice_agent_stream(request: VoiceAgentRequest):
         url = "https://api.sarvam.ai/text-to-speech"
         
         payload = {
-            "inputs": [generated_text],
+            "text": generated_text,
             "target_language_code": language,
             "speaker": speaker,
-            "pitch": pitch,
+            "model": "bulbul:v3",
             "pace": pace,
             "enable_preprocessing": True,
         }
@@ -162,10 +217,10 @@ async def voice_agent_combined(request: VoiceAgentRequest):
         url = "https://api.sarvam.ai/text-to-speech"
         
         payload = {
-            "inputs": [generated_text],
+            "text": generated_text,
             "target_language_code": language,
             "speaker": speaker,
-            "pitch": pitch,
+            "model": "bulbul:v3",
             "pace": pace,
             "enable_preprocessing": True,
         }
@@ -195,3 +250,106 @@ async def voice_agent_combined(request: VoiceAgentRequest):
         raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error in voice agent pipeline: {str(e)}")
+
+
+@router.post("/voice-agent-with-rag")
+async def voice_agent_with_rag(request: VoiceAgentRequest):
+    """
+    Voice agent with RAG context injection.
+    Queries RAG knowledge base, injects results into Groq prompt, returns JSON + audio URL.
+    
+    Args:
+        request: VoiceAgentRequest with prompt and configurations
+    
+    Returns:
+        JSON with generated_text, audio_url, and rag_chunks_used
+    """
+    try:
+        if groq_client is None:
+            raise HTTPException(status_code=500, detail="Groq API key not configured")
+
+        # Step 0: Query RAG for context (graceful fallback if empty)
+        rag_chunks = []
+        if getattr(request, "use_rag", True):
+            rag_chunks = _query_rag(request.prompt, n_results=4)
+        
+        # Build context string
+        context = ""
+        if rag_chunks:
+            context = "\n--- RAG Context Start ---\n"
+            for i, chunk in enumerate(rag_chunks, 1):
+                context += f"[Chunk {i}]\n{chunk}\n\n"
+            context += "--- RAG Context End ---\n"
+        
+        # Step 1: Generate text using Groq with RAG context
+        llm_config = get_model_config(request.llm_config)
+        
+        model = request.model or llm_config["model"]
+        temperature = request.temperature if request.temperature is not None else llm_config["temperature"]
+        max_tokens = request.max_tokens or llm_config["max_tokens"]
+        top_p = llm_config["top_p"]
+        
+        # Inject RAG context into prompt
+        prompt_with_context = f"{context}User Query: {request.prompt}" if context else request.prompt
+        
+        message = groq_client.messages.create(
+            model=model,
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt_with_context,
+                }
+            ],
+            temperature=temperature,
+            max_tokens=max_tokens,
+            top_p=top_p,
+        )
+        
+        generated_text = message.content[0].text
+        
+        # Step 2: Convert generated text to speech using Sarvam AI
+        tts_config = get_tts_config(request.tts_config)
+        
+        speaker = request.speaker or tts_config["speaker"]
+        language = request.language or tts_config["language"]
+        pitch = tts_config["pitch"]
+        pace = tts_config["pace"]
+        
+        url = "https://api.sarvam.ai/text-to-speech"
+        
+        payload = {
+            "text": generated_text,
+            "target_language_code": language,
+            "speaker": speaker,
+            "model": "bulbul:v3",
+            "pace": pace,
+            "enable_preprocessing": True,
+        }
+        
+        headers = {
+            "api-subscription-key": settings.SARVAM_API_KEY,
+            "Content-Type": "application/json"
+        }
+        
+        async with httpx.AsyncClient() as client:
+            tts_response = await client.post(url, json=payload, headers=headers)
+            tts_response.raise_for_status()
+            
+            result = tts_response.json()
+            audio_url = result.get("audios", [{}])[0].get("audio_url", "")
+            
+            if not audio_url:
+                raise Exception("No audio URL in response")
+        
+        return {
+            "generated_text": generated_text,
+            "audio_url": audio_url,
+            "llm_config_used": request.llm_config,
+            "tts_config_used": request.tts_config,
+            "rag_chunks_used": rag_chunks,
+        }
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error in voice agent with RAG pipeline: {str(e)}")
+
