@@ -371,7 +371,7 @@ const stopDemo = () => {
             <span className="title-line">
               Ask anything.
             </span>
-            <span className="title-line">
+            <span className="title-line title-line-lang">
               In your <span className="title-lang">{LANG_LABELS[activeLang]}</span> (Language)
             </span>
             <span className="title-line">Get instant answers.</span>

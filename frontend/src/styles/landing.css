@@ -286,6 +286,11 @@ body::before {
   white-space: nowrap;
 }
 
+.title-line-lang {
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+
 /* Design shape beside "Ask anything" */
 .title-shape {
   display: inline-block;
