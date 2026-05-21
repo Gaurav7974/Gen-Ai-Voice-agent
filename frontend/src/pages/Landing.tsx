@@ -372,7 +372,7 @@ const stopDemo = () => {
               Ask anything.
             </span>
             <span className="title-line title-line-lang">
-              In your <span className="title-lang">{LANG_LABELS[activeLang]}</span> (Language)
+              In your <span className="title-lang">{LANG_LABELS[activeLang]}</span> Language
             </span>
             <span className="title-line">Get instant answers.</span>
           </h1>
@@ -670,7 +670,7 @@ const stopDemo = () => {
               ])
               .map((lang, idx) => (
                 <div key={idx} className="lang-card">
-                  <div className="native">{lang.native} (Language)</div>
+                  <div className="native">{lang.native} Language</div>
                   <div className="english">{lang.english}</div>
                 </div>
               ))}
