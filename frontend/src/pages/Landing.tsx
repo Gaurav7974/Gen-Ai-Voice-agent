@@ -369,8 +369,7 @@ const stopDemo = () => {
         <div className="hero-content">
           <h1 className="hero-title">
             <span className="title-line">
-              Ask anything.
-              <span className="title-shape"></span>
+              Ask anything. <span className="title-shape"></span>
             </span>
             <span className="title-line">
               In your <span className="title-lang">{LANG_LABELS[activeLang]}</span>

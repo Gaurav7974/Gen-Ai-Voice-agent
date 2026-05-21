@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from routes import text_generation, tts, voice_agent, stt
+from routes import text_generation, tts, voice_agent, stt, rag
 from routes.__init__ import router as utils_router
 
 def create_app() -> FastAPI:
@@ -28,6 +28,7 @@ def create_app() -> FastAPI:
     app.include_router(text_generation.router)
     app.include_router(tts.router)
     app.include_router(voice_agent.router)
+    app.include_router(rag.router)
     
     return app
 

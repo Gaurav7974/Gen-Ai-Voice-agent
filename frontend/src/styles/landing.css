@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
 
 /* ═══════════════════════════════════════════════════════════
    GENA VOICE AI — LANDING PAGE CSS
@@ -24,8 +24,8 @@
   --teal-glow: #1ad6a020;
 
   /* Typography */
-  --font-display: 'Syne', sans-serif;
-  --font-body: 'DM Sans', sans-serif;
+  --font-display: 'Plus Jakarta Sans', sans-serif;
+  --font-body: 'Inter', sans-serif;
 
   /* Shadows */
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.12);
@@ -164,12 +164,12 @@ body::before {
   align-items: center;
   justify-content: space-between;
   padding: 20px 48px;
-  background: linear-gradient(to bottom, var(--bg) dd, transparent);
+  background: linear-gradient(to bottom, #080a0fdd, transparent);
   transition: background var(--trans-normal);
 }
 
 .navbar.scrolled {
-  background: var(--bg) ee;
+  background: #080a0fee;
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
 }
@@ -265,18 +265,25 @@ body::before {
   line-height: 1.15;
   letter-spacing: -1.5px;
   margin-bottom: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 .title-line {
-  display: block;
-  position: relative;
-}
-
-.title-line:first-child {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  position: relative;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  max-width: 100%;
+}
+
+.title-line:first-child {
+  flex-wrap: nowrap;
+  white-space: nowrap;
 }
 
 /* Design shape beside "Ask anything" */

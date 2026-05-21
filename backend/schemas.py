@@ -47,6 +47,7 @@ class VoiceAgentRequest(BaseModel):
     max_tokens: Optional[int] = None
     speaker: Optional[str] = None
     language: Optional[str] = None
+    use_rag: Optional[bool] = False
 
 class VoiceAgentResponse(BaseModel):
     """Combined response for voice agent"""
@@ -54,6 +55,7 @@ class VoiceAgentResponse(BaseModel):
     audio_url: str
     llm_config_used: str
     tts_config_used: str
+    rag_chunks_used: Optional[list] = None
 
 class ConfigsResponse(BaseModel):
     """Response model for available configurations"""
