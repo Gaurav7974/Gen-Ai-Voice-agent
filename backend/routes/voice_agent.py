@@ -92,7 +92,7 @@ async def voice_agent_stream(request: VoiceAgentRequest):
         top_p = llm_config["top_p"]
         
         # Step 1: Generate text using Groq
-        message = groq_client.messages.create(
+        completion = groq_client.chat.completions.create(
             model=model,
             messages=[
                 {
@@ -101,11 +101,11 @@ async def voice_agent_stream(request: VoiceAgentRequest):
                 }
             ],
             temperature=temperature,
-            max_tokens=max_tokens,
+            max_completion_tokens=max_tokens,
             top_p=top_p,
         )
         
-        generated_text = message.content[0].text
+        generated_text = completion.choices[0].message.content or ""
         
         # Get TTS config
         tts_config = get_tts_config(request.tts_config)
@@ -184,7 +184,7 @@ async def voice_agent_combined(request: VoiceAgentRequest):
         top_p = llm_config["top_p"]
         
         # Step 1: Generate text using Groq
-        message = groq_client.messages.create(
+        completion = groq_client.chat.completions.create(
             model=model,
             messages=[
                 {
@@ -193,11 +193,11 @@ async def voice_agent_combined(request: VoiceAgentRequest):
                 }
             ],
             temperature=temperature,
-            max_tokens=max_tokens,
+            max_completion_tokens=max_tokens,
             top_p=top_p,
         )
         
-        generated_text = message.content[0].text
+        generated_text = completion.choices[0].message.content or ""
         
         # Get TTS config
         tts_config = get_tts_config(request.tts_config)
@@ -289,7 +289,7 @@ async def voice_agent_with_rag(request: VoiceAgentRequest):
         # Inject RAG context into prompt
         prompt_with_context = f"{context}User Query: {request.prompt}" if context else request.prompt
         
-        message = groq_client.messages.create(
+        completion = groq_client.chat.completions.create(
             model=model,
             messages=[
                 {
@@ -298,11 +298,11 @@ async def voice_agent_with_rag(request: VoiceAgentRequest):
                 }
             ],
             temperature=temperature,
-            max_tokens=max_tokens,
+            max_completion_tokens=max_tokens,
             top_p=top_p,
         )
         
-        generated_text = message.content[0].text
+        generated_text = completion.choices[0].message.content or ""
         
         # Step 2: Convert generated text to speech using Sarvam AI (STREAMING)
         tts_config = get_tts_config(request.tts_config)
@@ -352,4 +352,3 @@ async def voice_agent_with_rag(request: VoiceAgentRequest):
         raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error in voice agent with RAG pipeline: {str(e)}")
-

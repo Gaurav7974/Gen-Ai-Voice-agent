@@ -34,7 +34,7 @@ async def generate_text(request: TextGenerationRequest):
         max_tokens = request.max_tokens or config["max_tokens"]
         top_p = request.top_p if request.top_p is not None else config["top_p"]
         
-        message = groq_client.messages.create(
+        completion = groq_client.chat.completions.create(
             model=model,
             messages=[
                 {
@@ -43,16 +43,17 @@ async def generate_text(request: TextGenerationRequest):
                 }
             ],
             temperature=temperature,
-            max_tokens=max_tokens,
+            max_completion_tokens=max_tokens,
             top_p=top_p,
         )
         
-        generated_text = message.content[0].text
+        choice = completion.choices[0]
+        generated_text = choice.message.content or ""
         
         return TextGenerationResponse(
             text=generated_text,
             model=model,
-            stop_reason=message.stop_reason,
+            stop_reason=choice.finish_reason or "stop",
             config_used=config_used
         )
     except Exception as e:

@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     SARVAM_API_KEY: str
     
     # Groq LLM Configuration
-    LLM_MODEL: str = "mixtral-8x7b-32768"
+    LLM_MODEL: str = "llama-3.3-70b-versatile"
     LLM_TEMPERATURE: float = 0.7
     LLM_MAX_TOKENS: int = 1024
     LLM_TOP_P: float = 1.0
@@ -40,31 +40,31 @@ settings = Settings()
 # Model configurations for different use cases
 MODEL_CONFIGS = {
     "default": {
-        "model": "mixtral-8x7b-32768",
+        "model": "llama-3.3-70b-versatile",
         "temperature": 0.7,
         "max_tokens": 1024,
         "top_p": 1.0,
     },
     "creative": {
-        "model": "mixtral-8x7b-32768",
+        "model": "llama-3.3-70b-versatile",
         "temperature": 0.9,
         "max_tokens": 2048,
         "top_p": 0.95,
     },
     "precise": {
-        "model": "mixtral-8x7b-32768",
+        "model": "llama-3.3-70b-versatile",
         "temperature": 0.3,
         "max_tokens": 1024,
         "top_p": 0.9,
     },
     "fast": {
-        "model": "gemma-7b-it",
+        "model": "llama-3.1-8b-instant",
         "temperature": 0.7,
         "max_tokens": 512,
         "top_p": 1.0,
     },
     "detailed": {
-        "model": "llama-2-70b-chat-4096",
+        "model": "llama-3.3-70b-versatile",
         "temperature": 0.5,
         "max_tokens": 4096,
         "top_p": 0.95,
