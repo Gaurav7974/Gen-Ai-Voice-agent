@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { transcribeAudio, voiceAgentCombined, voiceAgentStream } from '../api';
+import { useNavigate } from 'react-router-dom';
+import { transcribeAudio, voiceAgentStream } from '../api';
+import { TextRotate } from '../components/TextRotate'
 import '../styles/landing.css';
+import { BackgroundRippleEffect } from '../components/ui/background-ripple-effect';
 
 const LANG_MAP: Record<string, string> = {
   hi: 'hi-IN',
@@ -20,37 +23,32 @@ const LANG_LABELS: Record<string, string> = {
   en: 'English',
 };
 
+const LANG_KEYS = Object.keys(LANG_LABELS) as (keyof typeof LANG_LABELS)[];
+
 export default function Landing({ onNavigate }: { onNavigate?: (view: 'landing' | 'rag') => void }) {
+  const navigate = useNavigate();
   const [activeLang, setActiveLang] = useState('hi');
+  const [rotatingLangIdx, setRotatingLangIdx] = useState(
+    LANG_KEYS.indexOf('hi'),
+  );
   const [demoRunning, setDemoRunning] = useState(false);
   const [demoPhase, setDemoPhase] = useState<'idle' | 'recording' | 'transcribing' | 'responding'>('idle');
   const [demoTranscript, setDemoTranscript] = useState('');
-const [demoResponse, setDemoResponse] = useState('');
+  const [demoResponse, setDemoResponse] = useState('');
   const [error, setError] = useState('');
   
-  // Chat state
-  const [chatMessages, setChatMessages] = useState<{ role: 'user' | 'assistant'; content: string; }[]>([]);
-  const [chatInput, setChatInput] = useState('');
-  const [chatLoading, setChatLoading] = useState(false);
-  const [chatPhase, setChatPhase] = useState<'idle' | 'recording' | 'thinking' | 'speaking'>('idle');
-  const [chatAudioUrl, setChatAudioUrl] = useState('');
-  
-  const navRef = useRef<HTMLElement | null>(null);
+  // Chat state removed — moved to dedicated ChatbotPage
+
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const cancelRef = useRef(false);
-  const chatInputRef = useRef<HTMLInputElement | null>(null);
 
+  // Keep activeLang aligned with the hero's rotating language display
   useEffect(() => {
-    const handleScroll = () => {
-      if (navRef.current) {
-        navRef.current.classList.toggle('scrolled', window.scrollY > 40);
-      }
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    setActiveLang(LANG_KEYS[rotatingLangIdx]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rotatingLangIdx]);
 
   useEffect(() => {
     const obs = new IntersectionObserver(
@@ -184,195 +182,30 @@ const stopDemo = () => {
     setDemoRunning(false);
   };
 
-  // ─── CHAT HANDLERS ───
-  const startChatRecording = async (): Promise<Blob> => {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    return new Promise((resolve, reject) => {
-      const recorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
-      mediaRecorderRef.current = recorder;
-      chunksRef.current = [];
-
-      recorder.ondataavailable = (e) => {
-        if (e.data.size > 0) chunksRef.current.push(e.data);
-      };
-
-      recorder.onstop = () => {
-        const blob = new Blob(chunksRef.current, { type: 'audio/webm' });
-        stream.getTracks().forEach((t) => t.stop());
-        resolve(blob);
-      };
-
-      recorder.onerror = () => {
-        stream.getTracks().forEach((t) => t.stop());
-        reject(new Error('Recording failed'));
-      };
-
-      recorder.start();
-    });
-  };
-
-  const stopChatRecording = () => {
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
-      mediaRecorderRef.current.stop();
-    }
-  };
-
-  const handleChatVoiceInput = async () => {
-    if (chatPhase === 'recording') {
-      stopChatRecording();
-      return;
-    }
-    
-    setChatPhase('recording');
-    try {
-      const audioBlob = await startChatRecording();
-      
-      // Auto-stop after 8 seconds
-      const autoStop = setTimeout(() => stopChatRecording(), 8000);
-
-      await new Promise<void>((resolve) => {
-        const checkInterval = setInterval(() => {
-          if (mediaRecorderRef.current?.state === 'inactive') {
-            clearInterval(checkInterval);
-            resolve();
-          }
-        }, 100);
-      });
-      clearTimeout(autoStop);
-
-      // Transcribe
-      setChatPhase('thinking');
-      const languageCode = LANG_MAP[activeLang];
-      const sttResult = await transcribeAudio(audioBlob, languageCode);
-      const transcript = sttResult.transcript;
-
-      if (!transcript.trim()) {
-        setError('Could not understand speech. Please try again.');
-        setChatPhase('idle');
-        return;
-      }
-
-      // Add user message to chat
-      setChatMessages(prev => [...prev, { role: 'user', content: transcript }]);
-      setChatInput('');
-
-      // Get AI response (STREAMING)
-      setChatPhase('speaking');
-      const { response, generatedText } = await voiceAgentStream(transcript, 'default', 'default', languageCode);
-      
-      // Add assistant message to chat
-      setChatMessages(prev => [...prev, { role: 'assistant', content: generatedText }]);
-      
-      // Play streaming audio
-      if (audioRef.current && response.body) {
-        const audioBlob = await response.blob();
-        const audioUrl = URL.createObjectURL(audioBlob);
-        setChatAudioUrl(audioUrl);
-        audioRef.current.src = audioUrl;
-        audioRef.current.play();
-      }
-      
-      setChatPhase('idle');
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Something went wrong';
-      setError(message);
-      setChatPhase('idle');
-    }
-  };
-
-  const handleChatSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!chatInput.trim() || chatLoading) return;
-
-    const userMessage = chatInput;
-    setChatInput('');
-    setChatLoading(true);
-    setChatPhase('thinking');
-
-    // Add user message
-    setChatMessages(prev => [...prev, { role: 'user', content: userMessage }]);
-
-    try {
-      const languageCode = LANG_MAP[activeLang];
-      // Use streaming endpoint for text input too
-      const { response, generatedText } = await voiceAgentStream(userMessage, 'default', 'default', languageCode);
-      
-      // Add assistant message
-      setChatMessages(prev => [...prev, { role: 'assistant', content: generatedText }]);
-      
-      // Play streaming audio
-      if (audioRef.current && response.body) {
-        const audioBlob = await response.blob();
-        const audioUrl = URL.createObjectURL(audioBlob);
-        setChatAudioUrl(audioUrl);
-        audioRef.current.src = audioUrl;
-        audioRef.current.play();
-      }
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Failed to get response';
-      setChatMessages(prev => [...prev, { role: 'assistant', content: `Error: ${message}` }]);
-    } finally {
-      setChatLoading(false);
-      setChatPhase('idle');
-    }
-  };
-
-  const playChatAudio = () => {
-    if (audioRef.current && chatAudioUrl) {
-      audioRef.current.play();
-    }
-  };
-
   return (
     <>
       {/* Hidden audio element for playback */}
       <audio ref={audioRef} preload="none" />
 
-      {/* NAV */}
-      <nav id="navbar" ref={navRef} className="navbar">
-        <div className="nav-logo">
-          Ge<span>na</span>
-        </div>
-        <ul className="nav-links">
-          <li>
-            <a href="#how">How it works</a>
-          </li>
-          <li>
-            <a href="#chatbot">Chat</a>
-          </li>
-          <li>
-            <a href="#demo">Demo</a>
-          </li>
-          <li>
-            <a href="#usecases">Use cases</a>
-          </li>
-          <li>
-            <a href="#" onClick={(e) => { e.preventDefault(); onNavigate?.('rag'); }}>RAG Data</a>
-          </li>
-        </ul>
-        <button
-          className="nav-cta"
-          onClick={() => {
-            const ctaEl = document.getElementById('cta');
-            if (ctaEl) ctaEl.scrollIntoView({ behavior: 'smooth' });
-          }}
-          aria-label="Jump to join waitlist section"
-        >
-          Join waitlist
-        </button>
-      </nav>
-
       {/* HERO */}
       <section id="hero" className="hero">
+        <BackgroundRippleEffect />
         <div className="hero-bg"></div>
-        <div className="hero-grid"></div>
         <div className="hero-content">
           <h1 className="hero-title">
             <span className="title-line">
               Ask anything.
             </span>
             <span className="title-line title-line-lang">
-              In your <span className="title-lang">{LANG_LABELS[activeLang]}</span> Language
+              In your{" "}
+              <TextRotate
+                texts={LANG_KEYS.map((k) => LANG_LABELS[k])}
+                rotationInterval={2200}
+                staggerDuration={0.04}
+                mainClassName="title-lang inline-flex"
+                onNext={(idx) => setRotatingLangIdx(idx)}
+              />{" "}
+              Language
             </span>
             <span className="title-line">Get instant answers.</span>
           </h1>
@@ -383,8 +216,7 @@ const stopDemo = () => {
             <button
               className="btn-primary"
               onClick={() => {
-                // Route to login/signup page - placeholder for now
-                window.location.href = '/login';
+                navigate('/dashboard');
               }}
               aria-label="Get started with Gena"
             >
@@ -410,7 +242,10 @@ const stopDemo = () => {
               <button
                 key={lang}
                 className={`hero-lang-btn ${activeLang === lang ? 'active' : ''}`}
-                onClick={() => setActiveLang(lang)}
+                              onClick={() => {
+                setActiveLang(lang);
+                setRotatingLangIdx(LANG_KEYS.indexOf(lang));
+              }}
               >
                 {LANG_LABELS[lang]}
               </button>
@@ -428,21 +263,39 @@ const stopDemo = () => {
         <div className="steps-wrap fade-up">
           <div className="step">
             <div className="step-num">01</div>
-            <div className="step-icon">🎙️</div>
+            <div className="step-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f5622e" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                <line x1="12" y1="19" x2="12" y2="23" />
+                <line x1="8" y1="23" x2="16" y2="23" />
+              </svg>
+            </div>
             <h3>You speak</h3>
             <p>Tap and speak in your language. Hindi, Tamil, Marathi — whatever feels natural. Sarvam STT captures every word.</p>
-            <div className="step-connector">→</div>
           </div>
           <div className="step">
             <div className="step-num">02</div>
-            <div className="step-icon">🔍</div>
+            <div className="step-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f5622e" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8" />
+                <path d="M21 21l-4.35-4.35" />
+                <path d="M11 8v6" />
+                <path d="M8 11h6" />
+              </svg>
+            </div>
             <h3>AI retrieves</h3>
             <p>Your query hits a hybrid BM25 + semantic search across the knowledge base. Top 5 relevant chunks are pulled — no hallucinations.</p>
-            <div className="step-connector">→</div>
           </div>
           <div className="step">
             <div className="step-num">03</div>
-            <div className="step-icon">🔊</div>
+            <div className="step-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1ad6a0" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 18V5l12-2v13" />
+                <circle cx="6" cy="18" r="3" />
+                <circle cx="18" cy="16" r="3" />
+              </svg>
+            </div>
             <h3>You hear the answer</h3>
             <p>Groq generates a grounded response in under 1.5 seconds. Sarvam TTS streams it back to you — audio, not text.</p>
           </div>
@@ -469,7 +322,10 @@ const stopDemo = () => {
                  <button
                    key={lang}
                    className={`lang-pill ${activeLang === lang ? 'active' : ''}`}
-                   onClick={() => setActiveLang(lang)}
+                                 onClick={() => {
+                setActiveLang(lang);
+                setRotatingLangIdx(LANG_KEYS.indexOf(lang));
+              }}
                    aria-label={`Select ${LANG_LABELS[lang]} language`}
                    aria-pressed={activeLang === lang}
                  >
@@ -516,118 +372,6 @@ const stopDemo = () => {
               {demoPhase === 'recording' && 'Recording… click mic to stop'}
               {demoPhase === 'transcribing' && 'Transcribing…'}
               {demoPhase === 'responding' && 'Generating response…'}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* AI CHATBOT */}
-      <section id="chatbot" className="section chatbot-section">
-        <div className="chatbot-container">
-          <div className="chatbot-header fade-up">
-            <p className="section-label">AI Assistant</p>
-            <h2 className="section-title">Chat with Gena</h2>
-            <p className="section-sub">Type or speak — get instant voice responses in your language</p>
-          </div>
-          
-          <div className="chatbot-shell fade-up">
-            <div className="chatbot-topbar">
-              <div className="chatbot-dot"></div>
-              <div className="chatbot-dot"></div>
-              <div className="chatbot-dot"></div>
-              <span className="chatbot-title-bar">gena — chat</span>
-            </div>
-            
-            <div className="chatbot-body">
-              {/* Language selector */}
-              <div className="chatbot-lang-row">
-                {Object.keys(LANG_LABELS).slice(0, 6).map((lang) => (
-                  <button
-                    key={lang}
-                    className={`chatbot-lang-pill ${activeLang === lang ? 'active' : ''}`}
-                    onClick={() => setActiveLang(lang)}
-                  >
-                    {LANG_LABELS[lang]}
-                  </button>
-                ))}
-              </div>
-              
-              {/* Messages */}
-              <div className="chatbot-messages" ref={(el) => { if (el) el.scrollTop = el.scrollHeight; }}>
-                {chatMessages.length === 0 && (
-                  <div className="chatbot-empty">
-                    <div className="chatbot-empty-icon">💬</div>
-                    <div className="chatbot-empty-text">Start a conversation</div>
-                    <div className="chatbot-empty-sub">Type a message or tap the mic to speak</div>
-                  </div>
-                )}
-                {chatMessages.map((msg, idx) => (
-                  <div key={idx} className={`chat-message ${msg.role}`}>
-                    <div className="chat-message-avatar">
-                      {msg.role === 'user' ? '👤' : '✨'}
-                    </div>
-                    <div className="chat-message-content">
-                      {msg.content}
-                    </div>
-                  </div>
-                ))}
-                {chatLoading && (
-                  <div className="chat-message assistant loading">
-                    <div className="chat-message-avatar">✨</div>
-                    <div className="chat-message-content">
-                      <span className="typing-indicator">
-                        <span></span><span></span><span></span>
-                      </span>
-                    </div>
-                  </div>
-                )}
-              </div>
-              
-              {/* Audio indicator */}
-              {chatAudioUrl && !chatLoading && (
-                <div className="chatbot-audio-bar">
-                  <button className="chatbot-audio-play" onClick={playChatAudio}>
-                    ▶ Play Voice Response
-                  </button>
-                </div>
-              )}
-              
-              {/* Input area */}
-              <form className="chatbot-input-area" onSubmit={handleChatSubmit}>
-                <input
-                  ref={chatInputRef}
-                  type="text"
-                  className="chatbot-input"
-                  placeholder="Type your message..."
-                  value={chatInput}
-                  onChange={(e) => setChatInput(e.target.value)}
-                  disabled={chatLoading}
-                />
-                <button
-                  type="button"
-                  className={`chatbot-mic ${chatPhase === 'recording' ? 'recording' : ''}`}
-                  onClick={handleChatVoiceInput}
-                  disabled={chatLoading}
-                  aria-label={chatPhase === 'recording' ? 'Stop recording' : 'Start voice input'}
-                >
-                  {chatPhase === 'recording' ? '⏹' : '🎙️'}
-                </button>
-                <button
-                  type="submit"
-                  className="chatbot-send"
-                  disabled={!chatInput.trim() || chatLoading}
-                >
-                  ➤
-                </button>
-              </form>
-              
-              {/* Status hint */}
-              <div className="chatbot-hint">
-                {chatPhase === 'recording' && 'Listening...'}
-                {chatPhase === 'thinking' && 'Gena is thinking...'}
-                {chatPhase === 'speaking' && 'Playing response...'}
-                {chatPhase === 'idle' && !chatLoading && 'Tap mic to speak or type to chat'}
-              </div>
             </div>
           </div>
         </div>
