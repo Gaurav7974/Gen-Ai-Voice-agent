@@ -1,0 +1,33 @@
+# --- Secrets & environment files ---
+backend/.env
+frontend/.env.local
+rag/data/
+
+# --- Logs ---
+*.log
+
+# --- Images / screenshots (generated, not source) ---
+*.png
+*.jpg
+*.jpeg
+
+# --- Build artifacts ---
+frontend/dist/
+frontend/build/
+frontend/tsconfig.tsbuildinfo
+frontend/tsconfig.node.tsbuildinfo
+
+# --- Dependencies ---
+frontend/node_modules/
+backend/venv/
+
+# --- Python cache ---
+__pycache__/
+*.pyc
+
+# --- Vector store ---
+rag/chroma_store/
+
+# --- Tool / editor artifacts ---
+.sisyphus/
+.playwright-mcp/
