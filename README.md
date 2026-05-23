@@ -1,107 +1,96 @@
-# Gen AI Voice Agent
+# Gen AI Voice Agent (Gena)
 
-A full-stack voice agent with a FastAPI backend and local RAG knowledge base. Users speak or type a prompt, the system generates a response via Groq LLM, and converts it to speech using Sarvam AI TTS.
+A full-stack, voice-first AI for Indic languages. Users speak or type in Hindi, Tamil, Telugu and 8+ other Indic languages; the system transcribes via Sarvam STT, generates a grounded response via Groq LLM + RAG, and streams audio back via Sarvam TTS.
 
 ## Architecture
 
 ```
-┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐
-│   Frontend      │────▶│   FastAPI        │────▶│   Groq LLM      │
-│   (React)       │◀────│   Backend        │────▶│   (Mixtral,     │
-│                 │     │                  │     │    Llama, Gemma) │
-└─────────────────┘     │                  │     └─────────────────┘
-                        │   ├─ STT         │
-                        │   ├─ Text Gen    │────▶│   Sarvam AI TTS │
-                        │   ├─ TTS Stream  │     │   (Bulbul v3)   │
-                        │   └─ Voice Agent │     └─────────────────┘
-                        └──────────────────┘
-                        
-┌─────────────────┐
-│   RAG Pipeline  │  (standalone)
-│   ChromaDB      │
-│   + Doc Loader  │
-└─────────────────┘
+┌─────────────────┐     ┌──────────────────────────────────┐     ┌─────────────────┐
+│  apps/web        │────▶│  apps/api  (FastAPI)             │────▶│  Groq LLM       │
+│  React + Vite    │◀────│  app/api/routes/                 │     │  (Mixtral, etc) │
+│  TypeScript      │     │  ├─ stt.py   (Sarvam Saaras v3) │     └─────────────────┘
+└─────────────────┘     │  ├─ tts.py   (Sarvam Bulbul v3) │────▶│  Sarvam AI TTS  │
+                        │  ├─ voice_agent.py               │     └─────────────────┘
+                        │  └─ rag.py   (ChromaDB + BM25)  │
+                        │  app/services/   (RAG, doc load) │
+                        │  app/db/         (Chroma client) │
+                        └──────────────────────────────────┘
 ```
 
 ## Project Structure
 
 ```
-gen ai vocie agent/
-├── backend/                 # FastAPI REST API
-│   ├── main.py              # App factory, CORS, router registration
-│   ├── config.py            # Pydantic settings + preset configs
-│   ├── schemas.py           # Pydantic request/response models
-│   ├── requirements.txt     # Python dependencies
-│   ├── .env.example         # Environment variable template
-│   └── routes/
-│       ├── __init__.py      # Utility routes (/, /health, /api/configs)
-│       ├── stt.py           # Speech-to-text via Sarvam Saaras v3
-│       ├── text_generation.py  # Text generation via Groq LLM
-│       ├── tts.py           # Streaming TTS via Sarvam Bulbul v3
-│       └── voice_agent.py   # Combined LLM + TTS pipeline
-│
-├── rag/                     # Local RAG knowledge base (standalone)
-│   ├── rag_config.py        # Chroma paths, chunking params
-│   ├── document_loader.py   # File discovery, text chunking
-│   ├── ingest.py            # Upsert chunks into ChromaDB
-│   ├── query.py             # CLI similarity search
-│   ├── data/                # Drop .txt/.md files here
-│   └── chroma_store/        # Persistent ChromaDB storage
-│
-└── README.md                # This file
+gen-ai-voice-agent/
+├── apps/
+│   ├── api/                       # FastAPI backend
+│   │   ├── requirements.txt
+│   │   ├── .env / .env.example
+│   │   └── app/
+│   │       ├── main.py            # App factory, CORS, router registration
+│   │       ├── config.py          # Pydantic settings + preset configs
+│   │       ├── schemas.py         # Pydantic request/response models
+│   │       ├── sarvam_tts_stream.py
+│   │       ├── api/routes/        # Route handlers
+│   │       │   ├── rag.py
+│   │       │   ├── stt.py
+│   │       │   ├── text_generation.py
+│   │       │   ├── tts.py
+│   │       │   ├── voice_agent.py
+│   │       │   └── utils.py
+│   │       ├── services/          # Business logic
+│   │       │   ├── document_loader.py
+│   │       │   ├── rag.py
+│   │       │   ├── rag_config.py
+│   │       │   └── tts.py
+│   │       └── db/                # Database clients
+│   │           ├── chroma.py
+│   │           └── chroma_ingest.py
+│   └── web/                       # React + Vite frontend
+│       ├── index.html
+│       ├── package.json
+│       ├── vite.config.ts
+│       └── src/
+│           ├── App.tsx
+│           ├── main.tsx
+│           ├── api.ts
+│           └── (pages, components, styles...)
+├── knowledge/
+│   └── docs/                      # Drop .txt/.md knowledge files here
+│       └── secret.txt
+├── tests/
+│   ├── test_rag_routes.py
+│   └── test_document_loader.py
+├── CLAUDE.md
+├── DESIGN.md
+├── pytest.ini
+└── README.md
 ```
 
 ## Quick Start
 
-### Backend
+### API (Backend)
 
-1. **Create and activate a virtual environment:**
-   ```bash
-   cd backend
-   python -m venv venv
-   venv\Scripts\activate        # Windows
-   # source venv/bin/activate   # Linux/macOS
-   ```
+```bash
+cd apps/api
+python -m venv venv
+venv\Scripts\activate        # Windows
+# source venv/bin/activate   # Linux/macOS
+pip install -r requirements.txt
+copy .env.example .env       # then add your API keys
+uvicorn app.main:app --reload
+```
 
-2. **Install dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
+API docs: http://localhost:8000/docs
 
-3. **Configure API keys:**
-   ```bash
-   copy .env.example .env       # Windows
-   # cp .env.example .env       # Linux/macOS
-   ```
-   Edit `.env` and add your `GROQ_API_KEY` and `SARVAM_API_KEY`.
+### Web (Frontend)
 
-4. **Run the server:**
-   ```bash
-   uvicorn main:app --reload
-   ```
-   API docs: http://localhost:8000/docs
+```bash
+cd apps/web
+npm install
+npm run dev
+```
 
-### RAG Pipeline
-
-1. **Install dependencies:**
-   ```bash
-   cd rag
-   pip install -r requirements.txt
-   ```
-
-2. **Add knowledge files** (`.txt`, `.md`, `.markdown`) to `rag/data/`.
-
-3. **Ingest:**
-   ```bash
-   python ingest.py
-   ```
-
-4. **Query:**
-   ```bash
-   python query.py "How does the voice agent handle interruptions?"
-   ```
-
-## Backend API Endpoints
+## API Endpoints
 
 | Method | Path | Description |
 |--------|------|-------------|
@@ -136,20 +125,23 @@ gen ai vocie agent/
 | `professional` | ratan | 1.0 | 0.95 | Formal |
 | `friendly` | ratan | 1.05 | 1.0 | Warm |
 
-All presets are defined in [`backend/config.py`](backend/config.py). Custom parameters can override any preset value in the request body.
+All presets are defined in `apps/api/app/config.py`. Custom parameters can override any preset value in the request body.
 
 ## RAG Integration
 
-The RAG pipeline is standalone — it does not modify the FastAPI app or frontend. The intended future flow:
+The RAG pipeline is embedded in `apps/api/app/services/rag.py` and `app/db/`. To add knowledge:
 
-```
-User input → STT transcript → RAG query → retrieved context → Groq prompt (with context) → Sarvam TTS → audio
-```
+1. Drop `.txt` or `.md` files into `knowledge/docs/`
+2. Run ingestion: `python apps/api/rag/scripts/ingest.py`
 
-Keep retrieved chunks short. Voice agents should speak concise answers, not read documents aloud.
+The intended voice flow:
+```
+User input -> STT -> RAG query -> retrieved context -> Groq (with context) -> Sarvam TTS -> audio
+```
 
 ## Tech Stack
 
+- **Frontend**: React 18, Vite, TypeScript, Clerk auth
 - **Backend**: FastAPI, Uvicorn, Pydantic
 - **LLM**: Groq (Mixtral, Llama, Gemma)
 - **TTS**: Sarvam AI Bulbul v3

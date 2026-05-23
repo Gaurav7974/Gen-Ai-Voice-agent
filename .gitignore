@@ -1,33 +1,96 @@
-# --- Secrets & environment files ---
-backend/.env
-frontend/.env.local
-rag/data/
+# ----------------------------------------------------------------------------
+# GENA VOICE AI — Master Gitignore
+# ----------------------------------------------------------------------------
 
-# --- Logs ---
-*.log
+# --- System / OS ---
+.DS_Store
+Thumbs.db
+*.tmp
+*.temp
 
-# --- Images / screenshots (generated, not source) ---
-*.png
-*.jpg
-*.jpeg
+# --- IDEs / Editors ---
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
 
-# --- Build artifacts ---
-frontend/dist/
-frontend/build/
-frontend/tsconfig.tsbuildinfo
-frontend/tsconfig.node.tsbuildinfo
+# --- Node.js / Frontend (apps/web) ---
+node_modules/
+dist/
+build/
+.next/
+.svelte-kit/
+.turbo/
+.vercel/
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
 
-# --- Dependencies ---
-frontend/node_modules/
-backend/venv/
-
-# --- Python cache ---
+# --- Python (apps/api, scripts) ---
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
 
-# --- Vector store ---
-rag/chroma_store/
-
-# --- Tool / editor artifacts ---
-.sisyphus/
+# --- Testing ---
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+.noseids/
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
 .playwright-mcp/
+
+# --- Environment & Secrets (NEVER COMMIT) ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+certs/
+
+# --- Databases & Vector Stores ---
+*.db
+*.sqlite3
+chroma_store/
+data/
+storage/
+
+# --- Tooling ---
+.sisyphus/
+
+# --- Media (Generated) ---
+*.mp3
+*.wav
+*.m4a
+output.*
+screenshots/
