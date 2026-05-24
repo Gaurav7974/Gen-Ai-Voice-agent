@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { listRagFiles, uploadRagFile, deleteRagFile, ingestRag, queryRag } from '../api';
 
-export default function RagManager({ onNavigate }: { onNavigate: (view: 'landing' | 'rag') => void }) {
+export default function RagManager({ onNavigate, showNavbar = true }: { onNavigate: (view: 'landing' | 'rag') => void; showNavbar?: boolean }) {
   const [files, setFiles] = useState<{ name: string; size: number }[]>([]);
   const [dragOver, setDragOver] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -96,22 +96,26 @@ export default function RagManager({ onNavigate }: { onNavigate: (view: 'landing
 
   return (
     <div className="rag-shell">
-      <nav id="navbar" className="navbar">
-        <div className="nav-logo">
-          Ge<span>na</span> RAG
-        </div>
-        <ul className="nav-links">
-          <li>
-            <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('landing'); }}>&larr; Back to Home</a>
-          </li>
-        </ul>
-      </nav>
+      {showNavbar && (
+        <nav id="navbar" className="navbar">
+          <div className="nav-logo">
+            Ly<span>ra</span> RAG
+          </div>
+          <ul className="nav-links">
+            <li>
+              <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('landing'); }}>&larr; Back to Home</a>
+            </li>
+          </ul>
+        </nav>
+      )}
 
       <main className="rag-main">
-        <header className="rag-header">
-          <h1>RAG Data Sources</h1>
-          <p>Manage documents used by the voice agent.</p>
-        </header>
+        {showNavbar && (
+          <header className="rag-header">
+            <h1>RAG Data Sources</h1>
+            <p>Manage documents used by the voice agent.</p>
+          </header>
+        )}
 
         {status && (
           <div className={`rag-status status-${status.type}`}>

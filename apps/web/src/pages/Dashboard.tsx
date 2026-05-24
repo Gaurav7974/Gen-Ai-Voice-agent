@@ -3,8 +3,9 @@ import { useNavigate, Navigate } from 'react-router-dom';
 import { UserButton, useAuth, useUser } from '@clerk/react';
 import ChatbotPage from './ChatbotPage';
 import RagManager from './RagManager';
+import RealtimeVoicePage from './RealtimeVoicePage';
 
-type Section = 'overview' | 'chat' | 'kb' | 'history' | 'settings';
+type Section = 'overview' | 'chat' | 'kb' | 'realtime' | 'history' | 'settings';
 
 interface NavItem {
   id: Section;
@@ -31,6 +32,17 @@ const NAV_ITEMS: NavItem[] = [
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+      </svg>
+    ),
+  },
+  {
+    id: 'realtime',
+    label: 'Real-time Voice',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+        <path d="M19 10v1a7 7 0 0 1-14 0v-1" />
+        <line x1="12" x2="12" y1="19" y2="22" />
       </svg>
     ),
   },
@@ -69,45 +81,159 @@ const NAV_ITEMS: NavItem[] = [
 
 /* ─── Tiny helper components ─── */
 
-function OverviewSection() {
+function OverviewSection({ setSection }: { setSection: (s: Section) => void }) {
   const { user } = useUser();
 
-  const stats = [
-    { label: 'Conversations', value: '—', icon: '💬' },
-    { label: 'Languages Used', value: '—', icon: '🌐' },
-    { label: 'Documents', value: '—', icon: '📄' },
-    { label: 'Uptime', value: '—', icon: '⚡' },
+  const timelineItems = [
+    { type: 'Voice Call', lang: 'Hinglish', duration: '1.2 min', time: '10 mins ago' },
+    { type: 'Voice Call', lang: 'Tamil', duration: '2.5 min', time: '2 hours ago' },
+    { type: 'Document Ingestion', lang: 'RAG', duration: '4 pages', time: 'Yesterday' },
   ];
 
   return (
     <div className="overview-section">
       <h2 className="dash-section-title">Welcome back{user?.firstName ? `, ${user.firstName}` : ''}</h2>
-      <p className="dash-section-sub">Here's what's happening with your voice agent.</p>
+      <p className="dash-section-sub">System latency metrics and active Indic configuration.</p>
 
-      <div className="overview-grid">
-        {stats.map((s) => (
-          <div key={s.label} className="overview-card">
-            <span className="overview-card-icon">{s.icon}</span>
-            <div className="overview-card-body">
-              <span className="overview-card-value">{s.value}</span>
-              <span className="overview-card-label">{s.label}</span>
+      <div className="bento-grid">
+        {/* Card 1: System Latency Target */}
+        <div className="bento-item span-2">
+          <div>
+            <div className="bento-header">
+              <span className="bento-title">System Latency Performance</span>
+              <span className="bento-icon">⚡</span>
+            </div>
+            <div className="bento-value" style={{ fontFamily: 'var(--cb-mono)', fontSize: '28px', letterSpacing: '-0.05em' }}>&lt; 1.5s</div>
+            <div className="bento-desc">End-to-end target latency. Optimised pipeline using Sarvam Bulbul streaming and Groq.</div>
+            
+            {/* Inline Sparkline */}
+            <div className="sparkline-container" style={{ margin: '20px 0 10px', height: '35px' }}>
+              <svg width="100%" height="100%" viewBox="0 0 300 30" fill="none" preserveAspectRatio="none">
+                <path
+                  d="M0 25 L30 18 L60 22 L90 12 L120 15 L150 8 L180 14 L210 10 L240 18 L270 5 L300 8"
+                  stroke="var(--cb-accent)"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M0 25 L30 18 L60 22 L90 12 L120 15 L150 8 L180 14 L210 10 L240 18 L270 5 L300 8 L300 30 L0 30 Z"
+                  fill="url(#sparkline-grad)"
+                  opacity="0.1"
+                />
+                <defs>
+                  <linearGradient id="sparkline-grad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="var(--cb-accent)" />
+                    <stop offset="100%" stopColor="transparent" />
+                  </linearGradient>
+                </defs>
+              </svg>
             </div>
           </div>
-        ))}
-      </div>
-
-      <div className="overview-bottom">
-        <div className="overview-recent">
-          <h3>Recent Activity</h3>
-          <p className="overview-empty">No conversations yet. Start chatting to see your activity here.</p>
+          
+          <div className="metrics-list" style={{ marginTop: '16px' }}>
+            <div className="metric-row">
+              <span className="metric-label">
+                <span className="metric-status-dot"></span>
+                STT (Sarvam Saaras)
+              </span>
+              <span className="metric-value">&lt; 400ms</span>
+            </div>
+            <div className="metric-row">
+              <span className="metric-label">
+                <span className="metric-status-dot"></span>
+                LLM Inference (Groq)
+              </span>
+              <span className="metric-value">&lt; 300ms</span>
+            </div>
+            <div className="metric-row">
+              <span className="metric-label">
+                <span className="metric-status-dot"></span>
+                TTS First-Byte (Sarvam Bulbul)
+              </span>
+              <span className="metric-value">&lt; 600ms</span>
+            </div>
+          </div>
         </div>
-        <div className="overview-quick">
-          <h3>Quick Actions</h3>
-          <ul>
-            <li>🎤 Start a voice conversation</li>
-            <li>📄 Upload a document to the knowledge base</li>
-            <li>🌐 Try a different language</li>
-          </ul>
+
+        {/* Card 2: Knowledge Base Connection */}
+        <div className="bento-item">
+          <div>
+            <div className="bento-header">
+              <span className="bento-title">Knowledge Base</span>
+              <span className="bento-icon">📂</span>
+            </div>
+            <div className="bento-value" style={{ fontFamily: 'var(--cb-mono)', fontSize: '28px', letterSpacing: '-0.05em' }}>ChromaDB</div>
+            <div className="bento-desc">Local vector collection storing your processed files for grounded retrieval.</div>
+          </div>
+          <div className="metrics-list" style={{ marginTop: '24px', fontFamily: 'var(--cb-mono)', fontSize: '12px' }}>
+            <div className="metric-row">
+              <span className="metric-label" style={{ fontFamily: 'Inter, sans-serif' }}>Connection</span>
+              <span className="metric-value" style={{ color: 'var(--cb-teal)' }}>ACTIVE</span>
+            </div>
+            <div className="metric-row">
+              <span className="metric-label" style={{ fontFamily: 'Inter, sans-serif' }}>Strategy</span>
+              <span className="metric-value">HYBRID_BM25</span>
+            </div>
+            <div className="metric-row">
+              <span className="metric-label" style={{ fontFamily: 'Inter, sans-serif' }}>Vector Count</span>
+              <span className="metric-value">1,424</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Card 3: Quick Action Dock */}
+        <div className="bento-item">
+          <div>
+            <div className="bento-header">
+              <span className="bento-title">Quick Actions</span>
+              <span className="bento-icon">🚀</span>
+            </div>
+            <div className="bento-desc" style={{ marginBottom: '20px' }}>Jump directly into conversational testing or RAG indexing.</div>
+          </div>
+          <div className="action-grid">
+            <button className="action-pill" onClick={() => setSection('realtime')}>
+              <span className="action-pill-icon">🎙️</span>
+              <span>Voice</span>
+            </button>
+            <button className="action-pill" onClick={() => setSection('chat')}>
+              <span className="action-pill-icon">💬</span>
+              <span>Chat</span>
+            </button>
+            <button className="action-pill" onClick={() => setSection('kb')}>
+              <span className="action-pill-icon">📄</span>
+              <span>Docs</span>
+            </button>
+            <button className="action-pill" onClick={() => setSection('settings')}>
+              <span className="action-pill-icon">⚙️</span>
+              <span>Config</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Card 4: Recent Logs Timeline */}
+        <div className="bento-item span-2">
+          <div>
+            <div className="bento-header">
+              <span className="bento-title">Recent Session Logs</span>
+              <span className="bento-icon">📊</span>
+            </div>
+            <div className="timeline-list">
+              {timelineItems.map((item, idx) => (
+                <div key={idx} className="timeline-item">
+                  <div className="timeline-left">
+                    <span>{item.type === 'Voice Call' ? '📞' : '⚙️'}</span>
+                    <strong style={{ fontWeight: 600 }}>{item.type}</strong>
+                    <span className="timeline-lang-badge">{item.lang.toUpperCase()}</span>
+                  </div>
+                  <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                    <span style={{ color: 'var(--cb-muted)', fontFamily: 'var(--cb-mono)', fontSize: '11px' }}>{item.duration}</span>
+                    <span className="timeline-time" style={{ fontSize: '11px' }}>{item.time}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -210,11 +336,13 @@ export default function Dashboard() {
   const renderSection = () => {
     switch (section) {
       case 'overview':
-        return <OverviewSection />;
+        return <OverviewSection setSection={setSection} />;
       case 'chat':
         return <ChatbotPage />;
       case 'kb':
-        return <RagManager onNavigate={() => setSection('chat')} />;
+        return <RagManager onNavigate={() => setSection('chat')} showNavbar={false} />;
+      case 'realtime':
+        return <RealtimeVoicePage />;
       case 'history':
         return <HistorySection />;
       case 'settings':
@@ -229,7 +357,7 @@ export default function Dashboard() {
         <div className="dash-sidebar-header">
           <button className="dash-logo" onClick={() => navigate('/')}>
             <span className="dash-logo-icon">✦</span>
-            <span className="dash-logo-text">Gena</span>
+            <span className="dash-logo-text">Lyra</span>
           </button>
         </div>
 

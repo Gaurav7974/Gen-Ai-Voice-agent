@@ -11,6 +11,8 @@ import Landing from './pages/Landing';
 import RagManager from './pages/RagManager';
 import ChatbotPage from './pages/ChatbotPage';
 import Dashboard from './pages/Dashboard';
+import RealtimeVoicePage from './pages/RealtimeVoicePage';
+import SmoothScroll from './components/SmoothScroll';
 import './App.css';
 
 function NavBar() {
@@ -80,15 +82,18 @@ function AppRoutes() {
   return (
     <div className="app-shell">
       <NavBar />
-      <Routes>
-        <Route path="/" element={<Landing onNavigate={setView} />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/login/*" element={<div className="auth-page"><SignIn routing="path" path="/login" /></div>} />
-        <Route path="/sign-up/*" element={<div className="auth-page"><SignUp routing="path" path="/sign-up" /></div>} />
-        <Route path="/chatbot" element={<ChatbotPage />} />
-        <Route path="/rag" element={<RagManager onNavigate={setView} />} />
-        <Route path="/sign-in/*" element={<div className="auth-page"><SignIn routing="path" path="/sign-in" /></div>} />
-      </Routes>
+      <SmoothScroll>
+        <Routes>
+          <Route path="/" element={<Landing onNavigate={setView} />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/login/*" element={<div className="auth-page"><SignIn routing="path" path="/login" /></div>} />
+          <Route path="/sign-up/*" element={<div className="auth-page"><SignUp routing="path" path="/sign-up" /></div>} />
+          <Route path="/chatbot" element={<ChatbotPage />} />
+          <Route path="/realtime" element={<RealtimeVoicePage />} />
+          <Route path="/rag" element={<RagManager onNavigate={setView} />} />
+          <Route path="/sign-in/*" element={<div className="auth-page"><SignIn routing="path" path="/sign-in" /></div>} />
+        </Routes>
+      </SmoothScroll>
     </div>
   );
 }

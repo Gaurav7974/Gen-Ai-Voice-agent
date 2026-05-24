@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { transcribeAudio, voiceAgentStream } from '../api';
+import StreamingText from '../components/StreamingText';
 import '../styles/chatbot.css';
 
 const LANG_MAP: Record<string, string> = {
@@ -43,7 +44,7 @@ export default function ChatbotPage() {
   // Load persisted sessions from localStorage on first render
   const loadSessions = (): Session[] => {
     try {
-      const raw = localStorage.getItem('gena_sessions');
+      const raw = localStorage.getItem('lyra_sessions');
       if (raw) return JSON.parse(raw);
     } catch { /* ignore corrupt data */ }
     return [];
@@ -51,7 +52,7 @@ export default function ChatbotPage() {
 
   const [sessions, setSessions] = useState<Session[]>(loadSessions);
   const [activeSessionId, setActiveSessionId] = useState<string | null>(() => {
-    const saved = localStorage.getItem('gena_active_session_id');
+    const saved = localStorage.getItem('lyra_active_session_id');
     return saved || null;
   });
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
@@ -95,15 +96,15 @@ export default function ChatbotPage() {
 
   // Persist sessions to localStorage whenever they change
   useEffect(() => {
-    localStorage.setItem('gena_sessions', JSON.stringify(sessions));
+    localStorage.setItem('lyra_sessions', JSON.stringify(sessions));
   }, [sessions]);
 
   // Persist the active session ID to localStorage whenever it changes
   useEffect(() => {
     if (activeSessionId) {
-      localStorage.setItem('gena_active_session_id', activeSessionId);
+      localStorage.setItem('lyra_active_session_id', activeSessionId);
     } else {
-      localStorage.removeItem('gena_active_session_id');
+      localStorage.removeItem('lyra_active_session_id');
     }
   }, [activeSessionId]);
 
@@ -301,9 +302,9 @@ export default function ChatbotPage() {
       {/* SIDEBAR */}
       <aside className={`chat-sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
         <div className="sidebar-top">
-          <button className="sidebar-logo-btn" onClick={startNewChat} title="Gena Voice AI">
+          <button className="sidebar-logo-btn" onClick={startNewChat} title="Lyra Voice AI">
             <span className="sidebar-logo-icon">✦</span>
-            {sidebarOpen && <span className="sidebar-logo-text">Gena</span>}
+            {sidebarOpen && <span className="sidebar-logo-text">Lyra</span>}
           </button>
           {sidebarOpen && (
             <button className="sidebar-new-chat" onClick={startNewChat}>
@@ -390,7 +391,7 @@ export default function ChatbotPage() {
               <span className="chat-dot" />
               <span className="chat-dot" />
             </div>
-            <span className="chat-header-title">Gena AI Voice Agent</span>
+            <span className="chat-header-title">Lyra AI Voice Agent</span>
           </div>
           <div className="chat-phase-badge">
             {chatPhase === 'recording' && '● Listening'}
@@ -528,46 +529,58 @@ export default function ChatbotPage() {
               ref={chatInputRef}
               type="text"
               className="chat-text-input"
-              placeholder="Ask Gena anything…"
+              placeholder="Ask Lyra anything…"
               value={chatInput}
               onChange={(e) => setChatInput(e.target.value)}
               disabled={chatLoading || chatPhase === 'recording'}
             />
-            <button
-              type="button"
-              className={`chat-mic-btn ${chatPhase === 'recording' ? 'recording' : ''}`}
-              onClick={handleVoiceInput}
-              disabled={chatLoading}
-              aria-label={chatPhase === 'recording' ? 'Stop voice input' : 'Start voice input'}
-            >
-              {chatPhase === 'recording' ? (
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <rect x="6" y="6" width="12" height="12" rx="2" />
-                </svg>
-              ) : (
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
-                  <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-                  <line x1="12" y1="19" x2="12" y2="23" />
-                  <line x1="8" y1="23" x2="16" y2="23" />
-                </svg>
-              )}
-            </button>
-            <button
-              type="submit"
-              className="chat-send-btn"
-              disabled={!chatInput.trim() || chatLoading || chatPhase === 'recording'}
-              aria-label="Send message"
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <line x1="22" y1="2" x2="11" y2="13" />
-                <polygon points="22 2 15 22 11 13 2 9 22 2" />
-              </svg>
-            </button>
+            <div className="chat-input-actions-row">
+              <div className="chat-input-actions-left">
+                <span className="input-lang-badge">{LANG_LABELS[activeLang]}</span>
+              </div>
+              <div className="chat-input-actions-right">
+                <div className="mic-ring-container">
+                  <button
+                    type="button"
+                    className={`chat-mic-btn ${chatPhase === 'recording' ? 'recording' : ''}`}
+                    onClick={handleVoiceInput}
+                    disabled={chatLoading}
+                    aria-label={chatPhase === 'recording' ? 'Stop voice input' : 'Start voice input'}
+                  >
+                    {chatPhase === 'recording' ? (
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <rect x="6" y="6" width="12" height="12" rx="2" />
+                      </svg>
+                    ) : (
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                        <line x1="12" y1="19" x2="12" y2="23" />
+                        <line x1="8" y1="23" x2="16" y2="23" />
+                      </svg>
+                    )}
+                  </button>
+                  <div className="mic-pulse-ring"></div>
+                  <div className="mic-pulse-ring"></div>
+                  <div className="mic-pulse-ring"></div>
+                </div>
+                <button
+                  type="submit"
+                  className="chat-send-btn"
+                  disabled={!chatInput.trim() || chatLoading || chatPhase === 'recording'}
+                  aria-label="Send message"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <line x1="22" y1="2" x2="11" y2="13" />
+                    <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                  </svg>
+                </button>
+              </div>
+            </div>
           </div>
           <p className="chat-input-hint">
             {chatPhase === 'recording' && 'Recording – press mic to stop'}
-            {chatPhase === 'thinking' && 'Gena is thinking…'}
+            {chatPhase === 'thinking' && 'Lyra is thinking…'}
             {chatPhase === 'speaking' && 'Generating response…'}
             {chatPhase === 'idle' && !chatLoading && 'Enter a message or press the mic to speak'}
             {chatLoading && chatPhase !== 'recording' && 'Generating response…'}

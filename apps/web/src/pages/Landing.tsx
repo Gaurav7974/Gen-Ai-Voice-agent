@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { transcribeAudio, voiceAgentStream } from '../api';
 import { TextRotate } from '../components/TextRotate'
+import StreamingText from '../components/StreamingText';
 import '../styles/landing.css';
 import { BackgroundRippleEffect } from '../components/ui/background-ripple-effect';
 
@@ -24,6 +26,29 @@ const LANG_LABELS: Record<string, string> = {
 };
 
 const LANG_KEYS = Object.keys(LANG_LABELS) as (keyof typeof LANG_LABELS)[];
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: 'spring',
+      stiffness: 100,
+      damping: 15,
+    },
+  },
+};
 
 export default function Landing({ onNavigate }: { onNavigate?: (view: 'landing' | 'rag') => void }) {
   const navigate = useNavigate();
@@ -191,8 +216,14 @@ const stopDemo = () => {
       <section id="hero" className="hero">
         <BackgroundRippleEffect />
         <div className="hero-bg"></div>
-        <div className="hero-content">
-          <h1 className="hero-title">
+        <motion.div 
+          className="hero-content"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
+          <motion.h1 className="hero-title" variants={itemVariants}>
             <span className="title-line">
               Ask anything.
             </span>
@@ -208,17 +239,17 @@ const stopDemo = () => {
               Language
             </span>
             <span className="title-line">Get instant answers.</span>
-          </h1>
-          <p className="hero-sub">
-            Gena is a voice-first AI that understands Hindi, Tamil, Telugu, and 8+ Indic languages — with accurate, grounded answers.
-          </p>
-          <div className="hero-actions">
+          </motion.h1>
+          <motion.p className="hero-sub" variants={itemVariants}>
+            Lyra is a voice-first AI that understands Hindi, Tamil, Telugu, and 8+ Indic languages — with accurate, grounded answers.
+          </motion.p>
+          <motion.div className="hero-actions" variants={itemVariants}>
             <button
               className="btn-primary"
               onClick={() => {
                 navigate('/dashboard');
               }}
-              aria-label="Get started with Gena"
+              aria-label="Get started with Lyra"
             >
               GET STARTED
             </button>
@@ -235,8 +266,8 @@ const stopDemo = () => {
               </svg>
               Watch Demo
             </button>
-          </div>
-          <div className="hero-lang-select">
+          </motion.div>
+          <motion.div className="hero-lang-select" variants={itemVariants}>
             <span className="hero-lang-label">Speaking:</span>
             {Object.keys(LANG_LABELS).slice(0, 6).map((lang) => (
               <button
@@ -250,8 +281,8 @@ const stopDemo = () => {
                 {LANG_LABELS[lang]}
               </button>
             ))}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* HOW IT WORKS */}
@@ -314,7 +345,7 @@ const stopDemo = () => {
             <div className="demo-dot"></div>
             <div className="demo-dot"></div>
             <div className="demo-dot"></div>
-            <span className="demo-title-bar">gena — voice interface</span>
+            <span className="demo-title-bar">lyra — voice interface</span>
           </div>
           <div className="demo-body">
             <div className="demo-lang-row">
@@ -349,22 +380,27 @@ const stopDemo = () => {
               <div className="b"></div>
             </div>
             <div className={`demo-response ${demoResponse ? 'show' : ''}`}>
-              <div className="demo-response-label">Gena responds</div>
-              <div id="responseText">{demoResponse}</div>
+              <div className="demo-response-label">Lyra responds</div>
+              <div id="responseText">{demoResponse && <StreamingText text={demoResponse} />}</div>
             </div>
              <div className="demo-controls">
-               <button
-                 className={`mic-btn ${demoPhase === 'recording' ? 'recording' : ''}`}
-                 onClick={() => {
-                   if (demoPhase === 'idle') runDemo();
-                   else if (demoPhase === 'recording') stopRecording();
-                   else stopDemo();
-                 }}
-                 aria-label={demoPhase !== 'idle' ? 'Stop recording or cancel demo' : 'Start recording voice input'}
-                 aria-pressed={demoPhase === 'recording'}
-               >
-                 {demoPhase === 'idle' ? '🎙️' : '⏹'}
-              </button>
+               <div className="mic-ring-container">
+                 <button
+                   className={`mic-btn ${demoPhase === 'recording' ? 'recording' : ''}`}
+                   onClick={() => {
+                     if (demoPhase === 'idle') runDemo();
+                     else if (demoPhase === 'recording') stopRecording();
+                     else stopDemo();
+                   }}
+                   aria-label={demoPhase !== 'idle' ? 'Stop recording or cancel demo' : 'Start recording voice input'}
+                   aria-pressed={demoPhase === 'recording'}
+                 >
+                   {demoPhase === 'idle' ? '🎙️' : '⏹'}
+                </button>
+                <div className="mic-pulse-ring"></div>
+                <div className="mic-pulse-ring"></div>
+                <div className="mic-pulse-ring"></div>
+              </div>
             </div>
             {error && <div className="demo-error">{error}</div>}
             <div className="demo-hint">
@@ -433,29 +469,94 @@ const stopDemo = () => {
           </h2>
         </div>
         <div className="features-grid fade-up">
-          <div className="feat-card">
-            <div className="feat-icon orange">⚡</div>
-            <h3>Sub-1.5s latency</h3>
-            <p>Groq's inference engine combined with streamed TTS means you hear the answer before you expect it. Every hop is optimised.</p>
-            <div className="feat-stat">&lt;1.5s</div>
+          <div className="feat-card span-2">
+            <div>
+              <div className="feat-icon orange">⚡</div>
+              <h3>Sub-1.5s latency</h3>
+              <p>Groq's inference engine combined with streamed TTS means you hear the answer before you expect it. Every hop is optimised for real-time conversation.</p>
+            </div>
+            <div className="bento-micro-viz">
+              <div className="latency-timeline-viz">
+                <div className="timeline-node active">
+                  <span className="node-dot"></span>
+                  <span className="node-label">STT</span>
+                  <span className="node-time">&lt; 400ms</span>
+                </div>
+                <div className="timeline-node active">
+                  <span className="node-dot"></span>
+                  <span className="node-label">LLM</span>
+                  <span className="node-time">&lt; 300ms</span>
+                </div>
+                <div className="timeline-node active">
+                  <span className="node-dot"></span>
+                  <span className="node-label">TTS</span>
+                  <span className="node-time">&lt; 600ms</span>
+                </div>
+                <div className="timeline-line-connector">
+                  <div className="timeline-line-fill"></div>
+                </div>
+              </div>
+            </div>
+            <div className="feat-stat">&lt; 1.5s E2E</div>
           </div>
           <div className="feat-card">
-            <div className="feat-icon teal">🧠</div>
-            <h3>RAG-grounded answers</h3>
-            <p>Every response is anchored in retrieved context. BM25 + semantic hybrid search picks the best chunks before Groq generates a word.</p>
-            <div className="feat-stat teal">0 halluc.</div>
+            <div>
+              <div className="feat-icon teal">🌐</div>
+              <h3>11 Indic languages</h3>
+              <p>Lyra powers both STT and TTS with native Indic language models — not translated, truly native.</p>
+            </div>
+            <div className="bento-micro-viz">
+              <div className="lang-pills-viz">
+                <span className="lang-pill">हिन्दी</span>
+                <span className="lang-pill">தமிழ்</span>
+                <span className="lang-pill">తెలుగు</span>
+                <span className="lang-pill">ಕನ್ನಡ</span>
+                <span className="lang-pill">मराठी</span>
+                <span className="lang-pill">বাংলা</span>
+              </div>
+            </div>
+            <div className="feat-stat teal">11 Languages</div>
           </div>
           <div className="feat-card">
-            <div className="feat-icon teal">🌐</div>
-            <h3>11 Indic languages</h3>
-            <p>Sarvam AI powers both STT and TTS with native Indic language models — not translated or transliterated, truly native.</p>
-            <div className="feat-stat teal">11 langs</div>
+            <div>
+              <div className="feat-icon teal">🧠</div>
+              <h3>RAG-grounded answers</h3>
+              <p>Every response is anchored in retrieved context. BM25 + semantic hybrid search picks the best chunks.</p>
+            </div>
+            <div className="bento-micro-viz">
+              <div className="rag-schema-viz">
+                <div className="rag-file-card">
+                  <span>doc.txt</span>
+                  <span style={{ fontSize: '8px', opacity: 0.5 }}>4 chunks</span>
+                </div>
+                <span className="rag-arrow-flow">→</span>
+                <div className="rag-chunk-card">
+                  <span>chunk_0</span>
+                  <span style={{ fontSize: '8px', opacity: 0.8 }}>dist: 0.12</span>
+                </div>
+              </div>
+            </div>
+            <div className="feat-stat teal">0 Hallucinations</div>
           </div>
-          <div className="feat-card">
-            <div className="feat-icon orange">🔊</div>
-            <h3>Streamed audio response</h3>
-            <p>TTS streams in chunks so playback starts before synthesis is complete. The experience feels like talking to a person, not a chatbot.</p>
-            <div className="feat-stat">Streamed</div>
+          <div className="feat-card span-2">
+            <div>
+              <div className="feat-icon orange">🔊</div>
+              <h3>Streamed audio response</h3>
+              <p>TTS streams in chunks so playback starts before synthesis is complete. The experience feels like talking to a person, not a chatbot. Sub-second time-to-first-audio ensures a natural flow.</p>
+            </div>
+            <div className="bento-micro-viz">
+              <div className="audio-wave-viz">
+                <span className="audio-bar"></span>
+                <span className="audio-bar"></span>
+                <span className="audio-bar"></span>
+                <span className="audio-bar"></span>
+                <span className="audio-bar"></span>
+                <span className="audio-bar"></span>
+                <span className="audio-bar"></span>
+                <span className="audio-bar"></span>
+              </div>
+            </div>
+            <div className="feat-stat">Chunked Streaming</div>
           </div>
         </div>
       </section>
@@ -464,7 +565,7 @@ const stopDemo = () => {
       <section id="usecases" className="section usecases-section">
         <div className="fade-up center">
           <p className="section-label">Use cases</p>
-          <h2 className="section-title">Who is Gena for?</h2>
+          <h2 className="section-title">Who is Lyra for?</h2>
           <p className="section-sub">Built for the 900 million Indians who deserve AI in their language.</p>
         </div>
         <div className="cases-grid fade-up">
@@ -476,7 +577,7 @@ const stopDemo = () => {
           <div className="case-card">
             <div className="case-emoji">🏥</div>
             <h3>Healthcare</h3>
-            <p>Patients describe symptoms in Hindi or Tamil. Gena provides grounded, safe health information from verified sources.</p>
+            <p>Patients describe symptoms in Hindi or Tamil. Lyra provides grounded, safe health information from verified sources.</p>
           </div>
           <div className="case-card">
             <div className="case-emoji">🎧</div>
@@ -557,7 +658,7 @@ const stopDemo = () => {
           <h2>
             Be the first to
             <br />
-            try Gena.
+            try Lyra.
           </h2>
           <p>Join the waitlist. We're onboarding in batches — Indic language developers and EdTech teams first.</p>
           <div className="email-form">
@@ -586,7 +687,7 @@ const stopDemo = () => {
       {/* FOOTER */}
       <footer className="footer">
         <div className="foot-logo">
-          Ge<span>na</span>
+          Ly<span>ra</span>
         </div>
         <div className="foot-links">
           <a href="#">GitHub</a>
@@ -594,7 +695,7 @@ const stopDemo = () => {
           <a href="#">Docs</a>
           <a href="#">Privacy</a>
         </div>
-        <div className="foot-copy">© 2025 Gena. Built for Bharat.</div>
+        <div className="foot-copy">© 2025 Lyra. Built for Bharat.</div>
       </footer>
     </>
   );
