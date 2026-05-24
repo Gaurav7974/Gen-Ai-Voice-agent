@@ -322,4 +322,4 @@ cd apps/web && npm run build
 
 ## License
 
-This project is provided as-is for learning and demonstration. Add a `LICENSE` file before public distribution if you plan to open-source under a specific terms.
+Licensed under the [MIT License](./LICENSE).
