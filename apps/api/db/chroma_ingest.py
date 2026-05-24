@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import chromadb
 from chromadb.utils.embedding_functions import DefaultEmbeddingFunction
-from document_loader import load_chunks
-from rag_config import CHROMA_DIR, COLLECTION_NAME, DATA_DIR
+from services.document_loader import load_chunks
+from services.rag_config import CHROMA_DIR, COLLECTION_NAME, DATA_DIR
 
 
 def get_collection():

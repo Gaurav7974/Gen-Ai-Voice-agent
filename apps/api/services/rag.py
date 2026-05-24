@@ -7,8 +7,8 @@ import chromadb
 from chromadb.utils.embedding_functions import DefaultEmbeddingFunction
 from pathlib import Path
 
-from rag_config import CHROMA_DIR, COLLECTION_NAME, DEFAULT_N_RESULTS, DATA_DIR
-from document_loader import load_chunks, DocumentChunk
+from services.rag_config import CHROMA_DIR, COLLECTION_NAME, DEFAULT_N_RESULTS, DATA_DIR
+from services.document_loader import load_chunks, DocumentChunk
 
 
 def get_collection():

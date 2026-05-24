@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from hashlib import sha256
 from pathlib import Path
 
-from rag_config import CHUNK_OVERLAP, CHUNK_SIZE, SUPPORTED_EXTENSIONS
+from services.rag_config import CHUNK_OVERLAP, CHUNK_SIZE, SUPPORTED_EXTENSIONS
 
 
 @dataclass(frozen=True)

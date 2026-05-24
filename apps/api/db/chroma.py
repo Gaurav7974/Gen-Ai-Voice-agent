@@ -6,7 +6,7 @@ import argparse
 import chromadb
 from chromadb.utils.embedding_functions import DefaultEmbeddingFunction
 
-from rag_config import CHROMA_DIR, COLLECTION_NAME, DEFAULT_N_RESULTS
+from services.rag_config import CHROMA_DIR, COLLECTION_NAME, DEFAULT_N_RESULTS
 
 
 def get_collection():
