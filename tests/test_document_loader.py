@@ -1,7 +1,7 @@
 import pytest
 from pathlib import Path
-from document_loader import chunk_text, build_chunk_id, load_chunks, discover_documents
-from rag_config import CHUNK_SIZE, CHUNK_OVERLAP, SUPPORTED_EXTENSIONS
+from services.document_loader import chunk_text, build_chunk_id, load_chunks, discover_documents
+from services.rag_config import CHUNK_SIZE, CHUNK_OVERLAP, SUPPORTED_EXTENSIONS
 
 def test_chunk_text_empty():
     assert chunk_text("") == []
