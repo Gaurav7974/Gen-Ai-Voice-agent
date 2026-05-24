@@ -1,4 +1,4 @@
-# Gen AI Voice Agent (Gena)
+# Gen AI Voice Agent (Lyra)
 
 A full-stack, voice-first AI for Indic languages. Users speak or type in Hindi, Tamil, Telugu and 8+ other Indic languages; the system transcribes via Sarvam STT, generates a grounded response via Groq LLM + RAG, and streams audio back via Sarvam TTS.
 

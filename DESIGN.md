@@ -1,19 +1,19 @@
-# Gena Voice AI — Design & UI Research
+# Lyra Voice AI — Design & UI Research
 
 Date: 2026-05-23
-Product: Gena — Voice-first AI for Indic languages
+Product: Lyra — Voice-first AI for Indic languages
 Stack: React + Vite + TypeScript + FastAPI
 
 ## Overview
-Gena is a voice-first AI application designed for the 900 million Indians who deserve AI in their native language. This document outlines the architectural design and the premium UI/UX patterns that define the Gena experience.
+Lyra is a voice-first AI application designed for the 900 million Indians who deserve AI in their native language. This document outlines the architectural design and the premium UI/UX patterns that define the Lyra experience.
 
 ## Visual Identity & Design System
 
 ### Core Palette: Deep Space
-Instead of pure black, Gena uses a rich, dark navy base to create depth and a modern "intelligent" feel.
+Instead of pure black, Lyra uses a rich, dark navy base to create depth and a modern "intelligent" feel.
 - **Base BG:** `hsl(228 22% 5%)` (#0b0d14 - Deep Space)
 - **Surface:** `hsl(228 18% 8%)` (#111420)
-- **Primary Accent:** `hsl(20 90% 55%)` (#f5622e - Gena Orange)
+- **Primary Accent:** `hsl(20 90% 55%)` (#f5622e - Lyra Orange)
 - **Secondary Accent:** `hsl(175 80% 45%)` (#1ad6a0 - Teal)
 - **Glow:** `hsl(20 90% 55% / 0.25)`
 
@@ -24,7 +24,7 @@ Instead of pure black, Gena uses a rich, dark navy base to create depth and a mo
 - **Noise Overlay:** A subtle grain (4% opacity) to add texture and a premium feel.
 
 ## Voice & Audio Visualization
-Since Gena is voice-first, the visualizer **is** the product. 
+Since Lyra is voice-first, the visualizer **is** the product. 
 
 ### Recommended Patterns:
 1. **Pulsing Concentric Rings:** 3-5 rings pulsing outward from the mic button during recording (Sonar-style).
