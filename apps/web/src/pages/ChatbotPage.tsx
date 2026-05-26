@@ -184,17 +184,10 @@ export default function ChatbotPage() {
     setChatPhase('recording');
     setError('');
     try {
-      const audioBlob = await startRecording();
+      const recordingPromise = startRecording();
 
       const autoStop = setTimeout(() => stopRecording(), 8000);
-      await new Promise<void>((resolve) => {
-        const check = setInterval(() => {
-          if (mediaRecorderRef.current?.state === 'inactive') {
-            clearInterval(check);
-            resolve();
-          }
-        }, 100);
-      });
+      const audioBlob = await recordingPromise;
       clearTimeout(autoStop);
 
       setChatPhase('thinking');
@@ -302,12 +295,14 @@ export default function ChatbotPage() {
       {/* SIDEBAR */}
       <aside className={`chat-sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
         <div className="sidebar-top">
-          <button className="sidebar-logo-btn" onClick={startNewChat} title="Lyra Voice AI">
-            <span className="sidebar-logo-icon">✦</span>
+          <button type="button" className="sidebar-logo-btn" onClick={startNewChat} title="Lyra Voice AI">
+            <span className="sidebar-logo-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ display: 'inline-block' }}><polygon points="12 2 15 9 22 12 15 15 12 22 9 15 2 12 9 9" /></svg>
+            </span>
             {sidebarOpen && <span className="sidebar-logo-text">Lyra</span>}
           </button>
           {sidebarOpen && (
-            <button className="sidebar-new-chat" onClick={startNewChat}>
+            <button type="button" className="sidebar-new-chat" onClick={startNewChat}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <line x1="12" y1="5" x2="12" y2="19" />
                 <line x1="5" y1="12" x2="19" y2="12" />
@@ -324,6 +319,7 @@ export default function ChatbotPage() {
               {items.map((s) => (
                 <button
                   key={s.id}
+                  type="button"
                   className={`session-item ${activeSessionId === s.id ? 'active' : ''}`}
                   onClick={() => switchSession(s)}
                   title={s.title}
@@ -335,6 +331,7 @@ export default function ChatbotPage() {
                     <>
                       <span className="session-title">{s.title || 'New chat'}</span>
                       <button
+                        type="button"
                         className="session-delete"
                         onClick={(e) => deleteSession(e, s.id)}
                         title="Delete session"
@@ -356,6 +353,7 @@ export default function ChatbotPage() {
               {LANG_KEYS.map((lang) => (
                 <button
                   key={lang}
+                  type="button"
                   className={`lang-pill ${activeLang === lang ? 'active' : ''}`}
                   onClick={() => setActiveLang(lang)}
                   title={LANG_LABELS[lang]}
@@ -371,7 +369,7 @@ export default function ChatbotPage() {
       {/* MAIN CHAT AREA */}
       <main className="chat-main">
         <div className="chat-main-topbar">
-          <button className="mobile-menu-btn" onClick={() => setSidebarOpen(!sidebarOpen)} aria-label="Toggle sidebar">
+          <button type="button" className="mobile-menu-btn" onClick={() => setSidebarOpen(!sidebarOpen)} aria-label="Toggle sidebar">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               {sidebarOpen
                 ? <>
@@ -395,37 +393,42 @@ export default function ChatbotPage() {
           </div>
           <div className="chat-phase-badge">
             {chatPhase === 'recording' && '● Listening'}
-            {chatPhase === 'thinking' && '⏳ Thinking'}
+            {chatPhase === 'thinking' && 'Thinking...'}
             {chatPhase === 'speaking' && '│ Playing'}
             {chatPhase === 'idle' && !chatLoading && 'Ready'}
-            {chatLoading && chatPhase !== 'recording' && '⏳ Thinking'}
+            {chatLoading && chatPhase !== 'recording' && 'Thinking...'}
           </div>
         </div>
 
         {error && <div className="chat-banner error">{error}</div>}
 
+        {/* SOURCE: Chat Interface — https://ui.shadcn.com/docs/components/dialog */}
         <div className="chat-messages-area">
           {/* Empty state */}
           {chatMessages.length === 0 && (
             <div className="chat-welcome">
               <div className="welcome-ring">
-                <div className="welcome-ring-inner">✦</div>
+                <div className="welcome-ring-inner">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="12 2 15 9 22 12 15 15 12 22 9 15 2 12 9 9" /></svg>
+                </div>
               </div>
-              <h2 className="welcome-title">Start a conversation</h2>
+              <h2 className="welcome-title" style={{ fontFamily: 'var(--f-display)', fontWeight: 800 }}>Chat with Lyra</h2>
               <p className="welcome-sub">
                 {chatPhase === 'recording'
                   ? 'Listening… speak now.'
-                  : 'Voice or text — ask anything in your language.'}
+                  : 'Type or speak in your language — Hindi, Tamil, Telugu, or English. Lyra retrieves verified chunks with zero hallucinations.'}
               </p>
-              <div className="welcome-langs fade-up">
+              <div className="welcome-langs fade-up" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center', marginTop: '8px' }}>
                 {LANG_KEYS.map((lang) => (
                   <button
                     key={lang}
-                    className={`welcome-lang-pill ${activeLang === lang ? 'active' : ''}`}
+                    type="button"
+                    className={`pill ${activeLang === lang ? 'active' : ''}`}
                     onClick={() => setActiveLang(lang)}
+                    style={{ padding: '8px 16px', borderRadius: 'var(--r-md)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', minWidth: '80px' }}
                   >
-                    <span className="welcome-lang-native">{LANG_LABELS[lang]}</span>
-                    <span className="welcome-lang-code">{lang.toUpperCase()}</span>
+                    <span className="welcome-lang-native" style={{ fontSize: '14px', fontWeight: 600 }}>{LANG_LABELS[lang]}</span>
+                    <span className="welcome-lang-code" style={{ fontSize: '10px', opacity: 0.6, textTransform: 'uppercase', fontFamily: 'var(--f-mono)' }}>{lang}</span>
                   </button>
                 ))}
               </div>
@@ -451,7 +454,7 @@ export default function ChatbotPage() {
               <div className={`msg-bubble ${msg.role}`}>
                 <div className="msg-body">{msg.content}</div>
                 {msg.role === 'assistant' && idx > 0 && chatAudioUrl && chatPhase === 'idle' && (
-                  <button className="msg-play-btn" onClick={playAudio}>
+                  <button type="button" className="msg-play-btn" onClick={playAudio}>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                       <polygon points="5 3 19 12 5 21 5 3" />
                     </svg>
@@ -482,7 +485,7 @@ export default function ChatbotPage() {
           {/* Audio available banner */}
           {chatAudioUrl && chatPhase === 'idle' && !chatLoading && chatMessages.some((m) => m.role === 'assistant') && (
             <div className="chat-audio-banner">
-              <button className="play-voice-banner" onClick={playAudio}>
+              <button type="button" className="play-voice-banner" onClick={playAudio}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                   <polygon points="5 3 19 12 5 21 5 3" />
                 </svg>
@@ -507,13 +510,14 @@ export default function ChatbotPage() {
         </div>
 
         {/* LANGUAGE PILLS */}
-        <div className="chat-lang-bar">
+        <div className="chat-lang-bar" style={{ background: 'var(--surface2)', borderTop: '1px solid var(--border)' }}>
           <span className="chat-lang-bar-label">Language</span>
           <div className="chat-lang-pills">
             {LANG_KEYS.map((lang) => (
               <button
                 key={lang}
-                className={`chat-lang-pill ${activeLang === lang ? 'active' : ''}`}
+                type="button"
+                className={`pill ${activeLang === lang ? 'active' : ''}`}
                 onClick={() => setActiveLang(lang)}
               >
                 {LANG_LABELS[lang]}
@@ -554,7 +558,7 @@ export default function ChatbotPage() {
                     ) : (
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
-                        <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-1" />
                         <line x1="12" y1="19" x2="12" y2="23" />
                         <line x1="8" y1="23" x2="16" y2="23" />
                       </svg>

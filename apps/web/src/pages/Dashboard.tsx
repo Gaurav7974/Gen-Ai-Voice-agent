@@ -1,277 +1,210 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { UserButton, useAuth, useUser } from '@clerk/react';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import ChatbotPage from './ChatbotPage';
 import RagManager from './RagManager';
 import RealtimeVoicePage from './RealtimeVoicePage';
 
-type Section = 'overview' | 'chat' | 'kb' | 'realtime' | 'history' | 'settings';
-
-interface NavItem {
-  id: Section;
-  label: string;
-  icon: React.ReactNode;
+interface BentoCardProps extends React.HTMLAttributes<HTMLDivElement> {
+  className?: string;
+  glowColor?: string;
+  children: React.ReactNode;
 }
+// SOURCE: BentoGrid Glow — https://ui.aceternity.com/components/bento-grid
+function BentoCard({ className = '', glowColor = 'var(--accent-glow)', children, ...props }: BentoCardProps) {
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
 
-const NAV_ITEMS: NavItem[] = [
-  {
-    id: 'overview',
-    label: 'Overview',
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="3" y="3" width="7" height="7" rx="1" />
-        <rect x="14" y="3" width="7" height="7" rx="1" />
-        <rect x="3" y="14" width="7" height="7" rx="1" />
-        <rect x="14" y="14" width="7" height="7" rx="1" />
-      </svg>
-    ),
-  },
-  {
-    id: 'chat',
-    label: 'Chat',
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-      </svg>
-    ),
-  },
-  {
-    id: 'realtime',
-    label: 'Real-time Voice',
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
-        <path d="M19 10v1a7 7 0 0 1-14 0v-1" />
-        <line x1="12" x2="12" y1="19" y2="22" />
-      </svg>
-    ),
-  },
-  {
-    id: 'kb',
-    label: 'Knowledge',
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-        <path d="M10 2v8l3-2 3 2V2" />
-      </svg>
-    ),
-  },
-  {
-    id: 'history',
-    label: 'History',
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="10" />
-        <polyline points="12 6 12 12 16 14" />
-      </svg>
-    ),
-  },
-  {
-    id: 'settings',
-    label: 'Settings',
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="3" />
-        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-      </svg>
-    ),
-  },
-];
+  const springConfig = { stiffness: 150, damping: 25 };
+  const glowX = useSpring(mouseX, springConfig);
+  const glowY = useSpring(mouseY, springConfig);
 
-/* ─── Tiny helper components ─── */
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    mouseX.set(e.clientX - rect.left);
+    mouseY.set(e.clientY - rect.top);
+  };
 
-function OverviewSection({ setSection }: { setSection: (s: Section) => void }) {
-  const { user } = useUser();
-
-  const timelineItems = [
-    { type: 'Voice Call', lang: 'Hinglish', duration: '1.2 min', time: '10 mins ago' },
-    { type: 'Voice Call', lang: 'Tamil', duration: '2.5 min', time: '2 hours ago' },
-    { type: 'Document Ingestion', lang: 'RAG', duration: '4 pages', time: 'Yesterday' },
-  ];
+  const backgroundValue = useTransform(
+    [glowX, glowY],
+    ([x, y]) => `radial-gradient(320px circle at ${x}px ${y}px, ${glowColor}, transparent 80%)`
+  );
 
   return (
-    <div className="overview-section">
-      <h2 className="dash-section-title">Welcome back{user?.firstName ? `, ${user.firstName}` : ''}</h2>
-      <p className="dash-section-sub">System latency metrics and active Indic configuration.</p>
-
-      <div className="bento-grid">
-        {/* Card 1: System Latency Target */}
-        <div className="bento-item span-2">
-          <div>
-            <div className="bento-header">
-              <span className="bento-title">System Latency Performance</span>
-              <span className="bento-icon">⚡</span>
-            </div>
-            <div className="bento-value" style={{ fontFamily: 'var(--cb-mono)', fontSize: '28px', letterSpacing: '-0.05em' }}>&lt; 1.5s</div>
-            <div className="bento-desc">End-to-end target latency. Optimised pipeline using Sarvam Bulbul streaming and Groq.</div>
-            
-            {/* Inline Sparkline */}
-            <div className="sparkline-container" style={{ margin: '20px 0 10px', height: '35px' }}>
-              <svg width="100%" height="100%" viewBox="0 0 300 30" fill="none" preserveAspectRatio="none">
-                <path
-                  d="M0 25 L30 18 L60 22 L90 12 L120 15 L150 8 L180 14 L210 10 L240 18 L270 5 L300 8"
-                  stroke="var(--cb-accent)"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M0 25 L30 18 L60 22 L90 12 L120 15 L150 8 L180 14 L210 10 L240 18 L270 5 L300 8 L300 30 L0 30 Z"
-                  fill="url(#sparkline-grad)"
-                  opacity="0.1"
-                />
-                <defs>
-                  <linearGradient id="sparkline-grad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="var(--cb-accent)" />
-                    <stop offset="100%" stopColor="transparent" />
-                  </linearGradient>
-                </defs>
-              </svg>
-            </div>
-          </div>
-          
-          <div className="metrics-list" style={{ marginTop: '16px' }}>
-            <div className="metric-row">
-              <span className="metric-label">
-                <span className="metric-status-dot"></span>
-                STT (Sarvam Saaras)
-              </span>
-              <span className="metric-value">&lt; 400ms</span>
-            </div>
-            <div className="metric-row">
-              <span className="metric-label">
-                <span className="metric-status-dot"></span>
-                LLM Inference (Groq)
-              </span>
-              <span className="metric-value">&lt; 300ms</span>
-            </div>
-            <div className="metric-row">
-              <span className="metric-label">
-                <span className="metric-status-dot"></span>
-                TTS First-Byte (Sarvam Bulbul)
-              </span>
-              <span className="metric-value">&lt; 600ms</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 2: Knowledge Base Connection */}
-        <div className="bento-item">
-          <div>
-            <div className="bento-header">
-              <span className="bento-title">Knowledge Base</span>
-              <span className="bento-icon">📂</span>
-            </div>
-            <div className="bento-value" style={{ fontFamily: 'var(--cb-mono)', fontSize: '28px', letterSpacing: '-0.05em' }}>ChromaDB</div>
-            <div className="bento-desc">Local vector collection storing your processed files for grounded retrieval.</div>
-          </div>
-          <div className="metrics-list" style={{ marginTop: '24px', fontFamily: 'var(--cb-mono)', fontSize: '12px' }}>
-            <div className="metric-row">
-              <span className="metric-label" style={{ fontFamily: 'Inter, sans-serif' }}>Connection</span>
-              <span className="metric-value" style={{ color: 'var(--cb-teal)' }}>ACTIVE</span>
-            </div>
-            <div className="metric-row">
-              <span className="metric-label" style={{ fontFamily: 'Inter, sans-serif' }}>Strategy</span>
-              <span className="metric-value">HYBRID_BM25</span>
-            </div>
-            <div className="metric-row">
-              <span className="metric-label" style={{ fontFamily: 'Inter, sans-serif' }}>Vector Count</span>
-              <span className="metric-value">1,424</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 3: Quick Action Dock */}
-        <div className="bento-item">
-          <div>
-            <div className="bento-header">
-              <span className="bento-title">Quick Actions</span>
-              <span className="bento-icon">🚀</span>
-            </div>
-            <div className="bento-desc" style={{ marginBottom: '20px' }}>Jump directly into conversational testing or RAG indexing.</div>
-          </div>
-          <div className="action-grid">
-            <button className="action-pill" onClick={() => setSection('realtime')}>
-              <span className="action-pill-icon">🎙️</span>
-              <span>Voice</span>
-            </button>
-            <button className="action-pill" onClick={() => setSection('chat')}>
-              <span className="action-pill-icon">💬</span>
-              <span>Chat</span>
-            </button>
-            <button className="action-pill" onClick={() => setSection('kb')}>
-              <span className="action-pill-icon">📄</span>
-              <span>Docs</span>
-            </button>
-            <button className="action-pill" onClick={() => setSection('settings')}>
-              <span className="action-pill-icon">⚙️</span>
-              <span>Config</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Card 4: Recent Logs Timeline */}
-        <div className="bento-item span-2">
-          <div>
-            <div className="bento-header">
-              <span className="bento-title">Recent Session Logs</span>
-              <span className="bento-icon">📊</span>
-            </div>
-            <div className="timeline-list">
-              {timelineItems.map((item, idx) => (
-                <div key={idx} className="timeline-item">
-                  <div className="timeline-left">
-                    <span>{item.type === 'Voice Call' ? '📞' : '⚙️'}</span>
-                    <strong style={{ fontWeight: 600 }}>{item.type}</strong>
-                    <span className="timeline-lang-badge">{item.lang.toUpperCase()}</span>
-                  </div>
-                  <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-                    <span style={{ color: 'var(--cb-muted)', fontFamily: 'var(--cb-mono)', fontSize: '11px' }}>{item.duration}</span>
-                    <span className="timeline-time" style={{ fontSize: '11px' }}>{item.time}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+    <div
+      className={`card bento-item ${className}`}
+      onMouseMove={handleMouseMove}
+      style={{ position: 'relative', overflow: 'hidden' }}
+      {...props}
+    >
+      <motion.div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          pointerEvents: 'none',
+          background: backgroundValue,
+          mixBlendMode: 'normal',
+          zIndex: 0,
+        }}
+      />
+      <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '18px' }}>
+        {children}
       </div>
     </div>
   );
 }
 
-function HistorySection() {
-  // Placeholder — would be backed by an API
-  const conversations: any[] = [];
+type Section = 'overview' | 'chat' | 'kb' | 'realtime' | 'settings';
+
+interface NavItem { id: Section; label: string; icon: React.ReactNode; badge?: string; }
+
+const NAV_ITEMS: NavItem[] = [
+  {
+    id: 'overview', label: 'Overview',
+    icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>,
+  },
+  {
+    id: 'realtime', label: 'Voice',
+    icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><line x1="12" x2="12" y1="19" y2="22"/></svg>,
+    badge: 'Live',
+  },
+  {
+    id: 'chat', label: 'Chat',
+    icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
+  },
+  {
+    id: 'kb', label: 'Knowledge',
+    icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M10 2v8l3-2 3 2V2"/></svg>,
+  },
+  {
+    id: 'settings', label: 'Settings',
+    icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>,
+  },
+];
+
+/* ── Overview Section ── */
+function OverviewSection({ setSection }: { setSection: (s: Section) => void }) {
+  const { user } = useUser();
 
   return (
-    <div className="history-section">
-      <h2 className="dash-section-title">Conversation History</h2>
-      <p className="dash-section-sub">Your recent chat sessions</p>
+    <div style={{animation:'slide-in .35s ease-out'}}>
+      <h2 className="dash-section-title">
+        Welcome back{user?.firstName ? `, ${user.firstName}` : ''}
+      </h2>
+      <p className="dash-section-sub">System status, latency targets, and quick actions.</p>
 
-      {conversations.length === 0 ? (
-        <div className="history-empty">
-          <span className="history-empty-icon">📭</span>
-          <p>No past conversations found.</p>
-          <p className="history-empty-hint">Once you start chatting, your sessions will appear here.</p>
-        </div>
-      ) : (
-        <div className="history-list">
-          {conversations.map((c, i) => (
-            <div key={i} className="history-item">{c}</div>
-          ))}
-        </div>
-      )}
+      <div className="bento-grid">
+        {/* ── Latency card ── */}
+        <BentoCard className="span-2">
+          <div>
+            <div className="bento-header">
+              <span className="bento-title">System Latency</span>
+              <span className="bento-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              </span>
+            </div>
+            <div className="bento-value accent">&lt; 1.5s</div>
+            <p className="bento-desc">End-to-end target. Sarvam Bulbul v3 streaming + Groq inference.</p>
+          </div>
+          <div className="metrics-list">
+            {[
+              { label:'STT — Sarvam Saaras v3',  value:'< 400ms' },
+              { label:'LLM — Groq Inference',  value:'< 300ms' },
+              { label:'TTS — Sarvam Bulbul v3',   value:'< 600ms' },
+            ].map(({ label, value }) => (
+              <div key={label} className="metric-row">
+                <span className="metric-label">
+                  <span className="glow-dot glow-dot--small glow-dot--teal" />
+                  {label}
+                </span>
+                <span className="metric-value">{value}</span>
+              </div>
+            ))}
+          </div>
+        </BentoCard>
+
+        {/* ── Knowledge Base card ── */}
+        <BentoCard className="card--teal" glowColor="var(--teal-glow)">
+          <div>
+            <div className="bento-header">
+              <span className="bento-title">Knowledge Base</span>
+              <span className="bento-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>
+              </span>
+            </div>
+            <div className="bento-value teal">ChromaDB</div>
+            <p className="bento-desc">Hybrid BM25 + ChromaDB semantic search. Zero hallucinations.</p>
+          </div>
+          <div className="metrics-list">
+            {[
+              { label:'Connection', value:'ACTIVE' },
+              { label:'Strategy',   value:'HYBRID_BM25' },
+              { label:'Vectors',    value:'1,424' },
+            ].map(({ label, value }) => (
+              <div key={label} className="metric-row">
+                <span className="metric-label">{label}</span>
+                <span className="metric-value" style={label==='Connection'?{color:'var(--teal)'}:{}}>{value}</span>
+              </div>
+            ))}
+          </div>
+        </BentoCard>
+
+        {/* ── Quick Actions ── */}
+        <BentoCard>
+          <div>
+            <div className="bento-header">
+              <span className="bento-title">Quick Actions</span>
+              <span className="bento-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4.5 16.5c-1.5 1.25-2.5 3.5-2.5 3.5s2.25-1 3.5-2.5M12 2C6.5 2 2 6.5 2 12c0 2.25 1.5 3.5 3.5 3.5S12 10 12 10s4.5 4.5 4.5 6.5 1.25 3.5 3.5 3.5 2-5.5 2-11c0-5.5-4.5-9-10-9Z"/></svg>
+              </span>
+            </div>
+            <p className="bento-desc" style={{marginBottom:'16px'}}>Jump directly into conversational testing or RAG indexing.</p>
+          </div>
+          <div className="action-grid">
+            {[
+              { icon:<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><line x1="12" x2="12" y1="19" y2="22"/></svg>, label:'Voice',    id:'realtime' as Section },
+              { icon:<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>, label:'Chat',     id:'chat'     as Section },
+              { icon:<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>, label:'Docs',     id:'kb'       as Section },
+              { icon:<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>, label:'Settings', id:'settings' as Section },
+            ].map(({ icon, label, id }) => (
+              <button key={id} className="action-pill" onClick={() => setSection(id)}>
+                <span className="action-pill-icon">{icon}</span>
+                <span>{label}</span>
+              </button>
+            ))}
+          </div>
+        </BentoCard>
+
+        {/* ── Language support card ── */}
+        <BentoCard className="card--violet" glowColor="var(--violet-glow)">
+          <div>
+            <div className="bento-header">
+              <span className="bento-title">Active Languages</span>
+              <span className="bento-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              </span>
+            </div>
+            <div className="bento-value">11</div>
+            <p className="bento-desc">11 Indic languages. Native STT + TTS — not translated.</p>
+          </div>
+          <div style={{display:'flex',flexWrap:'wrap',gap:'6px'}}>
+            {['हिन्दी','தமிழ்','తెలుగు','ಕನ್ನಡ','मराठी','বাংলা'].map((l) => (
+              <span key={l} className="pill pill--teal" style={{padding:'4px 10px',fontSize:'11px'}}>{l}</span>
+            ))}
+          </div>
+        </BentoCard>
+      </div>
     </div>
   );
 }
 
+/* ── Settings Section ── */
 function SettingsSection() {
   return (
-    <div className="settings-section">
+    <div className="settings-section" style={{animation:'slide-in .35s ease-out'}}>
       <h2 className="dash-section-title">Settings</h2>
-      <p className="dash-section-sub">Manage your preferences</p>
-
+      <p className="dash-section-sub">Manage your preferences and account</p>
       <div className="settings-card">
         <div className="settings-row">
           <div className="settings-row-label">
@@ -311,8 +244,7 @@ function SettingsSection() {
   );
 }
 
-/* ─── Main Dashboard ─── */
-
+/* ── Main Dashboard ── */
 export default function Dashboard() {
   const navigate = useNavigate();
   const [section, setSection] = useState<Section>('overview');
@@ -323,46 +255,59 @@ export default function Dashboard() {
   if (!isLoaded) {
     return (
       <div className="dash-loading">
-        <div className="dash-loading-ring">✦</div>
+        <div className="dash-loading-ring" style={{ animation: 'spin 1.5s linear infinite' }}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeDasharray="22"/></svg>
+        </div>
         <p>Loading…</p>
       </div>
     );
   }
-
-  if (!isSignedIn) {
-    return <Navigate to="/" replace />;
-  }
+  if (!isSignedIn) return <Navigate to="/" replace />;
 
   const renderSection = () => {
     switch (section) {
-      case 'overview':
-        return <OverviewSection setSection={setSection} />;
-      case 'chat':
-        return <ChatbotPage />;
-      case 'kb':
-        return <RagManager onNavigate={() => setSection('chat')} showNavbar={false} />;
-      case 'realtime':
-        return <RealtimeVoicePage />;
-      case 'history':
-        return <HistorySection />;
-      case 'settings':
-        return <SettingsSection />;
+      case 'overview':  return <OverviewSection setSection={setSection} />;
+      case 'chat':      return <ChatbotPage />;
+      case 'kb':        return <RagManager onNavigate={() => setSection('chat')} showNavbar={false} />;
+      case 'realtime':  return <RealtimeVoicePage />;
+      case 'settings':  return <SettingsSection />;
     }
   };
 
   return (
     <div className="dash">
-      {/* ─── SIDEBAR ─── */}
+      {/* ── SIDEBAR ── */}
       <aside className={`dash-sidebar ${sidebarOpen ? 'open' : ''}`}>
         <div className="dash-sidebar-header">
           <button className="dash-logo" onClick={() => navigate('/')}>
-            <span className="dash-logo-icon">✦</span>
-            <span className="dash-logo-text">Lyra</span>
+            <span className="dash-logo-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ display: 'inline-block' }}><polygon points="12 2 15 9 22 12 15 15 12 22 9 15 2 12 9 9" /></svg>
+            </span>
+            <span>Lyra</span>
           </button>
+          {/* System status */}
+          <div className="dash-status">
+            <span className="glow-dot glow-dot--teal glow-dot--small" />
+            System online
+          </div>
         </div>
 
         <nav className="dash-sidebar-nav">
-          {NAV_ITEMS.map((item) => (
+          <span className="dash-nav-label">Main</span>
+          {NAV_ITEMS.slice(0, 4).map((item) => (
+            <button
+              key={item.id}
+              className={`dash-nav-item ${section === item.id ? 'active' : ''}`}
+              onClick={() => { setSection(item.id); setSidebarOpen(false); }}
+            >
+              {item.icon}
+              <span>{item.label}</span>
+              {item.badge && <span className="dash-nav-badge">{item.badge}</span>}
+            </button>
+          ))}
+
+          <span className="dash-nav-label" style={{marginTop:'8px'}}>Account</span>
+          {NAV_ITEMS.slice(4).map((item) => (
             <button
               key={item.id}
               className={`dash-nav-item ${section === item.id ? 'active' : ''}`}
@@ -387,31 +332,24 @@ export default function Dashboard() {
         </div>
       </aside>
 
-      {/* overlay for mobile sidebar */}
       {sidebarOpen && <div className="dash-overlay" onClick={() => setSidebarOpen(false)} />}
 
-      {/* ─── MAIN ─── */}
+      {/* ── MAIN ── */}
       <div className="dash-main">
-        {/* Top bar */}
         <header className="dash-topbar">
           <button className="dash-menu-btn" onClick={() => setSidebarOpen(true)} aria-label="Open menu">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="18" x2="21" y2="18" />
+              <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
             </svg>
           </button>
-
           <div className="dash-topbar-title">
             {NAV_ITEMS.find((n) => n.id === section)?.label || 'Dashboard'}
           </div>
-
           <div className="dash-topbar-right">
             <UserButton />
           </div>
         </header>
 
-        {/* Content */}
         <main className="dash-content" key={section}>
           {renderSection()}
         </main>

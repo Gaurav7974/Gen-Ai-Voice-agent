@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
+import StreamingText from '../components/StreamingText';
 import '../styles/chatbot.css'; // Leverage existing styles and extend them
 
 const LANG_MAP: Record<string, string> = {
@@ -36,7 +38,7 @@ export default function RealtimeVoicePage() {
   const audioCtxRef = useRef<AudioContext | null>(null);
   const playAudioCtxRef = useRef<AudioContext | null>(null);
   const micSourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
-  const processorNodeRef = useRef<ScriptProcessorNode | null>(null);
+  const processorNodeRef = useRef<AudioWorkletNode | null>(null);
   const micStreamRef = useRef<MediaStream | null>(null);
   const activeSourcesRef = useRef<AudioBufferSourceNode[]>([]);
   const nextPlayTimeRef = useRef<number>(0);
@@ -75,12 +77,19 @@ export default function RealtimeVoicePage() {
       micSourceRef.current = source;
       source.connect(analyser);
 
-      // ScriptProcessorNode downsamples microphone input (default is 44.1k/48k) to 16kHz mono PCM
-      const bufferSize = 4096;
-      const processor = captureCtx.createScriptProcessor(bufferSize, 1, 1);
-      processorNodeRef.current = processor;
-      source.connect(processor);
-      processor.connect(captureCtx.destination);
+      // AudioWorkletNode captures microphone input → downsamples to 16kHz mono PCM
+      // Replaces the deprecated ScriptProcessorNode API
+      await captureCtx.audioWorklet.addModule(
+        new URL('../audio/pcm-processor.ts', import.meta.url),
+      );
+      const workletNode = new AudioWorkletNode(captureCtx, 'pcm-capture-processor', {
+        channelCount: 1,
+        channelCountMode: 'explicit',
+        numberOfInputs: 1,
+        numberOfOutputs: 1,
+      });
+      processorNodeRef.current = workletNode;
+      source.connect(workletNode);
 
       const inputSampleRate = captureCtx.sampleRate;
       const outputSampleRate = 16000;
@@ -141,20 +150,50 @@ export default function RealtimeVoicePage() {
         return buffer;
       };
 
-      processor.onaudioprocess = (e) => {
-        const inputData = e.inputBuffer.getChannelData(0);
-        const downsampled = downsample(inputData, inputSampleRate, outputSampleRate);
-        const pcmBuffer = floatTo16BitPCM(downsampled);
+      // Buffer 128-sample AudioWorklet quantums into 4096-sample chunks
+      // (matching the old ScriptProcessorNode bufferSize) before processing
+      const TARGET_BUFFER_SIZE = 4096;
+      let audioInputBuffer: Float32Array[] = [];
+      let audioInputLength = 0;
 
-        if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-          wsRef.current.send(pcmBuffer);
+      workletNode.port.onmessage = (e: MessageEvent<Float32Array>) => {
+        const chunk = e.data;
+        audioInputBuffer.push(chunk);
+        audioInputLength += chunk.length;
+
+        while (audioInputLength >= TARGET_BUFFER_SIZE) {
+          const combined = new Float32Array(TARGET_BUFFER_SIZE);
+          let offset = 0;
+          let remaining = TARGET_BUFFER_SIZE;
+
+          while (remaining > 0 && audioInputBuffer.length > 0) {
+            const buf = audioInputBuffer[0];
+            const toCopy = Math.min(buf.length, remaining);
+            combined.set(buf.subarray(0, toCopy), offset);
+            offset += toCopy;
+            remaining -= toCopy;
+
+            if (toCopy >= buf.length) {
+              audioInputBuffer.shift();
+            } else {
+              audioInputBuffer[0] = buf.subarray(toCopy);
+            }
+          }
+
+          audioInputLength -= TARGET_BUFFER_SIZE;
+
+          const downsampled = downsample(combined, inputSampleRate, outputSampleRate);
+          const pcmBuffer = floatTo16BitPCM(downsampled);
+
+          if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+            wsRef.current.send(pcmBuffer);
+          }
         }
       };
 
-      // 4. Establish WebSocket connection to backend
+      // 4. Establish WebSocket connection to backend (via Vite proxy in dev)
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      const host = window.location.port ? `${window.location.hostname}:8000` : window.location.hostname;
-      const wsUrl = `${protocol}//${host}/api/realtime/ws?language_code=${LANG_MAP[activeLang]}&use_rag=${useRag}`;
+      const wsUrl = `${protocol}//${window.location.host}/api/realtime/ws?language_code=${LANG_MAP[activeLang]}&use_rag=${useRag}`;
 
       const ws = new WebSocket(wsUrl);
       wsRef.current = ws;
@@ -166,7 +205,9 @@ export default function RealtimeVoicePage() {
 
       ws.onmessage = async (event) => {
         // Binary message is raw PCM chunks from agent's TTS stream
-        if (event.data instanceof Blob) {
+        if (event.data instanceof ArrayBuffer) {
+          handleIncomingPCM(event.data);
+        } else if (event.data instanceof Blob) {
           const arrayBuffer = await event.data.arrayBuffer();
           handleIncomingPCM(arrayBuffer);
         } else {
@@ -179,6 +220,9 @@ export default function RealtimeVoicePage() {
               setAgentText((prev) => prev + msg.text);
             } else if (msg.type === 'agent_status') {
               setAgentStatus(msg.status);
+              if (msg.status === 'searching_kb' || msg.status === 'thinking') {
+                setAgentText('');
+              }
             } else if (msg.type === 'agent_audio_start') {
               // Agent is about to speak
             } else if (msg.type === 'agent_audio_end') {
@@ -326,89 +370,170 @@ export default function RealtimeVoicePage() {
   };
 
   return (
-    <div className="realtime-page">
+    <div className="realtime-page" style={{ animation: 'slide-in .35s ease-out' }}>
       <div className="realtime-container">
         
+        <header className="realtime-header" style={{ marginBottom: '24px' }}>
+          <h1 style={{ fontFamily: 'var(--f-display)', fontWeight: 800, fontSize: '28px', color: 'var(--text)' }}>Talk to Lyra</h1>
+          <p style={{ color: 'var(--muted)', fontSize: '14.5px' }}>Start a real-time voice session. Speak naturally. Lyra responds with grounded, low-latency audio.</p>
+        </header>
+
         {/* Top Controls */}
         <div className="realtime-header-controls">
           <div className="controls-group">
-            <label className="control-label">Language</label>
-            <select
-              className="settings-select"
-              value={activeLang}
-              onChange={(e) => setActiveLang(e.target.value)}
-              disabled={isConnected}
-            >
+            <label className="control-label">Voice Language</label>
+            <div className="flex gap-sm" style={{ flexWrap: 'wrap', gap: '8px', marginTop: '4px' }}>
               {Object.entries(LANG_LABELS).map(([k, v]) => (
-                <option key={k} value={k}>{v}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className="controls-group">
-            <label className="settings-row-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <input
-                type="checkbox"
-                checked={useRag}
-                onChange={(e) => setUseRag(e.target.checked)}
-                disabled={isConnected}
-              />
-              Enable RAG
-            </label>
-          </div>
-        </div>
-
-        {/* Visualizer Circle */}
-        <div className="visualizer-wrapper">
-          <div className={`visualizer-ring ${getPulseClassName()}`} style={{ transform: `scale(${1 + (volumeLevel / 160)})` }}>
-            <div className="visualizer-ring-inner-1"></div>
-            <div className="visualizer-ring-inner-2"></div>
-            <div className="visualizer-ring-inner-3"></div>
-            <div className="visualizer-ring-inner-4"></div>
-            <div className="visualizer-core">
-              {isConnected ? (
-                <span className="visualizer-mic-icon" onClick={sendInterrupted}>
-                  {agentStatus === 'speaking' ? '⏹' : '🎙'}
-                </span>
-              ) : (
-                <button className="connect-btn" onClick={connectSession}>
-                  Start
+                <button
+                  key={k}
+                  type="button"
+                  className={`pill ${activeLang === k ? 'active' : ''}`}
+                  onClick={() => setActiveLang(k)}
+                  disabled={isConnected}
+                  style={{ padding: '6px 12px', fontSize: '12px' }}
+                >
+                  {v}
                 </button>
-              )}
+              ))}
             </div>
           </div>
-          <div className="status-label">{getStatusText()}</div>
-        </div>
 
-        {/* Terminal/Chat boxes */}
-        <div className="realtime-transcript">
-          <div className="transcript-box">
-            <div className="transcript-box-topbar">
-              <span className="box-dot"></span>
-              <span className="box-dot"></span>
-              <span className="box-dot"></span>
-              <span className="box-header" style={{ marginLeft: '6px' }}>USER_TRANSCRIPT</span>
+          <div className="controls-group" style={{ flex: '0 0 auto' }}>
+            <label className="control-label">Retrieval Mode</label>
+            <div style={{ marginTop: '4px' }}>
+              <button
+                type="button"
+                className={`pill ${useRag ? 'pill--teal active' : ''}`}
+                onClick={() => setUseRag(!useRag)}
+                disabled={isConnected}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '6px 12px', fontSize: '12px' }}
+              >
+                <span className={`glow-dot glow-dot--small ${useRag ? 'glow-dot--teal' : ''}`} />
+                {useRag ? 'Knowledge Grounded (RAG)' : 'General Model'}
+              </button>
             </div>
-            <div className="box-content user-color">{userText || '...'}</div>
-          </div>
-          <div className="transcript-box">
-            <div className="transcript-box-topbar">
-              <span className="box-dot"></span>
-              <span className="box-dot"></span>
-              <span className="box-dot"></span>
-              <span className="box-header" style={{ marginLeft: '6px' }}>LYRA_RESPONSE</span>
-            </div>
-            <div className="box-content agent-color">{agentText || '...'}</div>
           </div>
         </div>
 
-        {error && <div className="realtime-error">{error}</div>}
+        {/* Visualizer & Browser Shell Wrapper */}
+        <div className="demo-shell" style={{ width: '100%', margin: '0 auto', boxShadow: 'var(--shadow-warm)' }}>
+          <div className="demo-topbar">
+            <div className="demo-dot" />
+            <div className="demo-dot" />
+            <div className="demo-dot" />
+            <span className="demo-title-bar">
+              lyra — real-time voice interface · {LANG_LABELS[activeLang]}
+            </span>
+            <div className="chat-phase-badge">
+              {isConnected ? (
+                <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                  <span className={`glow-dot glow-dot--small ${agentStatus === 'speaking' ? 'glow-dot--teal' : ''}`} />
+                  {agentStatus === 'speaking' ? 'Speaking' : agentStatus === 'thinking' ? 'Thinking' : agentStatus === 'searching_kb' ? 'Searching KB' : 'Listening'}
+                </span>
+              ) : 'Ready'}
+            </div>
+          </div>
 
-        {isConnected && (
-          <button className="disconnect-btn" onClick={disconnectSession}>
-            End Conversation
-          </button>
-        )}
+          <div className="demo-body" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '24px', padding: '32px 24px' }}>
+            
+            {/* Visualizer & Mic Button */}
+            <div className="visualizer-wrapper" style={{ margin: '0' }}>
+              <motion.div
+                className={`visualizer-ring ${getPulseClassName()}`}
+                animate={{ scale: 1 + (volumeLevel / 160) }}
+                transition={{ type: 'spring', bounce: 0.25, duration: 0.1 }}
+                style={{ width: '150px', height: '150px' }}
+              >
+                <div className="visualizer-ring-inner-1"></div>
+                <div className="visualizer-ring-inner-2"></div>
+                <div className="visualizer-ring-inner-3"></div>
+                <div className="visualizer-ring-inner-4"></div>
+                
+                <div className="visualizer-core" style={{ width: '100px', height: '100px' }}>
+                  {isConnected ? (
+                    <button 
+                      type="button"
+                      className="mic-btn recording" 
+                      onClick={sendInterrupted} 
+                      style={{ width: '74px', height: '74px', border: 'none', color: '#fff', fontSize: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                    >
+                      {agentStatus === 'speaking' ? (
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="4" y="4" width="16" height="16" rx="2" /></svg>
+                      ) : (
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
+                      )}
+                    </button>
+                  ) : (
+                    <button 
+                      type="button"
+                      className="mic-btn" 
+                      onClick={connectSession}
+                      style={{ width: '74px', height: '74px', border: 'none', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                    >
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: '#fff' }}><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
+                    </button>
+                  )}
+                </div>
+              </motion.div>
+            </div>
+
+            <div className="status-label" style={{ fontFamily: 'var(--f-mono)', fontSize: '11px', color: 'var(--muted)', letterSpacing: '2px' }}>
+              {getStatusText()}
+            </div>
+
+            {/* Interactive Waveform Animation */}
+            <div className={`demo-waveform ${isConnected && agentStatus !== 'idle' ? 'active' : ''}`} style={{ marginBottom: '0', height: '32px' }}>
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} className="b" />
+              ))}
+            </div>
+
+            {/* Transcript Boxes */}
+            <div className="realtime-transcript" style={{ width: '100%', gap: '16px' }}>
+              <div className="transcript-box" style={{ minHeight: '130px', padding: '16px', background: 'var(--surface)', border: '1px solid var(--border)' }}>
+                <div className="transcript-box-topbar" style={{ borderBottomColor: 'var(--border)' }}>
+                  <span className="box-dot" style={{ backgroundColor: 'var(--accent)' }}></span>
+                  <span className="box-dot" style={{ backgroundColor: 'var(--border3)' }}></span>
+                  <span className="box-dot" style={{ backgroundColor: 'var(--teal)' }}></span>
+                  <span className="box-header" style={{ color: 'var(--muted)', fontSize: '10px' }}>USER_TRANSCRIPT</span>
+                </div>
+                <div className="box-content user-color" style={{ color: 'var(--accent2)', fontSize: '13.5px', fontFamily: 'var(--f-body)', fontWeight: 500 }}>
+                  {userText || 'Listening for your voice...'}
+                </div>
+              </div>
+
+              <div className="transcript-box" style={{ minHeight: '130px', padding: '16px', background: 'var(--teal-dim)', border: '1px solid hsla(174,90%,48%,.20)' }}>
+                <div className="transcript-box-topbar" style={{ borderBottomColor: 'hsla(174,90%,48%,.20)' }}>
+                  <span className="box-dot" style={{ backgroundColor: 'var(--teal)' }}></span>
+                  <span className="box-dot" style={{ backgroundColor: 'hsla(174,90%,48%,.30)' }}></span>
+                  <span className="box-dot" style={{ backgroundColor: 'var(--border3)' }}></span>
+                  <span className="box-header" style={{ color: 'var(--teal)', fontSize: '10px' }}>LYRA_RESPONSE</span>
+                </div>
+                <div className="box-content agent-color" style={{ color: 'var(--text)', fontSize: '13.5px', fontFamily: 'var(--f-body)' }}>
+                  {agentText ? (
+                    <StreamingText text={agentText} />
+                  ) : (
+                    <span style={{ color: 'var(--muted)' }}>Waiting for query...</span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {error && <div className="realtime-error" style={{ width: '100%', margin: '0' }}>{error}</div>}
+
+            {isConnected && (
+              <button 
+                type="button"
+                className="disconnect-btn" 
+                onClick={disconnectSession}
+                style={{ padding: '10px 24px', fontSize: '13px', border: '1px solid #ff7069', background: 'rgba(255, 95, 87, 0.05)' }}
+              >
+                End Conversation
+              </button>
+            )}
+
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -1,0 +1,890 @@
+[2m12:56:57 AM[22m [31m[1m[vite][22m[39m [31mInternal server error: C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\src\pages\Landing.tsx: Unexpected token (598:62)
+
+[0m [90m 596 |[31m       [33m<[31m[33msection[31m id[33m=[31m[32m"features"[31m className[33m=[31m[32m"section"[31m[33m>[31m
+ [90m 597 |[31m         [33m<[31m[33mdiv[31m className[33m=[31m[32m"section-inner"[31m[33m>[31m
+[31m[1m>[22m[31m[90m 598 |[31m           [33m<[31m[33mdiv[31m className[33m=[31m[32m"fad          <div className="[31mfade[33m-[31mup[32m" style={{ marginTop: '48px' }}>[31m
+ [90m     |[31m                                                               [31m[1m^[22m[31m
+ [90m 599 |[31m             [33m<[31m[33mBentoGridSecondDemo[31m [33m/[31m[33m>[31m
+ [90m 600 |[31m           [33m<[31m[35m/div><span className="wave-bar-3" /[31m[33m>[31m
+ [90m 601 |[31m                   [33m<[31m[33m/[31m[33mdiv[31m[33m>[31m[0m[39m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/Asus/Dev/projects/gen ai vocie agent/apps/web/src/pages/Landing.tsx[39m:598:62
+[33m  596 |        <section id="features" className="section">
+  597 |          <div className="section-inner">
+  598 |            <div className="fad          <div className="fade-up" style={{ marginTop: '48px' }}>
+      |                                                                ^
+  599 |              <BentoGridSecondDemo />
+  600 |            </div><span className="wave-bar-3" />[39m
+      at constructor (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:365:19)
+      at TypeScriptParserMixin.raise (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:6616:19)
+      at TypeScriptParserMixin.unexpected (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:6636:16)
+      at TypeScriptParserMixin.jsxParseIdentifier (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4581:12)
+      at TypeScriptParserMixin.jsxParseNamespacedName (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4588:23)
+      at TypeScriptParserMixin.jsxParseAttribute (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4664:22)
+      at TypeScriptParserMixin.jsxParseOpeningElementAfterName (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4679:28)
+      at TypeScriptParserMixin.jsxParseOpeningElementAfterName (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10060:18)
+      at TypeScriptParserMixin.jsxParseOpeningElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4674:17)
+      at TypeScriptParserMixin.jsxParseElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4698:33)
+      at TypeScriptParserMixin.jsxParseElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4710:32)
+      at TypeScriptParserMixin.jsxParseElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4710:32)
+      at TypeScriptParserMixin.jsxParseElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4710:32)
+      at TypeScriptParserMixin.jsxParseElement (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4761:17)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4771:19)
+      at TypeScriptParserMixin.parseExprSubscripts (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11098:23)
+      at TypeScriptParserMixin.parseUpdate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11083:21)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11063:23)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9854:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10916:61)
+      at TypeScriptParserMixin.parseExprOps (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10921:23)
+      at TypeScriptParserMixin.parseMaybeConditional (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10898:23)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10848:21)
+      at C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9792:39
+      at TypeScriptParserMixin.tryParse (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:6924:20)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9792:18)
+      at C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10817:39
+      at TypeScriptParserMixin.allowInAnd (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12443:12)
+      at TypeScriptParserMixin.parseMaybeAssignAllowIn (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10817:17)
+      at TypeScriptParserMixin.parseMaybeAssignAllowInOrVoidPattern (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12510:17)
+      at TypeScriptParserMixin.parseParenAndDistinguishExpression (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11692:28)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11348:23)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4776:20)
+      at TypeScriptParserMixin.parseExprSubscripts (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11098:23)
+      at TypeScriptParserMixin.parseUpdate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11083:21)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11063:23)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9854:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10916:61)
+      at TypeScriptParserMixin.parseExprOps (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10921:23)
+      at TypeScriptParserMixin.parseMaybeConditional (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10898:23)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10848:21)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9803:20)
+      at TypeScriptParserMixin.parseExpressionBase (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10801:23)
+      at C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10797:39
+      at TypeScriptParserMixin.allowInAnd (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12438:16)
+      at TypeScriptParserMixin.parseExpression (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10797:17)
+      at TypeScriptParserMixin.parseReturnStatement (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:13159:28)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12815:21)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9525:18)
+      at TypeScriptParserMixin.parseStatementLike (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12784:17)
+[2m12:56:57 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\src\pages\Landing.tsx: Unexpected token (598:62)
+
+[0m [90m 596 |[39m       [33m<[39m[33msection[39m id[33m=[39m[32m"features"[39m className[33m=[39m[32m"section"[39m[33m>[39m
+ [90m 597 |[39m         [33m<[39m[33mdiv[39m className[33m=[39m[32m"section-inner"[39m[33m>[39m
+[31m[1m>[22m[39m[90m 598 |[39m           [33m<[39m[33mdiv[39m className[33m=[39m[32m"fad          <div className="[39mfade[33m-[39mup[32m" style={{ marginTop: '48px' }}>[39m
+ [90m     |[39m                                                               [31m[1m^[22m[39m
+ [90m 599 |[39m             [33m<[39m[33mBentoGridSecondDemo[39m [33m/[39m[33m>[39m
+ [90m 600 |[39m           [33m<[39m[35m/div><span className="wave-bar-3" /[39m[33m>[39m
+ [90m 601 |[39m                   [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m[0m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/Asus/Dev/projects/gen ai vocie agent/apps/web/src/pages/Landing.tsx[39m:598:62
+[33m  596 |        <section id="features" className="section">
+  597 |          <div className="section-inner">
+  598 |            <div className="fad          <div className="fade-up" style={{ marginTop: '48px' }}>
+      |                                                                ^
+  599 |              <BentoGridSecondDemo />
+  600 |            </div><span className="wave-bar-3" />[39m
+[2m12:56:57 AM[22m [31m[1m[vite][22m[39m [31mInternal server error: C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\src\pages\Landing.tsx: Unexpected token (598:62)
+
+[0m [90m 596 |[31m       [33m<[31m[33msection[31m id[33m=[31m[32m"features"[31m className[33m=[31m[32m"section"[31m[33m>[31m
+ [90m 597 |[31m         [33m<[31m[33mdiv[31m className[33m=[31m[32m"section-inner"[31m[33m>[31m
+[31m[1m>[22m[31m[90m 598 |[31m           [33m<[31m[33mdiv[31m className[33m=[31m[32m"fad          <div className="[31mfade[33m-[31mup[32m" style={{ marginTop: '48px' }}>[31m
+ [90m     |[31m                                                               [31m[1m^[22m[31m
+ [90m 599 |[31m             [33m<[31m[33mBentoGridSecondDemo[31m [33m/[31m[33m>[31m
+ [90m 600 |[31m           [33m<[31m[35m/div><span className="wave-bar-3" /[31m[33m>[31m
+ [90m 601 |[31m                   [33m<[31m[33m/[31m[33mdiv[31m[33m>[31m[0m[39m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/Asus/Dev/projects/gen ai vocie agent/apps/web/src/pages/Landing.tsx[39m:598:62
+[33m  596 |        <section id="features" className="section">
+  597 |          <div className="section-inner">
+  598 |            <div className="fad          <div className="fade-up" style={{ marginTop: '48px' }}>
+      |                                                                ^
+  599 |              <BentoGridSecondDemo />
+  600 |            </div><span className="wave-bar-3" />[39m
+      at constructor (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:365:19)
+      at TypeScriptParserMixin.raise (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:6616:19)
+      at TypeScriptParserMixin.unexpected (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:6636:16)
+      at TypeScriptParserMixin.jsxParseIdentifier (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4581:12)
+      at TypeScriptParserMixin.jsxParseNamespacedName (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4588:23)
+      at TypeScriptParserMixin.jsxParseAttribute (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4664:22)
+      at TypeScriptParserMixin.jsxParseOpeningElementAfterName (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4679:28)
+      at TypeScriptParserMixin.jsxParseOpeningElementAfterName (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10060:18)
+      at TypeScriptParserMixin.jsxParseOpeningElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4674:17)
+      at TypeScriptParserMixin.jsxParseElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4698:33)
+      at TypeScriptParserMixin.jsxParseElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4710:32)
+      at TypeScriptParserMixin.jsxParseElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4710:32)
+      at TypeScriptParserMixin.jsxParseElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4710:32)
+      at TypeScriptParserMixin.jsxParseElement (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4761:17)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4771:19)
+      at TypeScriptParserMixin.parseExprSubscripts (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11098:23)
+      at TypeScriptParserMixin.parseUpdate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11083:21)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11063:23)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9854:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10916:61)
+      at TypeScriptParserMixin.parseExprOps (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10921:23)
+      at TypeScriptParserMixin.parseMaybeConditional (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10898:23)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10848:21)
+      at C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9792:39
+      at TypeScriptParserMixin.tryParse (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:6924:20)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9792:18)
+      at C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10817:39
+      at TypeScriptParserMixin.allowInAnd (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12443:12)
+      at TypeScriptParserMixin.parseMaybeAssignAllowIn (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10817:17)
+      at TypeScriptParserMixin.parseMaybeAssignAllowInOrVoidPattern (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12510:17)
+      at TypeScriptParserMixin.parseParenAndDistinguishExpression (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11692:28)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11348:23)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4776:20)
+      at TypeScriptParserMixin.parseExprSubscripts (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11098:23)
+      at TypeScriptParserMixin.parseUpdate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11083:21)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11063:23)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9854:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10916:61)
+      at TypeScriptParserMixin.parseExprOps (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10921:23)
+      at TypeScriptParserMixin.parseMaybeConditional (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10898:23)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10848:21)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9803:20)
+      at TypeScriptParserMixin.parseExpressionBase (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10801:23)
+      at C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10797:39
+      at TypeScriptParserMixin.allowInAnd (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12438:16)
+      at TypeScriptParserMixin.parseExpression (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10797:17)
+      at TypeScriptParserMixin.parseReturnStatement (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:13159:28)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12815:21)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9525:18)
+      at TypeScriptParserMixin.parseStatementLike (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12784:17)
+[2m1:22:36 AM[22m [31m[1m[vite][22m[39m [31mInternal server error: C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\src\pages\Landing.tsx: Unterminated JSX contents. (837:7)
+
+[0m [90m 835 |[31m         [33m<[31m[33mdiv[31m className[33m=[31m[32m"foot-copy"[31m[33m>[31m© [35m2025[31m [33mLyra[31m[33m.[31m [33mBuilt[31m [36mfor[31m [33mBharat[31m[33m.[31m[33m<[31m[33m/[31m[33mdiv[31m[33m>[31m
+ [90m 836 |[31m       [33m<[31m[33m/[31m[33mfooter[31m[33m>[31m
+[31m[1m>[22m[31m[90m 837 |[31m     [33m<[31m[33m/[31m[33m>[31m
+ [90m     |[31m        [31m[1m^[22m[31m
+ [90m 838 |[31m   )[33m;[31m
+ [90m 839 |[31m }
+ [90m 840 |[31m[0m[39m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/Asus/Dev/projects/gen ai vocie agent/apps/web/src/pages/Landing.tsx[39m:837:7
+[33m  835 |          <div className="foot-copy">© 2025 Lyra. Built for Bharat.</div>
+  836 |        </footer>
+  837 |      </>
+      |         ^
+  838 |    );
+  839 |  }[39m
+      at constructor (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:365:19)
+      at TypeScriptParserMixin.raise (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:6616:19)
+      at TypeScriptParserMixin.jsxReadToken (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4460:20)
+      at TypeScriptParserMixin.getTokenFromCode (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4786:12)
+      at TypeScriptParserMixin.getTokenFromCode (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10004:11)
+      at TypeScriptParserMixin.nextToken (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:5799:10)
+      at TypeScriptParserMixin.next (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:5709:10)
+      at TypeScriptParserMixin.eat (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:5713:12)
+      at TypeScriptParserMixin.jsxParseClosingElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4688:14)
+      at TypeScriptParserMixin.jsxParseElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4707:37)
+      at TypeScriptParserMixin.jsxParseElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4710:32)
+      at TypeScriptParserMixin.jsxParseElement (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4761:17)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4771:19)
+      at TypeScriptParserMixin.parseExprSubscripts (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11098:23)
+      at TypeScriptParserMixin.parseUpdate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11083:21)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11063:23)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9854:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10916:61)
+      at TypeScriptParserMixin.parseExprOps (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10921:23)
+      at TypeScriptParserMixin.parseMaybeConditional (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10898:23)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10848:21)
+      at C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9792:39
+      at TypeScriptParserMixin.tryParse (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:6924:20)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9792:18)
+      at C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10817:39
+      at TypeScriptParserMixin.allowInAnd (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12443:12)
+      at TypeScriptParserMixin.parseMaybeAssignAllowIn (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10817:17)
+      at TypeScriptParserMixin.parseMaybeAssignAllowInOrVoidPattern (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12510:17)
+      at TypeScriptParserMixin.parseParenAndDistinguishExpression (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11692:28)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11348:23)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4776:20)
+      at TypeScriptParserMixin.parseExprSubscripts (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11098:23)
+      at TypeScriptParserMixin.parseUpdate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11083:21)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11063:23)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9854:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10916:61)
+      at TypeScriptParserMixin.parseExprOps (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10921:23)
+      at TypeScriptParserMixin.parseMaybeConditional (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10898:23)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10848:21)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9803:20)
+      at TypeScriptParserMixin.parseExpressionBase (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10801:23)
+      at C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10797:39
+      at TypeScriptParserMixin.allowInAnd (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12438:16)
+      at TypeScriptParserMixin.parseExpression (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10797:17)
+      at TypeScriptParserMixin.parseReturnStatement (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:13159:28)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12815:21)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9525:18)
+      at TypeScriptParserMixin.parseStatementLike (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12784:17)
+      at TypeScriptParserMixin.parseStatementListItem (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12764:17)
+      at TypeScriptParserMixin.parseBlockOrModuleBlockBody (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:13333:61)
+[2m1:22:37 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\src\pages\Landing.tsx: Unterminated JSX contents. (837:7)
+
+[0m [90m 835 |[39m         [33m<[39m[33mdiv[39m className[33m=[39m[32m"foot-copy"[39m[33m>[39m© [35m2025[39m [33mLyra[39m[33m.[39m [33mBuilt[39m [36mfor[39m [33mBharat[39m[33m.[39m[33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m 836 |[39m       [33m<[39m[33m/[39m[33mfooter[39m[33m>[39m
+[31m[1m>[22m[39m[90m 837 |[39m     [33m<[39m[33m/[39m[33m>[39m
+ [90m     |[39m        [31m[1m^[22m[39m
+ [90m 838 |[39m   )[33m;[39m
+ [90m 839 |[39m }
+ [90m 840 |[39m[0m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/Asus/Dev/projects/gen ai vocie agent/apps/web/src/pages/Landing.tsx[39m:837:7
+[33m  835 |          <div className="foot-copy">© 2025 Lyra. Built for Bharat.</div>
+  836 |        </footer>
+  837 |      </>
+      |         ^
+  838 |    );
+  839 |  }[39m
+[2m1:22:37 AM[22m [31m[1m[vite][22m[39m [31mInternal server error: C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\src\pages\Landing.tsx: Unterminated JSX contents. (837:7)
+
+[0m [90m 835 |[31m         [33m<[31m[33mdiv[31m className[33m=[31m[32m"foot-copy"[31m[33m>[31m© [35m2025[31m [33mLyra[31m[33m.[31m [33mBuilt[31m [36mfor[31m [33mBharat[31m[33m.[31m[33m<[31m[33m/[31m[33mdiv[31m[33m>[31m
+ [90m 836 |[31m       [33m<[31m[33m/[31m[33mfooter[31m[33m>[31m
+[31m[1m>[22m[31m[90m 837 |[31m     [33m<[31m[33m/[31m[33m>[31m
+ [90m     |[31m        [31m[1m^[22m[31m
+ [90m 838 |[31m   )[33m;[31m
+ [90m 839 |[31m }
+ [90m 840 |[31m[0m[39m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/Asus/Dev/projects/gen ai vocie agent/apps/web/src/pages/Landing.tsx[39m:837:7
+[33m  835 |          <div className="foot-copy">© 2025 Lyra. Built for Bharat.</div>
+  836 |        </footer>
+  837 |      </>
+      |         ^
+  838 |    );
+  839 |  }[39m
+      at constructor (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:365:19)
+      at TypeScriptParserMixin.raise (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:6616:19)
+      at TypeScriptParserMixin.jsxReadToken (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4460:20)
+      at TypeScriptParserMixin.getTokenFromCode (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4786:12)
+      at TypeScriptParserMixin.getTokenFromCode (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10004:11)
+      at TypeScriptParserMixin.nextToken (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:5799:10)
+      at TypeScriptParserMixin.next (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:5709:10)
+      at TypeScriptParserMixin.eat (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:5713:12)
+      at TypeScriptParserMixin.jsxParseClosingElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4688:14)
+      at TypeScriptParserMixin.jsxParseElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4707:37)
+      at TypeScriptParserMixin.jsxParseElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4710:32)
+      at TypeScriptParserMixin.jsxParseElement (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4761:17)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4771:19)
+      at TypeScriptParserMixin.parseExprSubscripts (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11098:23)
+      at TypeScriptParserMixin.parseUpdate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11083:21)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11063:23)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9854:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10916:61)
+      at TypeScriptParserMixin.parseExprOps (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10921:23)
+      at TypeScriptParserMixin.parseMaybeConditional (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10898:23)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10848:21)
+      at C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9792:39
+      at TypeScriptParserMixin.tryParse (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:6924:20)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9792:18)
+      at C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10817:39
+      at TypeScriptParserMixin.allowInAnd (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12443:12)
+      at TypeScriptParserMixin.parseMaybeAssignAllowIn (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10817:17)
+      at TypeScriptParserMixin.parseMaybeAssignAllowInOrVoidPattern (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12510:17)
+      at TypeScriptParserMixin.parseParenAndDistinguishExpression (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11692:28)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11348:23)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4776:20)
+      at TypeScriptParserMixin.parseExprSubscripts (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11098:23)
+      at TypeScriptParserMixin.parseUpdate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11083:21)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11063:23)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9854:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10916:61)
+      at TypeScriptParserMixin.parseExprOps (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10921:23)
+      at TypeScriptParserMixin.parseMaybeConditional (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10898:23)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10848:21)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9803:20)
+      at TypeScriptParserMixin.parseExpressionBase (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10801:23)
+      at C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10797:39
+      at TypeScriptParserMixin.allowInAnd (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12438:16)
+      at TypeScriptParserMixin.parseExpression (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10797:17)
+      at TypeScriptParserMixin.parseReturnStatement (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:13159:28)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12815:21)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9525:18)
+      at TypeScriptParserMixin.parseStatementLike (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12784:17)
+      at TypeScriptParserMixin.parseStatementListItem (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12764:17)
+      at TypeScriptParserMixin.parseBlockOrModuleBlockBody (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:13333:61)
+[2m1:22:37 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\src\pages\Landing.tsx: Unterminated JSX contents. (837:7)
+
+[0m [90m 835 |[39m         [33m<[39m[33mdiv[39m className[33m=[39m[32m"foot-copy"[39m[33m>[39m© [35m2025[39m [33mLyra[39m[33m.[39m [33mBuilt[39m [36mfor[39m [33mBharat[39m[33m.[39m[33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m 836 |[39m       [33m<[39m[33m/[39m[33mfooter[39m[33m>[39m
+[31m[1m>[22m[39m[90m 837 |[39m     [33m<[39m[33m/[39m[33m>[39m
+ [90m     |[39m        [31m[1m^[22m[39m
+ [90m 838 |[39m   )[33m;[39m
+ [90m 839 |[39m }
+ [90m 840 |[39m[0m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/Asus/Dev/projects/gen ai vocie agent/apps/web/src/pages/Landing.tsx[39m:837:7
+[33m  835 |          <div className="foot-copy">© 2025 Lyra. Built for Bharat.</div>
+  836 |        </footer>
+  837 |      </>
+      |         ^
+  838 |    );
+  839 |  }[39m
+[2m1:22:37 AM[22m [31m[1m[vite][22m[39m [31mInternal server error: C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\src\pages\Landing.tsx: Unterminated JSX contents. (837:7)
+
+[0m [90m 835 |[31m         [33m<[31m[33mdiv[31m className[33m=[31m[32m"foot-copy"[31m[33m>[31m© [35m2025[31m [33mLyra[31m[33m.[31m [33mBuilt[31m [36mfor[31m [33mBharat[31m[33m.[31m[33m<[31m[33m/[31m[33mdiv[31m[33m>[31m
+ [90m 836 |[31m       [33m<[31m[33m/[31m[33mfooter[31m[33m>[31m
+[31m[1m>[22m[31m[90m 837 |[31m     [33m<[31m[33m/[31m[33m>[31m
+ [90m     |[31m        [31m[1m^[22m[31m
+ [90m 838 |[31m   )[33m;[31m
+ [90m 839 |[31m }
+ [90m 840 |[31m[0m[39m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/Asus/Dev/projects/gen ai vocie agent/apps/web/src/pages/Landing.tsx[39m:837:7
+[33m  835 |          <div className="foot-copy">© 2025 Lyra. Built for Bharat.</div>
+  836 |        </footer>
+  837 |      </>
+      |         ^
+  838 |    );
+  839 |  }[39m
+      at constructor (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:365:19)
+      at TypeScriptParserMixin.raise (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:6616:19)
+      at TypeScriptParserMixin.jsxReadToken (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4460:20)
+      at TypeScriptParserMixin.getTokenFromCode (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4786:12)
+      at TypeScriptParserMixin.getTokenFromCode (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10004:11)
+      at TypeScriptParserMixin.nextToken (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:5799:10)
+      at TypeScriptParserMixin.next (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:5709:10)
+      at TypeScriptParserMixin.eat (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:5713:12)
+      at TypeScriptParserMixin.jsxParseClosingElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4688:14)
+      at TypeScriptParserMixin.jsxParseElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4707:37)
+      at TypeScriptParserMixin.jsxParseElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4710:32)
+      at TypeScriptParserMixin.jsxParseElement (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4761:17)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4771:19)
+      at TypeScriptParserMixin.parseExprSubscripts (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11098:23)
+      at TypeScriptParserMixin.parseUpdate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11083:21)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11063:23)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9854:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10916:61)
+      at TypeScriptParserMixin.parseExprOps (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10921:23)
+      at TypeScriptParserMixin.parseMaybeConditional (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10898:23)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10848:21)
+      at C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9792:39
+      at TypeScriptParserMixin.tryParse (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:6924:20)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9792:18)
+      at C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10817:39
+      at TypeScriptParserMixin.allowInAnd (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12443:12)
+      at TypeScriptParserMixin.parseMaybeAssignAllowIn (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10817:17)
+      at TypeScriptParserMixin.parseMaybeAssignAllowInOrVoidPattern (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12510:17)
+      at TypeScriptParserMixin.parseParenAndDistinguishExpression (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11692:28)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11348:23)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4776:20)
+      at TypeScriptParserMixin.parseExprSubscripts (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11098:23)
+      at TypeScriptParserMixin.parseUpdate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11083:21)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11063:23)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9854:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10916:61)
+      at TypeScriptParserMixin.parseExprOps (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10921:23)
+      at TypeScriptParserMixin.parseMaybeConditional (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10898:23)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10848:21)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9803:20)
+      at TypeScriptParserMixin.parseExpressionBase (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10801:23)
+      at C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10797:39
+      at TypeScriptParserMixin.allowInAnd (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12438:16)
+      at TypeScriptParserMixin.parseExpression (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10797:17)
+      at TypeScriptParserMixin.parseReturnStatement (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:13159:28)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12815:21)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9525:18)
+      at TypeScriptParserMixin.parseStatementLike (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12784:17)
+      at TypeScriptParserMixin.parseStatementListItem (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12764:17)
+      at TypeScriptParserMixin.parseBlockOrModuleBlockBody (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:13333:61)
+[2m1:22:38 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\src\pages\Landing.tsx: Unterminated JSX contents. (837:7)
+
+[0m [90m 835 |[39m         [33m<[39m[33mdiv[39m className[33m=[39m[32m"foot-copy"[39m[33m>[39m© [35m2025[39m [33mLyra[39m[33m.[39m [33mBuilt[39m [36mfor[39m [33mBharat[39m[33m.[39m[33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m 836 |[39m       [33m<[39m[33m/[39m[33mfooter[39m[33m>[39m
+[31m[1m>[22m[39m[90m 837 |[39m     [33m<[39m[33m/[39m[33m>[39m
+ [90m     |[39m        [31m[1m^[22m[39m
+ [90m 838 |[39m   )[33m;[39m
+ [90m 839 |[39m }
+ [90m 840 |[39m[0m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/Asus/Dev/projects/gen ai vocie agent/apps/web/src/pages/Landing.tsx[39m:837:7
+[33m  835 |          <div className="foot-copy">© 2025 Lyra. Built for Bharat.</div>
+  836 |        </footer>
+  837 |      </>
+      |         ^
+  838 |    );
+  839 |  }[39m
+[2m1:22:39 AM[22m [31m[1m[vite][22m[39m [31mInternal server error: C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\src\pages\Landing.tsx: Unterminated JSX contents. (837:7)
+
+[0m [90m 835 |[31m         [33m<[31m[33mdiv[31m className[33m=[31m[32m"foot-copy"[31m[33m>[31m© [35m2025[31m [33mLyra[31m[33m.[31m [33mBuilt[31m [36mfor[31m [33mBharat[31m[33m.[31m[33m<[31m[33m/[31m[33mdiv[31m[33m>[31m
+ [90m 836 |[31m       [33m<[31m[33m/[31m[33mfooter[31m[33m>[31m
+[31m[1m>[22m[31m[90m 837 |[31m     [33m<[31m[33m/[31m[33m>[31m
+ [90m     |[31m        [31m[1m^[22m[31m
+ [90m 838 |[31m   )[33m;[31m
+ [90m 839 |[31m }
+ [90m 840 |[31m[0m[39m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/Asus/Dev/projects/gen ai vocie agent/apps/web/src/pages/Landing.tsx[39m:837:7
+[33m  835 |          <div className="foot-copy">© 2025 Lyra. Built for Bharat.</div>
+  836 |        </footer>
+  837 |      </>
+      |         ^
+  838 |    );
+  839 |  }[39m
+      at constructor (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:365:19)
+      at TypeScriptParserMixin.raise (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:6616:19)
+      at TypeScriptParserMixin.jsxReadToken (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4460:20)
+      at TypeScriptParserMixin.getTokenFromCode (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4786:12)
+      at TypeScriptParserMixin.getTokenFromCode (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10004:11)
+      at TypeScriptParserMixin.nextToken (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:5799:10)
+      at TypeScriptParserMixin.next (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:5709:10)
+      at TypeScriptParserMixin.eat (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:5713:12)
+      at TypeScriptParserMixin.jsxParseClosingElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4688:14)
+      at TypeScriptParserMixin.jsxParseElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4707:37)
+      at TypeScriptParserMixin.jsxParseElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4710:32)
+      at TypeScriptParserMixin.jsxParseElement (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4761:17)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4771:19)
+      at TypeScriptParserMixin.parseExprSubscripts (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11098:23)
+      at TypeScriptParserMixin.parseUpdate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11083:21)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11063:23)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9854:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10916:61)
+      at TypeScriptParserMixin.parseExprOps (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10921:23)
+      at TypeScriptParserMixin.parseMaybeConditional (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10898:23)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10848:21)
+      at C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9792:39
+      at TypeScriptParserMixin.tryParse (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:6924:20)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9792:18)
+      at C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10817:39
+      at TypeScriptParserMixin.allowInAnd (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12443:12)
+      at TypeScriptParserMixin.parseMaybeAssignAllowIn (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10817:17)
+      at TypeScriptParserMixin.parseMaybeAssignAllowInOrVoidPattern (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12510:17)
+      at TypeScriptParserMixin.parseParenAndDistinguishExpression (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11692:28)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11348:23)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4776:20)
+      at TypeScriptParserMixin.parseExprSubscripts (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11098:23)
+      at TypeScriptParserMixin.parseUpdate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11083:21)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11063:23)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9854:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10916:61)
+      at TypeScriptParserMixin.parseExprOps (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10921:23)
+      at TypeScriptParserMixin.parseMaybeConditional (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10898:23)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10848:21)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9803:20)
+      at TypeScriptParserMixin.parseExpressionBase (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10801:23)
+      at C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10797:39
+      at TypeScriptParserMixin.allowInAnd (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12438:16)
+      at TypeScriptParserMixin.parseExpression (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10797:17)
+      at TypeScriptParserMixin.parseReturnStatement (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:13159:28)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12815:21)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9525:18)
+      at TypeScriptParserMixin.parseStatementLike (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12784:17)
+      at TypeScriptParserMixin.parseStatementListItem (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12764:17)
+      at TypeScriptParserMixin.parseBlockOrModuleBlockBody (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:13333:61)
+[2m1:22:39 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\src\pages\Landing.tsx: Unterminated JSX contents. (837:7)
+
+[0m [90m 835 |[39m         [33m<[39m[33mdiv[39m className[33m=[39m[32m"foot-copy"[39m[33m>[39m© [35m2025[39m [33mLyra[39m[33m.[39m [33mBuilt[39m [36mfor[39m [33mBharat[39m[33m.[39m[33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m 836 |[39m       [33m<[39m[33m/[39m[33mfooter[39m[33m>[39m
+[31m[1m>[22m[39m[90m 837 |[39m     [33m<[39m[33m/[39m[33m>[39m
+ [90m     |[39m        [31m[1m^[22m[39m
+ [90m 838 |[39m   )[33m;[39m
+ [90m 839 |[39m }
+ [90m 840 |[39m[0m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/Asus/Dev/projects/gen ai vocie agent/apps/web/src/pages/Landing.tsx[39m:837:7
+[33m  835 |          <div className="foot-copy">© 2025 Lyra. Built for Bharat.</div>
+  836 |        </footer>
+  837 |      </>
+      |         ^
+  838 |    );
+  839 |  }[39m
+[2m1:22:40 AM[22m [31m[1m[vite][22m[39m [31mInternal server error: C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\src\pages\Landing.tsx: Unterminated JSX contents. (837:7)
+
+[0m [90m 835 |[31m         [33m<[31m[33mdiv[31m className[33m=[31m[32m"foot-copy"[31m[33m>[31m© [35m2025[31m [33mLyra[31m[33m.[31m [33mBuilt[31m [36mfor[31m [33mBharat[31m[33m.[31m[33m<[31m[33m/[31m[33mdiv[31m[33m>[31m
+ [90m 836 |[31m       [33m<[31m[33m/[31m[33mfooter[31m[33m>[31m
+[31m[1m>[22m[31m[90m 837 |[31m     [33m<[31m[33m/[31m[33m>[31m
+ [90m     |[31m        [31m[1m^[22m[31m
+ [90m 838 |[31m   )[33m;[31m
+ [90m 839 |[31m }
+ [90m 840 |[31m[0m[39m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/Asus/Dev/projects/gen ai vocie agent/apps/web/src/pages/Landing.tsx[39m:837:7
+[33m  835 |          <div className="foot-copy">© 2025 Lyra. Built for Bharat.</div>
+  836 |        </footer>
+  837 |      </>
+      |         ^
+  838 |    );
+  839 |  }[39m
+      at constructor (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:365:19)
+      at TypeScriptParserMixin.raise (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:6616:19)
+      at TypeScriptParserMixin.jsxReadToken (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4460:20)
+      at TypeScriptParserMixin.getTokenFromCode (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4786:12)
+      at TypeScriptParserMixin.getTokenFromCode (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10004:11)
+      at TypeScriptParserMixin.nextToken (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:5799:10)
+      at TypeScriptParserMixin.next (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:5709:10)
+      at TypeScriptParserMixin.eat (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:5713:12)
+      at TypeScriptParserMixin.jsxParseClosingElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4688:14)
+      at TypeScriptParserMixin.jsxParseElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4707:37)
+      at TypeScriptParserMixin.jsxParseElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4710:32)
+      at TypeScriptParserMixin.jsxParseElement (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4761:17)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4771:19)
+      at TypeScriptParserMixin.parseExprSubscripts (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11098:23)
+      at TypeScriptParserMixin.parseUpdate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11083:21)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11063:23)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9854:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10916:61)
+      at TypeScriptParserMixin.parseExprOps (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10921:23)
+      at TypeScriptParserMixin.parseMaybeConditional (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10898:23)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10848:21)
+      at C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9792:39
+      at TypeScriptParserMixin.tryParse (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:6924:20)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9792:18)
+      at C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10817:39
+      at TypeScriptParserMixin.allowInAnd (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12443:12)
+      at TypeScriptParserMixin.parseMaybeAssignAllowIn (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10817:17)
+      at TypeScriptParserMixin.parseMaybeAssignAllowInOrVoidPattern (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12510:17)
+      at TypeScriptParserMixin.parseParenAndDistinguishExpression (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11692:28)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11348:23)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4776:20)
+      at TypeScriptParserMixin.parseExprSubscripts (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11098:23)
+      at TypeScriptParserMixin.parseUpdate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11083:21)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11063:23)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9854:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10916:61)
+      at TypeScriptParserMixin.parseExprOps (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10921:23)
+      at TypeScriptParserMixin.parseMaybeConditional (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10898:23)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10848:21)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9803:20)
+      at TypeScriptParserMixin.parseExpressionBase (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10801:23)
+      at C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10797:39
+      at TypeScriptParserMixin.allowInAnd (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12438:16)
+      at TypeScriptParserMixin.parseExpression (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10797:17)
+      at TypeScriptParserMixin.parseReturnStatement (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:13159:28)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12815:21)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9525:18)
+      at TypeScriptParserMixin.parseStatementLike (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12784:17)
+      at TypeScriptParserMixin.parseStatementListItem (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12764:17)
+      at TypeScriptParserMixin.parseBlockOrModuleBlockBody (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:13333:61)
+[2m1:22:40 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\src\pages\Landing.tsx: Unterminated JSX contents. (837:7)
+
+[0m [90m 835 |[39m         [33m<[39m[33mdiv[39m className[33m=[39m[32m"foot-copy"[39m[33m>[39m© [35m2025[39m [33mLyra[39m[33m.[39m [33mBuilt[39m [36mfor[39m [33mBharat[39m[33m.[39m[33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m 836 |[39m       [33m<[39m[33m/[39m[33mfooter[39m[33m>[39m
+[31m[1m>[22m[39m[90m 837 |[39m     [33m<[39m[33m/[39m[33m>[39m
+ [90m     |[39m        [31m[1m^[22m[39m
+ [90m 838 |[39m   )[33m;[39m
+ [90m 839 |[39m }
+ [90m 840 |[39m[0m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/Asus/Dev/projects/gen ai vocie agent/apps/web/src/pages/Landing.tsx[39m:837:7
+[33m  835 |          <div className="foot-copy">© 2025 Lyra. Built for Bharat.</div>
+  836 |        </footer>
+  837 |      </>
+      |         ^
+  838 |    );
+  839 |  }[39m
+[2m1:22:40 AM[22m [31m[1m[vite][22m[39m [31mInternal server error: C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\src\pages\Landing.tsx: Unterminated JSX contents. (837:7)
+
+[0m [90m 835 |[31m         [33m<[31m[33mdiv[31m className[33m=[31m[32m"foot-copy"[31m[33m>[31m© [35m2025[31m [33mLyra[31m[33m.[31m [33mBuilt[31m [36mfor[31m [33mBharat[31m[33m.[31m[33m<[31m[33m/[31m[33mdiv[31m[33m>[31m
+ [90m 836 |[31m       [33m<[31m[33m/[31m[33mfooter[31m[33m>[31m
+[31m[1m>[22m[31m[90m 837 |[31m     [33m<[31m[33m/[31m[33m>[31m
+ [90m     |[31m        [31m[1m^[22m[31m
+ [90m 838 |[31m   )[33m;[31m
+ [90m 839 |[31m }
+ [90m 840 |[31m[0m[39m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/Asus/Dev/projects/gen ai vocie agent/apps/web/src/pages/Landing.tsx[39m:837:7
+[33m  835 |          <div className="foot-copy">© 2025 Lyra. Built for Bharat.</div>
+  836 |        </footer>
+  837 |      </>
+      |         ^
+  838 |    );
+  839 |  }[39m
+      at constructor (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:365:19)
+      at TypeScriptParserMixin.raise (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:6616:19)
+      at TypeScriptParserMixin.jsxReadToken (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4460:20)
+      at TypeScriptParserMixin.getTokenFromCode (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4786:12)
+      at TypeScriptParserMixin.getTokenFromCode (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10004:11)
+      at TypeScriptParserMixin.nextToken (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:5799:10)
+      at TypeScriptParserMixin.next (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:5709:10)
+      at TypeScriptParserMixin.eat (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:5713:12)
+      at TypeScriptParserMixin.jsxParseClosingElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4688:14)
+      at TypeScriptParserMixin.jsxParseElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4707:37)
+      at TypeScriptParserMixin.jsxParseElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4710:32)
+      at TypeScriptParserMixin.jsxParseElement (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4761:17)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4771:19)
+      at TypeScriptParserMixin.parseExprSubscripts (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11098:23)
+      at TypeScriptParserMixin.parseUpdate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11083:21)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11063:23)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9854:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10916:61)
+      at TypeScriptParserMixin.parseExprOps (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10921:23)
+      at TypeScriptParserMixin.parseMaybeConditional (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10898:23)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10848:21)
+      at C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9792:39
+      at TypeScriptParserMixin.tryParse (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:6924:20)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9792:18)
+      at C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10817:39
+      at TypeScriptParserMixin.allowInAnd (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12443:12)
+      at TypeScriptParserMixin.parseMaybeAssignAllowIn (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10817:17)
+      at TypeScriptParserMixin.parseMaybeAssignAllowInOrVoidPattern (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12510:17)
+      at TypeScriptParserMixin.parseParenAndDistinguishExpression (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11692:28)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11348:23)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4776:20)
+      at TypeScriptParserMixin.parseExprSubscripts (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11098:23)
+      at TypeScriptParserMixin.parseUpdate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11083:21)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11063:23)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9854:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10916:61)
+      at TypeScriptParserMixin.parseExprOps (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10921:23)
+      at TypeScriptParserMixin.parseMaybeConditional (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10898:23)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10848:21)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9803:20)
+      at TypeScriptParserMixin.parseExpressionBase (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10801:23)
+      at C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10797:39
+      at TypeScriptParserMixin.allowInAnd (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12438:16)
+      at TypeScriptParserMixin.parseExpression (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10797:17)
+      at TypeScriptParserMixin.parseReturnStatement (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:13159:28)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12815:21)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9525:18)
+      at TypeScriptParserMixin.parseStatementLike (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12784:17)
+      at TypeScriptParserMixin.parseStatementListItem (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12764:17)
+      at TypeScriptParserMixin.parseBlockOrModuleBlockBody (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:13333:61)
+[2m1:22:41 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\src\pages\Landing.tsx: Unterminated JSX contents. (837:7)
+
+[0m [90m 835 |[39m         [33m<[39m[33mdiv[39m className[33m=[39m[32m"foot-copy"[39m[33m>[39m© [35m2025[39m [33mLyra[39m[33m.[39m [33mBuilt[39m [36mfor[39m [33mBharat[39m[33m.[39m[33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m 836 |[39m       [33m<[39m[33m/[39m[33mfooter[39m[33m>[39m
+[31m[1m>[22m[39m[90m 837 |[39m     [33m<[39m[33m/[39m[33m>[39m
+ [90m     |[39m        [31m[1m^[22m[39m
+ [90m 838 |[39m   )[33m;[39m
+ [90m 839 |[39m }
+ [90m 840 |[39m[0m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/Asus/Dev/projects/gen ai vocie agent/apps/web/src/pages/Landing.tsx[39m:837:7
+[33m  835 |          <div className="foot-copy">© 2025 Lyra. Built for Bharat.</div>
+  836 |        </footer>
+  837 |      </>
+      |         ^
+  838 |    );
+  839 |  }[39m
+[2m1:22:41 AM[22m [31m[1m[vite][22m[39m [31mInternal server error: C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\src\pages\Landing.tsx: Unterminated JSX contents. (837:7)
+
+[0m [90m 835 |[31m         [33m<[31m[33mdiv[31m className[33m=[31m[32m"foot-copy"[31m[33m>[31m© [35m2025[31m [33mLyra[31m[33m.[31m [33mBuilt[31m [36mfor[31m [33mBharat[31m[33m.[31m[33m<[31m[33m/[31m[33mdiv[31m[33m>[31m
+ [90m 836 |[31m       [33m<[31m[33m/[31m[33mfooter[31m[33m>[31m
+[31m[1m>[22m[31m[90m 837 |[31m     [33m<[31m[33m/[31m[33m>[31m
+ [90m     |[31m        [31m[1m^[22m[31m
+ [90m 838 |[31m   )[33m;[31m
+ [90m 839 |[31m }
+ [90m 840 |[31m[0m[39m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/Asus/Dev/projects/gen ai vocie agent/apps/web/src/pages/Landing.tsx[39m:837:7
+[33m  835 |          <div className="foot-copy">© 2025 Lyra. Built for Bharat.</div>
+  836 |        </footer>
+  837 |      </>
+      |         ^
+  838 |    );
+  839 |  }[39m
+      at constructor (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:365:19)
+      at TypeScriptParserMixin.raise (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:6616:19)
+      at TypeScriptParserMixin.jsxReadToken (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4460:20)
+      at TypeScriptParserMixin.getTokenFromCode (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4786:12)
+      at TypeScriptParserMixin.getTokenFromCode (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10004:11)
+      at TypeScriptParserMixin.nextToken (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:5799:10)
+      at TypeScriptParserMixin.next (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:5709:10)
+      at TypeScriptParserMixin.eat (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:5713:12)
+      at TypeScriptParserMixin.jsxParseClosingElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4688:14)
+      at TypeScriptParserMixin.jsxParseElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4707:37)
+      at TypeScriptParserMixin.jsxParseElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4710:32)
+      at TypeScriptParserMixin.jsxParseElement (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4761:17)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4771:19)
+      at TypeScriptParserMixin.parseExprSubscripts (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11098:23)
+      at TypeScriptParserMixin.parseUpdate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11083:21)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11063:23)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9854:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10916:61)
+      at TypeScriptParserMixin.parseExprOps (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10921:23)
+      at TypeScriptParserMixin.parseMaybeConditional (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10898:23)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10848:21)
+      at C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9792:39
+      at TypeScriptParserMixin.tryParse (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:6924:20)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9792:18)
+      at C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10817:39
+      at TypeScriptParserMixin.allowInAnd (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12443:12)
+      at TypeScriptParserMixin.parseMaybeAssignAllowIn (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10817:17)
+      at TypeScriptParserMixin.parseMaybeAssignAllowInOrVoidPattern (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12510:17)
+      at TypeScriptParserMixin.parseParenAndDistinguishExpression (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11692:28)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11348:23)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4776:20)
+      at TypeScriptParserMixin.parseExprSubscripts (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11098:23)
+      at TypeScriptParserMixin.parseUpdate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11083:21)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11063:23)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9854:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10916:61)
+      at TypeScriptParserMixin.parseExprOps (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10921:23)
+      at TypeScriptParserMixin.parseMaybeConditional (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10898:23)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10848:21)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9803:20)
+      at TypeScriptParserMixin.parseExpressionBase (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10801:23)
+      at C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10797:39
+      at TypeScriptParserMixin.allowInAnd (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12438:16)
+      at TypeScriptParserMixin.parseExpression (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10797:17)
+      at TypeScriptParserMixin.parseReturnStatement (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:13159:28)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12815:21)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9525:18)
+      at TypeScriptParserMixin.parseStatementLike (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12784:17)
+      at TypeScriptParserMixin.parseStatementListItem (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12764:17)
+      at TypeScriptParserMixin.parseBlockOrModuleBlockBody (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:13333:61)
+[2m1:22:42 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\src\pages\Landing.tsx: Unterminated JSX contents. (837:7)
+
+[0m [90m 835 |[39m         [33m<[39m[33mdiv[39m className[33m=[39m[32m"foot-copy"[39m[33m>[39m© [35m2025[39m [33mLyra[39m[33m.[39m [33mBuilt[39m [36mfor[39m [33mBharat[39m[33m.[39m[33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m 836 |[39m       [33m<[39m[33m/[39m[33mfooter[39m[33m>[39m
+[31m[1m>[22m[39m[90m 837 |[39m     [33m<[39m[33m/[39m[33m>[39m
+ [90m     |[39m        [31m[1m^[22m[39m
+ [90m 838 |[39m   )[33m;[39m
+ [90m 839 |[39m }
+ [90m 840 |[39m[0m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/Asus/Dev/projects/gen ai vocie agent/apps/web/src/pages/Landing.tsx[39m:837:7
+[33m  835 |          <div className="foot-copy">© 2025 Lyra. Built for Bharat.</div>
+  836 |        </footer>
+  837 |      </>
+      |         ^
+  838 |    );
+  839 |  }[39m
+[2m1:22:42 AM[22m [31m[1m[vite][22m[39m [31mInternal server error: C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\src\pages\Landing.tsx: Unterminated JSX contents. (837:7)
+
+[0m [90m 835 |[31m         [33m<[31m[33mdiv[31m className[33m=[31m[32m"foot-copy"[31m[33m>[31m© [35m2025[31m [33mLyra[31m[33m.[31m [33mBuilt[31m [36mfor[31m [33mBharat[31m[33m.[31m[33m<[31m[33m/[31m[33mdiv[31m[33m>[31m
+ [90m 836 |[31m       [33m<[31m[33m/[31m[33mfooter[31m[33m>[31m
+[31m[1m>[22m[31m[90m 837 |[31m     [33m<[31m[33m/[31m[33m>[31m
+ [90m     |[31m        [31m[1m^[22m[31m
+ [90m 838 |[31m   )[33m;[31m
+ [90m 839 |[31m }
+ [90m 840 |[31m[0m[39m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/Asus/Dev/projects/gen ai vocie agent/apps/web/src/pages/Landing.tsx[39m:837:7
+[33m  835 |          <div className="foot-copy">© 2025 Lyra. Built for Bharat.</div>
+  836 |        </footer>
+  837 |      </>
+      |         ^
+  838 |    );
+  839 |  }[39m
+      at constructor (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:365:19)
+      at TypeScriptParserMixin.raise (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:6616:19)
+      at TypeScriptParserMixin.jsxReadToken (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4460:20)
+      at TypeScriptParserMixin.getTokenFromCode (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4786:12)
+      at TypeScriptParserMixin.getTokenFromCode (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10004:11)
+      at TypeScriptParserMixin.nextToken (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:5799:10)
+      at TypeScriptParserMixin.next (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:5709:10)
+      at TypeScriptParserMixin.eat (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:5713:12)
+      at TypeScriptParserMixin.jsxParseClosingElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4688:14)
+      at TypeScriptParserMixin.jsxParseElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4707:37)
+      at TypeScriptParserMixin.jsxParseElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4710:32)
+      at TypeScriptParserMixin.jsxParseElement (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4761:17)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4771:19)
+      at TypeScriptParserMixin.parseExprSubscripts (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11098:23)
+      at TypeScriptParserMixin.parseUpdate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11083:21)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11063:23)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9854:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10916:61)
+      at TypeScriptParserMixin.parseExprOps (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10921:23)
+      at TypeScriptParserMixin.parseMaybeConditional (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10898:23)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10848:21)
+      at C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9792:39
+      at TypeScriptParserMixin.tryParse (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:6924:20)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9792:18)
+      at C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10817:39
+      at TypeScriptParserMixin.allowInAnd (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12443:12)
+      at TypeScriptParserMixin.parseMaybeAssignAllowIn (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10817:17)
+      at TypeScriptParserMixin.parseMaybeAssignAllowInOrVoidPattern (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12510:17)
+      at TypeScriptParserMixin.parseParenAndDistinguishExpression (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11692:28)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11348:23)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4776:20)
+      at TypeScriptParserMixin.parseExprSubscripts (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11098:23)
+      at TypeScriptParserMixin.parseUpdate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11083:21)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11063:23)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9854:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10916:61)
+      at TypeScriptParserMixin.parseExprOps (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10921:23)
+      at TypeScriptParserMixin.parseMaybeConditional (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10898:23)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10848:21)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9803:20)
+      at TypeScriptParserMixin.parseExpressionBase (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10801:23)
+      at C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10797:39
+      at TypeScriptParserMixin.allowInAnd (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12438:16)
+      at TypeScriptParserMixin.parseExpression (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10797:17)
+      at TypeScriptParserMixin.parseReturnStatement (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:13159:28)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12815:21)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9525:18)
+      at TypeScriptParserMixin.parseStatementLike (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12784:17)
+      at TypeScriptParserMixin.parseStatementListItem (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12764:17)
+      at TypeScriptParserMixin.parseBlockOrModuleBlockBody (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:13333:61)
+[2m1:22:43 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\src\pages\Landing.tsx: Unterminated JSX contents. (836:7)
+
+[0m [90m 834 |[39m         [33m<[39m[33mdiv[39m className[33m=[39m[32m"foot-copy"[39m[33m>[39m© [35m2025[39m [33mLyra[39m[33m.[39m [33mBuilt[39m [36mfor[39m [33mBharat[39m[33m.[39m[33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m 835 |[39m       [33m<[39m[33m/[39m[33mfooter[39m[33m>[39m
+[31m[1m>[22m[39m[90m 836 |[39m     [33m<[39m[33m/[39m[33m>[39m
+ [90m     |[39m        [31m[1m^[22m[39m
+ [90m 837 |[39m   )[33m;[39m
+ [90m 838 |[39m }
+ [90m 839 |[39m[0m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/Asus/Dev/projects/gen ai vocie agent/apps/web/src/pages/Landing.tsx[39m:836:7
+[33m  834 |          <div className="foot-copy">© 2025 Lyra. Built for Bharat.</div>
+  835 |        </footer>
+  836 |      </>
+      |         ^
+  837 |    );
+  838 |  }[39m
+[2m1:22:43 AM[22m [31m[1m[vite][22m[39m [31mInternal server error: C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\src\pages\Landing.tsx: Unterminated JSX contents. (836:7)
+
+[0m [90m 834 |[31m         [33m<[31m[33mdiv[31m className[33m=[31m[32m"foot-copy"[31m[33m>[31m© [35m2025[31m [33mLyra[31m[33m.[31m [33mBuilt[31m [36mfor[31m [33mBharat[31m[33m.[31m[33m<[31m[33m/[31m[33mdiv[31m[33m>[31m
+ [90m 835 |[31m       [33m<[31m[33m/[31m[33mfooter[31m[33m>[31m
+[31m[1m>[22m[31m[90m 836 |[31m     [33m<[31m[33m/[31m[33m>[31m
+ [90m     |[31m        [31m[1m^[22m[31m
+ [90m 837 |[31m   )[33m;[31m
+ [90m 838 |[31m }
+ [90m 839 |[31m[0m[39m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/Asus/Dev/projects/gen ai vocie agent/apps/web/src/pages/Landing.tsx[39m:836:7
+[33m  834 |          <div className="foot-copy">© 2025 Lyra. Built for Bharat.</div>
+  835 |        </footer>
+  836 |      </>
+      |         ^
+  837 |    );
+  838 |  }[39m
+      at constructor (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:365:19)
+      at TypeScriptParserMixin.raise (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:6616:19)
+      at TypeScriptParserMixin.jsxReadToken (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4460:20)
+      at TypeScriptParserMixin.getTokenFromCode (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4786:12)
+      at TypeScriptParserMixin.getTokenFromCode (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10004:11)
+      at TypeScriptParserMixin.nextToken (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:5799:10)
+      at TypeScriptParserMixin.next (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:5709:10)
+      at TypeScriptParserMixin.eat (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:5713:12)
+      at TypeScriptParserMixin.jsxParseClosingElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4688:14)
+      at TypeScriptParserMixin.jsxParseElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4707:37)
+      at TypeScriptParserMixin.jsxParseElementAt (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4710:32)
+      at TypeScriptParserMixin.jsxParseElement (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4761:17)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4771:19)
+      at TypeScriptParserMixin.parseExprSubscripts (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11098:23)
+      at TypeScriptParserMixin.parseUpdate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11083:21)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11063:23)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9854:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10916:61)
+      at TypeScriptParserMixin.parseExprOps (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10921:23)
+      at TypeScriptParserMixin.parseMaybeConditional (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10898:23)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10848:21)
+      at C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9792:39
+      at TypeScriptParserMixin.tryParse (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:6924:20)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9792:18)
+      at C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10817:39
+      at TypeScriptParserMixin.allowInAnd (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12443:12)
+      at TypeScriptParserMixin.parseMaybeAssignAllowIn (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10817:17)
+      at TypeScriptParserMixin.parseMaybeAssignAllowInOrVoidPattern (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12510:17)
+      at TypeScriptParserMixin.parseParenAndDistinguishExpression (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11692:28)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11348:23)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:4776:20)
+      at TypeScriptParserMixin.parseExprSubscripts (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11098:23)
+      at TypeScriptParserMixin.parseUpdate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11083:21)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:11063:23)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9854:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10916:61)
+      at TypeScriptParserMixin.parseExprOps (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10921:23)
+      at TypeScriptParserMixin.parseMaybeConditional (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10898:23)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10848:21)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9803:20)
+      at TypeScriptParserMixin.parseExpressionBase (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10801:23)
+      at C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10797:39
+      at TypeScriptParserMixin.allowInAnd (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12438:16)
+      at TypeScriptParserMixin.parseExpression (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:10797:17)
+      at TypeScriptParserMixin.parseReturnStatement (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:13159:28)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12815:21)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:9525:18)
+      at TypeScriptParserMixin.parseStatementLike (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12784:17)
+      at TypeScriptParserMixin.parseStatementListItem (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:12764:17)
+      at TypeScriptParserMixin.parseBlockOrModuleBlockBody (C:\Users\Asus\Dev\projects\gen ai vocie agent\apps\web\node_modules\@babel\parser\lib\index.js:13333:61)

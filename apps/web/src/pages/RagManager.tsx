@@ -111,9 +111,9 @@ export default function RagManager({ onNavigate, showNavbar = true }: { onNaviga
 
       <main className="rag-main">
         {showNavbar && (
-          <header className="rag-header">
-            <h1>RAG Data Sources</h1>
-            <p>Manage documents used by the voice agent.</p>
+          <header className="rag-header" style={{ marginBottom: '24px' }}>
+            <h1 style={{ fontFamily: 'var(--f-display)', fontWeight: 800, fontSize: '28px' }}>Knowledge Base (RAG)</h1>
+            <p style={{ color: 'var(--muted)', fontSize: '14.5px' }}>Manage and index documents used by Lyra to retrieve context and formulate grounded responses.</p>
           </header>
         )}
 
@@ -123,84 +123,117 @@ export default function RagManager({ onNavigate, showNavbar = true }: { onNaviga
           </div>
         )}
 
-        <section className="rag-section">
-          <h2>Upload Documents</h2>
-          <div 
-            className={`rag-upload-zone ${dragOver ? 'drag-over' : ''}`}
-            onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
-            onDragLeave={() => setDragOver(false)}
-            onDrop={handleDrop}
-            onClick={() => fileInputRef.current?.click()}
-          >
-            <input 
-              type="file" 
-              ref={fileInputRef} 
-              style={{ display: 'none' }} 
-              accept=".txt,.md,.markdown" 
-              onChange={(e) => {
-                if (e.target.files && e.target.files[0]) {
-                  handleUpload(e.target.files[0]);
-                }
-              }}
-            />
-            {loading ? <p>Processing...</p> : <p>Drag & drop a .txt or .md file here, or click to browse</p>}
-          </div>
-        </section>
-
-        <section className="rag-section">
-          <div className="rag-section-header">
-            <h2>Data Files</h2>
-            <button className="rag-btn primary" onClick={handleIngest} disabled={loading}>
-              {loading ? 'Ingesting...' : 'Ingest to Vector DB'}
-            </button>
-          </div>
+        <div className="rag-grid">
           
-          <div className="rag-file-list">
-            {files.length === 0 ? (
-              <p className="empty-msg">No files found.</p>
-            ) : (
-              files.map(f => (
-                <div className="rag-file-item" key={f.name}>
-                  <div className="file-info">
-                    <span className="file-name">{f.name}</span>
-                    <span className="file-size">{formatSize(f.size)}</span>
+          {/* Left Column: Upload & Test */}
+          <div className="flex-col gap-md">
+            
+            {/* Upload Documents Card */}
+            <section className="rag-section">
+              <h2>Upload Documents</h2>
+              <div 
+                className={`rag-upload-zone ${dragOver ? 'drag-over' : ''}`}
+                onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+                onDragLeave={() => setDragOver(false)}
+                onDrop={handleDrop}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <input 
+                  type="file" 
+                  ref={fileInputRef} 
+                  style={{ display: 'none' }} 
+                  accept=".txt,.md,.markdown" 
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      handleUpload(e.target.files[0]);
+                    }
+                  }}
+                />
+                {loading ? (
+                  <div className="flex items-center justify-center gap-sm">
+                    <span className="glow-dot glow-dot--small" />
+                    <span>Processing file...</span>
                   </div>
-                  <button className="rag-btn danger" onClick={() => handleDelete(f.name)} disabled={loading}>
-                    Delete
-                  </button>
+                ) : (
+                  <div>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ margin: '0 auto 10px', color: 'var(--muted)' }}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    <p>Drag & drop a <strong>.txt</strong> or <strong>.md</strong> file containing curriculum, medical guidelines, or FAQs, or click to browse</p>
+                  </div>
+                )}
+              </div>
+            </section>
+
+            {/* Test Query Card */}
+            <section className="rag-section">
+              <h2>Test Grounded Query</h2>
+              <form onSubmit={handleQuery} className="rag-query-form">
+                <input 
+                  type="text" 
+                  value={query} 
+                  onChange={e => setQuery(e.target.value)} 
+                  placeholder="Ask a question about your files..."
+                  className="rag-input"
+                />
+                <button type="submit" className="rag-btn primary" disabled={loading || !query.trim()}>Search</button>
+              </form>
+
+              {queryResults.length > 0 && (
+                <div className="rag-results">
+                  {queryResults.map((r, i) => (
+                    <div key={i} className="card rag-result-card" style={{ background: 'var(--surface2)', border: '1px solid var(--border)' }}>
+                      <div className="rag-result-meta">
+                        <span className="badge">{r.source} (Chunk {r.chunk_index})</span>
+                        <span className="badge distance">Distance: {r.distance.toFixed(3)}</span>
+                      </div>
+                      <p className="rag-result-text" style={{ fontSize: '13.5px', color: 'var(--text)', lineHeight: 1.6 }}>{r.text}</p>
+                    </div>
+                  ))}
                 </div>
-              ))
-            )}
+              )}
+            </section>
+
           </div>
-        </section>
 
-        <section className="rag-section rag-query-section">
-          <h2>Test Query</h2>
-          <form onSubmit={handleQuery} className="rag-query-form">
-            <input 
-              type="text" 
-              value={query} 
-              onChange={e => setQuery(e.target.value)} 
-              placeholder="Ask a question..."
-              className="rag-input"
-            />
-            <button type="submit" className="rag-btn" disabled={loading || !query.trim()}>Search</button>
-          </form>
+          {/* Right Column: Ingest & Files List */}
+          <div>
+            
+            <section className="rag-section" style={{ display: 'flex', flexDirection: 'column' }}>
+              <div className="rag-section-header">
+                <h2>Knowledge Base Files</h2>
+              </div>
+              
+              <button 
+                type="button" 
+                className="rag-btn primary" 
+                onClick={handleIngest} 
+                disabled={loading || files.length === 0}
+                style={{ width: '100%', marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+              >
+                <span className="glow-dot glow-dot--small" />
+                {loading ? 'Re-Indexing KB...' : 'Index Knowledge Base'}
+              </button>
 
-          {queryResults.length > 0 && (
-            <div className="rag-results">
-              {queryResults.map((r, i) => (
-                <div key={i} className="rag-result-card">
-                  <div className="rag-result-meta">
-                    <span className="badge">{r.source} (Chunk {r.chunk_index})</span>
-                    <span className="badge distance">Dist: {r.distance.toFixed(3)}</span>
-                  </div>
-                  <p className="rag-result-text">{r.text}</p>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
+              <div className="rag-file-list" style={{ overflowY: 'auto', maxHeight: '420px' }}>
+                {files.length === 0 ? (
+                  <p className="empty-msg" style={{ textAlign: 'center', padding: '40px 10px', color: 'var(--muted)', fontSize: '14px' }}>No documents uploaded yet.</p>
+                ) : (
+                  files.map(f => (
+                    <div className="rag-file-item" key={f.name}>
+                      <div className="file-info" style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                        <span className="file-name" style={{ wordBreak: 'break-all' }}>{f.name}</span>
+                        <span className="file-size">{formatSize(f.size)}</span>
+                      </div>
+                      <button type="button" className="rag-btn danger sm" onClick={() => handleDelete(f.name)} disabled={loading} style={{ padding: '4px 10px', fontSize: '11.5px' }}>
+                        Delete
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
+            </section>
+
+          </div>
+        </div>
       </main>
     </div>
   );

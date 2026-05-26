@@ -1,702 +1,339 @@
+// SOURCE: Glass Navbar — https://ui.shadcn.com
+// SOURCE: Dot Pattern — https://magicui.design/docs/components/dot-pattern
+// SOURCE: TextRotate — https://reactbits.dev/text-rotate/
+// SOURCE: Bento Grid — https://21st.dev (customised for asymmetric visual cards)
+// SOURCE: Step Cards — https://21st.dev (customised with vertical offset and watermarks)
+// SOURCE: Waveform Visualizer — custom
+// CHANGE: Navbar scroll support using Framer Motion. Re-aligned hero typography hierarchy. Offset middle step card with watermark. Bento grid asymmetric layout and rich CSS/SVG interactive visuals. Polish scripts list styling.
+
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { transcribeAudio, voiceAgentStream } from '../api';
-import { TextRotate } from '../components/TextRotate'
-import StreamingText from '../components/StreamingText';
+import { useScroll, useMotionValueEvent } from 'framer-motion';
+import { VoiceAgentChatPreview } from '../components/nova/VoiceAgentChatPreview';
+import LandingSectionHeader from '../components/landing/LandingSectionHeader';
+import HowItWorksSection from '../components/landing/HowItWorksSection';
+import FeaturesGrid from '../components/landing/FeaturesGrid';
 import '../styles/landing.css';
-import { BackgroundRippleEffect } from '../components/ui/background-ripple-effect';
+import '../styles/landing-sections.css';
 
-const LANG_MAP: Record<string, string> = {
-  hi: 'hi-IN',
-  ta: 'ta-IN',
-  te: 'te-IN',
-  kn: 'kn-IN',
-  mr: 'mr-IN',
-  en: 'en-IN',
-};
-
-const LANG_LABELS: Record<string, string> = {
-  hi: 'हिन्दी',
-  ta: 'தமிழ்',
-  te: 'తెలుగు',
-  kn: 'ಕನ್ನಡ',
-  mr: 'मराठी',
-  en: 'English',
-};
-
-const LANG_KEYS = Object.keys(LANG_LABELS) as (keyof typeof LANG_LABELS)[];
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
+const useCasesData = [
+  {
+    num: "01.0",
+    title: "Ask in your language",
+    tag: "Voice first",
+    desc: "Speak naturally in Hindi or English. No typing needed.",
+    renderSvg: (strokeColor: string) => (
+      <svg viewBox="0 0 160 160" width="100%" height="100%" fill="none" stroke={strokeColor} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="60" y="40" width="40" height="60" rx="20" />
+        <path d="M 68 40 A 12 12 0 0 1 92 40" />
+        <path d="M 52 70 V 80 A 28 28 0 0 0 108 80 V 70" />
+        <line x1="80" y1="108" x2="80" y2="125" />
+        <line x1="60" y1="125" x2="100" y2="125" />
+      </svg>
+    )
   },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      type: 'spring',
-      stiffness: 100,
-      damping: 15,
-    },
+  {
+    num: "02.0",
+    title: "Query your documents",
+    tag: "RAG powered",
+    desc: "Upload a file and ask questions about it by voice.",
+    renderSvg: (strokeColor: string) => (
+      <svg viewBox="0 0 160 160" width="100%" height="100%" fill="none" stroke={strokeColor} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="48" y="38" width="52" height="72" rx="4" />
+        <rect x="54" y="44" width="52" height="72" rx="4" />
+        <rect x="60" y="50" width="52" height="72" rx="4" />
+        <line x1="72" y1="64" x2="100" y2="64" />
+        <line x1="72" y1="76" x2="100" y2="76" />
+        <line x1="72" y1="88" x2="90" y2="88" />
+      </svg>
+    )
   },
-};
+  {
+    num: "03.0",
+    title: "Instant spoken answers",
+    tag: "Hands free",
+    desc: "Get answers read back to you out loud. No screen required.",
+    renderSvg: (strokeColor: string) => (
+      <svg viewBox="0 0 160 160" width="100%" height="100%" fill="none" stroke={strokeColor} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="40" y="42" width="80" height="56" rx="6" />
+        <path d="M 55 98 L 45 112 L 65 98" />
+        <line x1="56" y1="56" x2="104" y2="56" />
+        <line x1="56" y1="68" x2="104" y2="68" />
+        <line x1="56" y1="80" x2="88" y2="80" />
+      </svg>
+    )
+  },
+  {
+    num: "04.0",
+    title: "Realtime voice chat",
+    tag: "Low latency",
+    desc: "Back-and-forth conversation with sub-1.5s response time.",
+    renderSvg: (strokeColor: string) => (
+      <svg viewBox="0 0 160 160" width="100%" height="100%" fill="none" stroke={strokeColor} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="30" y="40" width="60" height="42" rx="5" />
+        <path d="M 42 82 L 35 90 V 82" />
+        <rect x="70" y="65" width="60" height="42" rx="5" />
+        <path d="M 118 107 L 125 115 V 107" />
+        <path d="M 83 45 L 75 57 H 83 L 77 69 L 85 57 H 77 Z" />
+      </svg>
+    )
+  },
+  {
+    num: "05.0",
+    title: "Works in the browser",
+    tag: "No install",
+    desc: "Open Lyra in any browser. Works on desktop and mobile.",
+    renderSvg: (strokeColor: string) => (
+      <svg viewBox="0 0 160 160" width="100%" height="100%" fill="none" stroke={strokeColor} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="40" y="50" width="80" height="60" rx="6" />
+        <line x1="40" y1="65" x2="120" y2="65" />
+        <circle cx="48" cy="57.5" r="2" />
+        <circle cx="56" cy="57.5" r="2" />
+        <circle cx="64" cy="57.5" r="2" />
+      </svg>
+    )
+  },
+  {
+    num: "06.0",
+    title: "Private knowledge base",
+    tag: "Your data only",
+    desc: "Your documents stay private. Answers come only from your data.",
+    renderSvg: (strokeColor: string) => (
+      <svg viewBox="0 0 160 160" width="100%" height="100%" fill="none" stroke={strokeColor} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+        <ellipse cx="80" cy="50" rx="32" ry="9" />
+        <path d="M 48 50 V 72" />
+        <path d="M 112 50 V 72" />
+        <ellipse cx="80" cy="72" rx="32" ry="9" />
+        <path d="M 48 72 V 94" />
+        <path d="M 112 72 V 94" />
+        <ellipse cx="80" cy="94" rx="32" ry="9" />
+      </svg>
+    )
+  }
+];
 
-export default function Landing({ onNavigate }: { onNavigate?: (view: 'landing' | 'rag') => void }) {
+export default function Landing({ onNavigate }: { onNavigate?: (v:'landing'|'rag')=>void }) {
   const navigate = useNavigate();
-  const [activeLang, setActiveLang] = useState('hi');
-  const [rotatingLangIdx, setRotatingLangIdx] = useState(
-    LANG_KEYS.indexOf('hi'),
-  );
-  const [demoRunning, setDemoRunning] = useState(false);
-  const [demoPhase, setDemoPhase] = useState<'idle' | 'recording' | 'transcribing' | 'responding'>('idle');
-  const [demoTranscript, setDemoTranscript] = useState('');
-  const [demoResponse, setDemoResponse] = useState('');
-  const [error, setError] = useState('');
-  
-  // Chat state removed — moved to dedicated ChatbotPage
+  const [scrolled, setScrolled] = useState(false);
+  const [activeUseCase, setActiveUseCase] = useState(0);
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollY } = useScroll();
 
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const chunksRef = useRef<Blob[]>([]);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const cancelRef = useRef(false);
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    setScrolled(latest > 20);
+  });
 
-  // Keep activeLang aligned with the hero's rotating language display
-  useEffect(() => {
-    setActiveLang(LANG_KEYS[rotatingLangIdx]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rotatingLangIdx]);
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const { currentTarget, clientX, clientY } = e;
+    const { left, top } = currentTarget.getBoundingClientRect();
+    currentTarget.style.setProperty("--mouse-x", `${clientX - left}px`);
+    currentTarget.style.setProperty("--mouse-y", `${clientY - top}px`);
+  };
 
   useEffect(() => {
     const obs = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) e.target.classList.add('visible');
-        });
-      },
-      { threshold: 0.12 }
+      (entries) => entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+      { threshold: 0.1 }
     );
     document.querySelectorAll('.fade-up').forEach((el) => obs.observe(el));
     return () => obs.disconnect();
   }, []);
 
-  const startRecording = async (): Promise<Blob> => {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    return new Promise((resolve, reject) => {
-      const recorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
-      mediaRecorderRef.current = recorder;
-      chunksRef.current = [];
-
-      recorder.ondataavailable = (e) => {
-        if (e.data.size > 0) chunksRef.current.push(e.data);
-      };
-
-      recorder.onstop = () => {
-        const blob = new Blob(chunksRef.current, { type: 'audio/webm' });
-        stream.getTracks().forEach((t) => t.stop());
-        resolve(blob);
-      };
-
-      recorder.onerror = () => {
-        stream.getTracks().forEach((t) => t.stop());
-        reject(new Error('Recording failed'));
-      };
-
-      recorder.start();
-    });
-  };
-
-  const stopRecording = () => {
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
-      mediaRecorderRef.current.stop();
-    }
-  };
-
-  const runDemo = async () => {
-    if (demoRunning) return;
-    cancelRef.current = false;
-    setDemoRunning(true);
-    setError('');
-    setDemoTranscript('');
-    setDemoResponse('');
-
-    try {
-      // Phase 1: Recording
-      setDemoPhase('recording');
-      const audioBlobPromise = startRecording();
-
-      // Auto-stop after 8 seconds
-      const autoStop = setTimeout(() => stopRecording(), 8000);
-
-      const audioBlob = await audioBlobPromise;
-      clearTimeout(autoStop);
-      
-      if (cancelRef.current) return;
-
-      // Phase 2: Transcribing (STT)
-      setDemoPhase('transcribing');
-      const languageCode = LANG_MAP[activeLang];
-      const sttResult = await transcribeAudio(audioBlob, languageCode);
-      if (cancelRef.current) return;
-      const transcript = sttResult.transcript;
-      setDemoTranscript(transcript);
-
-      if (!transcript.trim()) {
-        setError('Could not understand speech. Please try again.');
-        setDemoPhase('idle');
-        setDemoRunning(false);
-        return;
-      }
-
-      // Phase 3: Responding (LLM + TTS - STREAMING)
-      setDemoPhase('responding');
-      
-      // Use streaming endpoint for true streaming audio
-      const { response, generatedText } = await voiceAgentStream(transcript, 'default', 'default', languageCode);
-      if (cancelRef.current) return;
-      setDemoResponse(generatedText);
-
-      // Play streaming audio response
-      if (audioRef.current && response.body) {
-        // Convert streaming response to blob
-        const audioBlob = await response.blob();
-        const audioUrl = URL.createObjectURL(audioBlob);
-        audioRef.current.src = audioUrl;
-        await new Promise<void>((resolve) => {
-          if (!audioRef.current) return resolve();
-          audioRef.current.onended = () => {
-            URL.revokeObjectURL(audioUrl); // Clean up
-            resolve();
-          };
-          audioRef.current.onerror = () => {
-            URL.revokeObjectURL(audioUrl); // Clean up
-            resolve();
-          };
-          audioRef.current.play().catch((e) => {
-            console.error('Audio play failed', e);
-            URL.revokeObjectURL(audioUrl);
-            resolve();
-          });
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate-on-scroll-visible');
+            obs.unobserve(entry.target);
+          }
         });
-      }
-    } catch (err: unknown) {
-      console.error('Demo error:', err);
-      const message = err instanceof Error ? err.message : 'Something went wrong';
-      setError(message);
-    } finally {
-      setDemoPhase('idle');
-      setDemoRunning(false);
-    }
-  };
+      },
+      { threshold: 0.05 }
+    );
+    document.querySelectorAll('[data-animation-on-scroll]').forEach((el) => {
+      el.classList.add('animate-on-scroll-hidden');
+      obs.observe(el);
+    });
+    return () => obs.disconnect();
+  }, []);
 
-const stopDemo = () => {
-    stopRecording();
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.src = '';
-    }
-    setDemoPhase('idle');
-    setDemoRunning(false);
-  };
+  const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior:'smooth' });
+
+  const SlideCta = ({ label, onClick, variant = 'primary' }: { label: string; onClick?: () => void; variant?: 'primary' | 'nav' }) => (
+    <button type="button" className={variant === 'primary' ? 'hero-cta-primary' : 'lp-nav-cta'} onClick={onClick}>
+      <span className={variant === 'primary' ? 'hero-cta-text-wrap' : 'lp-nav-cta-text-wrap'}>
+        <span className={variant === 'primary' ? 'hero-cta-text-slide' : 'lp-nav-cta-text-slide'}>
+          <span className={variant === 'primary' ? 'hero-cta-row' : undefined}>
+            {variant === 'primary' ? (
+              <>
+                <span>{label}</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              </>
+            ) : (
+              <span>{label}</span>
+            )}
+          </span>
+          <span className={variant === 'primary' ? 'hero-cta-row hero-cta-row--dup' : undefined}>
+            {variant === 'primary' ? (
+              <>
+                <span>{label}</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              </>
+            ) : (
+              <span>{label}</span>
+            )}
+          </span>
+        </span>
+      </span>
+    </button>
+  );
 
   return (
     <>
-      {/* Hidden audio element for playback */}
-      <audio ref={audioRef} preload="none" />
+      {/* == NAVBAR == */}
+      <nav className={`lp-nav lp-nav--hero-dark ${scrolled ? 'lp-nav--scrolled' : ''}`}>
+        <div className="lp-nav-inner">
+          <div className="lp-nav-logo" onClick={() => navigate('/')}>Lyra</div>
 
-      {/* HERO */}
-      <section id="hero" className="hero">
-        <BackgroundRippleEffect />
-        <div className="hero-bg"></div>
-        <motion.div 
-          className="hero-content"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
-          <motion.h1 className="hero-title" variants={itemVariants}>
-            <span className="title-line">
-              Ask anything.
-            </span>
-            <span className="title-line title-line-lang">
-              In your{" "}
-              <TextRotate
-                texts={LANG_KEYS.map((k) => LANG_LABELS[k])}
-                rotationInterval={2200}
-                staggerDuration={0.04}
-                mainClassName="title-lang inline-flex"
-                onNext={(idx) => setRotatingLangIdx(idx)}
-              />{" "}
-              Language
-            </span>
-            <span className="title-line">Get instant answers.</span>
-          </motion.h1>
-          <motion.p className="hero-sub" variants={itemVariants}>
-            Lyra is a voice-first AI that understands Hindi, Tamil, Telugu, and 8+ Indic languages — with accurate, grounded answers.
-          </motion.p>
-          <motion.div className="hero-actions" variants={itemVariants}>
-            <button
-              className="btn-primary"
-              onClick={() => {
-                navigate('/dashboard');
-              }}
-              aria-label="Get started with Lyra"
-            >
-              GET STARTED
-            </button>
-            <button 
-              className="btn-secondary" 
-              onClick={() => {
-                const demoEl = document.getElementById('demo');
-                if (demoEl) demoEl.scrollIntoView({ behavior: 'smooth' });
-              }}
-              aria-label="Watch demo video"
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polygon points="5 3 19 12 5 21 5 3" />
-              </svg>
-              Watch Demo
-            </button>
-          </motion.div>
-          <motion.div className="hero-lang-select" variants={itemVariants}>
-            <span className="hero-lang-label">Speaking:</span>
-            {Object.keys(LANG_LABELS).slice(0, 6).map((lang) => (
-              <button
-                key={lang}
-                className={`hero-lang-btn ${activeLang === lang ? 'active' : ''}`}
-                              onClick={() => {
-                setActiveLang(lang);
-                setRotatingLangIdx(LANG_KEYS.indexOf(lang));
-              }}
-              >
-                {LANG_LABELS[lang]}
+          <div className="lp-nav-links">
+            <button type="button" onClick={() => scrollTo('how-it-works')}>How it Works</button>
+            <button type="button" onClick={() => scrollTo('features')}>Features</button>
+            <button type="button" onClick={() => scrollTo('use-cases')}>Use Cases</button>
+          </div>
+
+          <div className="lp-nav-right">
+            <SlideCta label="Sign In" onClick={() => navigate('/sign-in')} variant="nav" />
+          </div>
+        </div>
+      </nav>
+
+      {/* == HERO == */}
+      <section id="hero" ref={heroRef}>
+        <div className="hero-grid-bg">
+          <div className="hero-grid-bg-v" />
+          <div className="hero-grid-bg-h" />
+        </div>
+
+        <div className="hero-content">
+          <div className="hero-heading" data-animation-on-scroll>
+            <h1 className="hero-title">
+              Grounded Voice AI for Bharat
+            </h1>
+            <p className="hero-sub">
+              A warm, sub-1.5s latency Indic voice assistant built for scale.<br />
+              Speak naturally in Hindi, Tamil, Telugu, Marathi, or English.
+            </p>
+            <div className="hero-actions">
+              <SlideCta label="Get started today" onClick={() => navigate('/dashboard')} variant="primary" />
+            </div>
+          </div>
+
+          <div className="hero-dashboard-section" data-animation-on-scroll>
+            <VoiceAgentChatPreview />
+          </div>
+
+        </div>
+      </section>
+
+      <div className="lp-landing-body">
+      <section id="how" className="section section--dark section--how">
+        <div className="section-inner section-inner--wide">
+          <LandingSectionHeader
+            eyebrow="How it works"
+            title="How It Works"
+            subtitle="From setup to everyday use, we've made voice automation effortless."
+            align="center"
+          />
+          <HowItWorksSection onStart={() => navigate('/sign-up')} />
+        </div>
+      </section>
+
+      {/* == USE CASES == */}
+      <section id="use-cases" className="section section--dark section--use-cases">
+        <div className="usecases-container">
+          <div className="usecases-header">
+            <span className="usecases-eyebrow">USE CASES</span>
+            <h2 className="usecases-title">Built for real conversations</h2>
+          </div>
+          <div className="usecases-row">
+            {useCasesData.map((uc, idx) => {
+              const isActive = activeUseCase === idx;
+              const strokeColor = isActive ? '#00c3c9' : 'rgba(255,255,255,0.18)';
+              return (
+                <div
+                  key={uc.num}
+                  className={`usecase-card ${isActive ? 'usecase-card--active' : ''}`}
+                  onMouseEnter={() => setActiveUseCase(idx)}
+                >
+                  <div className="usecase-card-header">
+                    <span className="usecase-card-badge">{uc.num}</span>
+                    <span className="usecase-card-tag">{uc.tag}</span>
+                  </div>
+                  
+                  <div className="usecase-card-illustration">
+                    {uc.renderSvg(strokeColor)}
+                  </div>
+                  
+                  <div className="usecase-card-footer">
+                    <div className="usecase-card-title">
+                      <strong>{uc.title}</strong> — {uc.desc}
+                    </div>
+                    <div className="usecase-card-action">
+                      {isActive ? (
+                        <span className="usecase-card-learnmore">LEARN MORE →</span>
+                      ) : (
+                        <span className="usecase-card-plus">+</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section id="features" className="section section--dark">
+        <div className="section-inner">
+          <LandingSectionHeader
+            eyebrow="Features"
+            title={<>Built for speed.<br />Grounded in truth.</>}
+            subtitle="Every layer optimized for voice: fast inference, accurate retrieval, natural Indic speech."
+            align="left"
+          />
+          <div className="fade-up">
+            <FeaturesGrid onMouseMove={handleMouseMove} />
+          </div>
+        </div>
+      </section>
+
+      <section id="cta" className="section section--dark cta-section">
+        <div className="section-inner">
+          <div className="cta-panel-nova fade-up">
+            <p className="lp-section-eyebrow" style={{ marginBottom: 12 }}>Early access</p>
+            <h2>Be the first to try Lyra.</h2>
+            <p>Join the waitlist — onboarding Indic-language builders and EdTech teams first.</p>
+            <div className="email-form">
+              <input className="email-input" type="email" placeholder="your@email.com" id="emailInput" />
+              <button type="button" className="email-submit" onClick={() => alert('Thanks for joining!')}>
+                Join waitlist
               </button>
-            ))}
-          </motion.div>
-        </motion.div>
-      </section>
-
-      {/* HOW IT WORKS */}
-      <section id="how" className="section how-section">
-        <div className="fade-up">
-          <p className="section-label center">How it works</p>
-          <h2 className="section-title center">Three steps to your answer</h2>
-        </div>
-        <div className="steps-wrap fade-up">
-          <div className="step">
-            <div className="step-num">01</div>
-            <div className="step-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f5622e" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
-                <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-                <line x1="12" y1="19" x2="12" y2="23" />
-                <line x1="8" y1="23" x2="16" y2="23" />
-              </svg>
             </div>
-            <h3>You speak</h3>
-            <p>Tap and speak in your language. Hindi, Tamil, Marathi — whatever feels natural. Sarvam STT captures every word.</p>
-          </div>
-          <div className="step">
-            <div className="step-num">02</div>
-            <div className="step-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f5622e" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="11" cy="11" r="8" />
-                <path d="M21 21l-4.35-4.35" />
-                <path d="M11 8v6" />
-                <path d="M8 11h6" />
-              </svg>
-            </div>
-            <h3>AI retrieves</h3>
-            <p>Your query hits a hybrid BM25 + semantic search across the knowledge base. Top 5 relevant chunks are pulled — no hallucinations.</p>
-          </div>
-          <div className="step">
-            <div className="step-num">03</div>
-            <div className="step-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1ad6a0" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M9 18V5l12-2v13" />
-                <circle cx="6" cy="18" r="3" />
-                <circle cx="18" cy="16" r="3" />
-              </svg>
-            </div>
-            <h3>You hear the answer</h3>
-            <p>Groq generates a grounded response in under 1.5 seconds. Sarvam TTS streams it back to you — audio, not text.</p>
+            <p className="cta-note">No spam. Unsubscribe anytime.</p>
           </div>
         </div>
       </section>
 
-      {/* DEMO */}
-      <section id="demo" className="section demo-section">
-        <div className="fade-up center">
-          <p className="section-label">Live demo</p>
-          <h2 className="section-title">Try it yourself</h2>
-          <p className="section-sub">Click the mic, ask a question, hear the answer. No signup required.</p>
-        </div>
-        <div className="demo-shell fade-up">
-          <div className="demo-topbar">
-            <div className="demo-dot"></div>
-            <div className="demo-dot"></div>
-            <div className="demo-dot"></div>
-            <span className="demo-title-bar">lyra — voice interface</span>
-          </div>
-          <div className="demo-body">
-            <div className="demo-lang-row">
-               {Object.keys(LANG_LABELS).map((lang) => (
-                 <button
-                   key={lang}
-                   className={`lang-pill ${activeLang === lang ? 'active' : ''}`}
-                                 onClick={() => {
-                setActiveLang(lang);
-                setRotatingLangIdx(LANG_KEYS.indexOf(lang));
-              }}
-                   aria-label={`Select ${LANG_LABELS[lang]} language`}
-                   aria-pressed={activeLang === lang}
-                 >
-                   {LANG_LABELS[lang]}
-                 </button>
-               ))}
-            </div>
-            <div className="demo-transcript" id="transcript">
-              <span id="transcriptText" style={{ color: demoTranscript ? 'var(--text)' : 'var(--muted2)' }}>
-                {demoTranscript || 'Press the mic and speak…'}
-              </span>
-            </div>
-            <div className={`demo-waveform ${demoPhase === 'recording' ? 'active' : ''}`}>
-              <div className="b"></div>
-              <div className="b"></div>
-              <div className="b"></div>
-              <div className="b"></div>
-              <div className="b"></div>
-              <div className="b"></div>
-              <div className="b"></div>
-              <div className="b"></div>
-            </div>
-            <div className={`demo-response ${demoResponse ? 'show' : ''}`}>
-              <div className="demo-response-label">Lyra responds</div>
-              <div id="responseText">{demoResponse && <StreamingText text={demoResponse} />}</div>
-            </div>
-             <div className="demo-controls">
-               <div className="mic-ring-container">
-                 <button
-                   className={`mic-btn ${demoPhase === 'recording' ? 'recording' : ''}`}
-                   onClick={() => {
-                     if (demoPhase === 'idle') runDemo();
-                     else if (demoPhase === 'recording') stopRecording();
-                     else stopDemo();
-                   }}
-                   aria-label={demoPhase !== 'idle' ? 'Stop recording or cancel demo' : 'Start recording voice input'}
-                   aria-pressed={demoPhase === 'recording'}
-                 >
-                   {demoPhase === 'idle' ? '🎙️' : '⏹'}
-                </button>
-                <div className="mic-pulse-ring"></div>
-                <div className="mic-pulse-ring"></div>
-                <div className="mic-pulse-ring"></div>
-              </div>
-            </div>
-            {error && <div className="demo-error">{error}</div>}
-            <div className="demo-hint">
-              {demoPhase === 'idle' && !demoRunning && 'Tap to start recording'}
-              {demoPhase === 'recording' && 'Recording… click mic to stop'}
-              {demoPhase === 'transcribing' && 'Transcribing…'}
-              {demoPhase === 'responding' && 'Generating response…'}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* LANGUAGES */}
-      <section id="languages" className="section languages-section">
-        <div className="fade-up center">
-          <p className="section-label">Language support</p>
-          <h2 className="section-title">Speaks your India</h2>
-          <p className="section-sub">11 Indic languages with native script support. More coming soon.</p>
-        </div>
-        <div className="lang-scroll-wrap">
-          <div className="lang-track" id="langTrack">
-            {[
-              { native: 'हिन्दी', english: 'Hindi' },
-              { native: 'தமிழ்', english: 'Tamil' },
-              { native: 'తెలుగు', english: 'Telugu' },
-              { native: 'ಕನ್ನಡ', english: 'Kannada' },
-              { native: 'മലയാളം', english: 'Malayalam' },
-              { native: 'मराठी', english: 'Marathi' },
-              { native: 'বাংলা', english: 'Bengali' },
-              { native: 'ਪੰਜਾਬੀ', english: 'Punjabi' },
-              { native: 'ગુજરાતી', english: 'Gujarati' },
-              { native: 'ଓଡ଼ିଆ', english: 'Odia' },
-              { native: 'English', english: 'English' },
-            ]
-              .concat([
-                { native: 'हिन्दी', english: 'Hindi' },
-                { native: 'தமிழ்', english: 'Tamil' },
-                { native: 'తెలుగు', english: 'Telugu' },
-                { native: 'ಕನ್ನಡ', english: 'Kannada' },
-                { native: 'മലയാളം', english: 'Malayalam' },
-                { native: 'मराठी', english: 'Marathi' },
-                { native: 'বাংলা', english: 'Bengali' },
-                { native: 'ਪੰਜਾਬੀ', english: 'Punjabi' },
-                { native: 'ગુજરાતી', english: 'Gujarati' },
-                { native: 'ଓଡ଼ିଆ', english: 'Odia' },
-                { native: 'English', english: 'English' },
-              ])
-              .map((lang, idx) => (
-                <div key={idx} className="lang-card">
-                  <div className="native">{lang.native} Language</div>
-                  <div className="english">{lang.english}</div>
-                </div>
-              ))}
-          </div>
-        </div>
-      </section>
-
-      {/* FEATURES */}
-      <section id="features" className="section features-section">
-        <div className="fade-up">
-          <p className="section-label">Features</p>
-          <h2 className="section-title">
-            Built for speed.
-            <br />
-            Grounded in truth.
-          </h2>
-        </div>
-        <div className="features-grid fade-up">
-          <div className="feat-card span-2">
-            <div>
-              <div className="feat-icon orange">⚡</div>
-              <h3>Sub-1.5s latency</h3>
-              <p>Groq's inference engine combined with streamed TTS means you hear the answer before you expect it. Every hop is optimised for real-time conversation.</p>
-            </div>
-            <div className="bento-micro-viz">
-              <div className="latency-timeline-viz">
-                <div className="timeline-node active">
-                  <span className="node-dot"></span>
-                  <span className="node-label">STT</span>
-                  <span className="node-time">&lt; 400ms</span>
-                </div>
-                <div className="timeline-node active">
-                  <span className="node-dot"></span>
-                  <span className="node-label">LLM</span>
-                  <span className="node-time">&lt; 300ms</span>
-                </div>
-                <div className="timeline-node active">
-                  <span className="node-dot"></span>
-                  <span className="node-label">TTS</span>
-                  <span className="node-time">&lt; 600ms</span>
-                </div>
-                <div className="timeline-line-connector">
-                  <div className="timeline-line-fill"></div>
-                </div>
-              </div>
-            </div>
-            <div className="feat-stat">&lt; 1.5s E2E</div>
-          </div>
-          <div className="feat-card">
-            <div>
-              <div className="feat-icon teal">🌐</div>
-              <h3>11 Indic languages</h3>
-              <p>Lyra powers both STT and TTS with native Indic language models — not translated, truly native.</p>
-            </div>
-            <div className="bento-micro-viz">
-              <div className="lang-pills-viz">
-                <span className="lang-pill">हिन्दी</span>
-                <span className="lang-pill">தமிழ்</span>
-                <span className="lang-pill">తెలుగు</span>
-                <span className="lang-pill">ಕನ್ನಡ</span>
-                <span className="lang-pill">मराठी</span>
-                <span className="lang-pill">বাংলা</span>
-              </div>
-            </div>
-            <div className="feat-stat teal">11 Languages</div>
-          </div>
-          <div className="feat-card">
-            <div>
-              <div className="feat-icon teal">🧠</div>
-              <h3>RAG-grounded answers</h3>
-              <p>Every response is anchored in retrieved context. BM25 + semantic hybrid search picks the best chunks.</p>
-            </div>
-            <div className="bento-micro-viz">
-              <div className="rag-schema-viz">
-                <div className="rag-file-card">
-                  <span>doc.txt</span>
-                  <span style={{ fontSize: '8px', opacity: 0.5 }}>4 chunks</span>
-                </div>
-                <span className="rag-arrow-flow">→</span>
-                <div className="rag-chunk-card">
-                  <span>chunk_0</span>
-                  <span style={{ fontSize: '8px', opacity: 0.8 }}>dist: 0.12</span>
-                </div>
-              </div>
-            </div>
-            <div className="feat-stat teal">0 Hallucinations</div>
-          </div>
-          <div className="feat-card span-2">
-            <div>
-              <div className="feat-icon orange">🔊</div>
-              <h3>Streamed audio response</h3>
-              <p>TTS streams in chunks so playback starts before synthesis is complete. The experience feels like talking to a person, not a chatbot. Sub-second time-to-first-audio ensures a natural flow.</p>
-            </div>
-            <div className="bento-micro-viz">
-              <div className="audio-wave-viz">
-                <span className="audio-bar"></span>
-                <span className="audio-bar"></span>
-                <span className="audio-bar"></span>
-                <span className="audio-bar"></span>
-                <span className="audio-bar"></span>
-                <span className="audio-bar"></span>
-                <span className="audio-bar"></span>
-                <span className="audio-bar"></span>
-              </div>
-            </div>
-            <div className="feat-stat">Chunked Streaming</div>
-          </div>
-        </div>
-      </section>
-
-      {/* USE CASES */}
-      <section id="usecases" className="section usecases-section">
-        <div className="fade-up center">
-          <p className="section-label">Use cases</p>
-          <h2 className="section-title">Who is Lyra for?</h2>
-          <p className="section-sub">Built for the 900 million Indians who deserve AI in their language.</p>
-        </div>
-        <div className="cases-grid fade-up">
-          <div className="case-card">
-            <div className="case-emoji">📚</div>
-            <h3>EdTech</h3>
-            <p>Students ask questions in their mother tongue and get curriculum-accurate answers instantly. No language barrier in learning.</p>
-          </div>
-          <div className="case-card">
-            <div className="case-emoji">🏥</div>
-            <h3>Healthcare</h3>
-            <p>Patients describe symptoms in Hindi or Tamil. Lyra provides grounded, safe health information from verified sources.</p>
-          </div>
-          <div className="case-card">
-            <div className="case-emoji">🎧</div>
-            <h3>Customer support</h3>
-            <p>Resolve queries in the customer's language. No IVR, no hold music — just fast, accurate voice AI at scale.</p>
-          </div>
-          <div className="case-card">
-            <div className="case-emoji">🏛️</div>
-            <h3>Government services</h3>
-            <p>Citizens access scheme information, eligibility criteria, and process guidance — spoken back in their language.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* ARCHITECTURE */}
-      <section id="architecture" className="section architecture-section">
-        <div className="fade-up center">
-          <p className="section-label">Under the hood</p>
-          <h2 className="section-title">The stack</h2>
-          <p className="section-sub">Purpose-built for low-latency, grounded voice AI. Every component is chosen for a reason.</p>
-        </div>
-        <div className="arch-wrap fade-up">
-          <div className="arch-row">
-            <div className="arch-node">
-              <div className="label">Frontend</div>
-              <div className="name">React / TS</div>
-            </div>
-            <div className="arch-arrow">→</div>
-            <div className="arch-node teal">
-              <div className="label">STT</div>
-              <div className="name">Sarvam AI</div>
-            </div>
-            <div className="arch-arrow">→</div>
-            <div className="arch-node">
-              <div className="label">Backend</div>
-              <div className="name">FastAPI</div>
-            </div>
-          </div>
-          <div className="arch-row">
-            <div className="arch-node">
-              <div className="label">Vector DB</div>
-              <div className="name">Chroma / Pinecone</div>
-            </div>
-            <div className="arch-arrow">→</div>
-            <div className="arch-node">
-              <div className="label">Retrieval</div>
-              <div className="name">BM25 + Semantic</div>
-            </div>
-            <div className="arch-arrow">→</div>
-            <div className="arch-node">
-              <div className="label">LLM</div>
-              <div className="name">Groq</div>
-            </div>
-          </div>
-          <div className="arch-row">
-            <div className="arch-node teal">
-              <div className="label">TTS</div>
-              <div className="name">Sarvam AI</div>
-            </div>
-            <div className="arch-arrow">→</div>
-            <div className="arch-node">
-              <div className="label">Output</div>
-              <div className="name">Streamed audio</div>
-            </div>
-          </div>
-          <div className="arch-stack-note">
-            <span>FastAPI backend</span>
-            <span>React / TypeScript frontend</span>
-            <span>768-dim embeddings</span>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section id="cta" className="section cta-section">
-        <div className="cta-inner fade-up">
-          <p className="section-label center">Early access</p>
-          <h2>
-            Be the first to
-            <br />
-            try Lyra.
-          </h2>
-          <p>Join the waitlist. We're onboarding in batches — Indic language developers and EdTech teams first.</p>
-          <div className="email-form">
-            <input
-              className="email-input"
-              type="email"
-              placeholder="your@email.com"
-              id="emailInput"
-              aria-label="Email address for waitlist"
-              required
-            />
-            <button
-              className="email-submit"
-              onClick={() => alert('Thanks for joining!')}
-              aria-label="Join the waitlist"
-            >
-              Join waitlist →
-            </button>
-          </div>
-          <div className="cta-note" id="ctaNote">
-            No spam. Unsubscribe anytime.
-          </div>
-        </div>
-      </section>
-
-      {/* FOOTER */}
-      <footer className="footer">
-        <div className="foot-logo">
-          Ly<span>ra</span>
-        </div>
+      {/* == FOOTER == */}
+      <footer className="footer footer--dark">
+        <div className="foot-logo">Ly<span>ra</span></div>
         <div className="foot-links">
-          <a href="#">GitHub</a>
-          <a href="#">Twitter / X</a>
-          <a href="#">Docs</a>
-          <a href="#">Privacy</a>
+          <a href="#">GitHub</a><a href="#">Twitter / X</a><a href="#">Docs</a><a href="#">Privacy</a>
         </div>
         <div className="foot-copy">© 2025 Lyra. Built for Bharat.</div>
       </footer>
+      </div>
     </>
   );
 }

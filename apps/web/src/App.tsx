@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, NavLink, useNavigate, useLocation, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import {
   UserButton,
   SignIn,
@@ -15,49 +15,30 @@ import RealtimeVoicePage from './pages/RealtimeVoicePage';
 import SmoothScroll from './components/SmoothScroll';
 import './App.css';
 
-function NavBar() {
+function AppNavBar() {
   const navigate = useNavigate();
   const location = useLocation();
   const isLanding = location.pathname === '/';
   const isAuth = location.pathname.startsWith('/login') || location.pathname.startsWith('/sign-up');
+  const isDashboard = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/chatbot') || location.pathname.startsWith('/realtime') || location.pathname.startsWith('/rag');
 
-  // Don't render navbar on auth pages
-  if (isAuth) return null;
+  // Landing has its own navbar; dashboard has sidebar; auth pages have none
+  if (isLanding || isAuth || isDashboard) return null;
 
   return (
-    <header className={`auth-bar ${isLanding ? 'landing-nav' : ''}`}>
-      <div className="nav-left" onClick={() => navigate('/')}>
-        <span className="nav-brand">Gen<span>AI</span></span>
+    <header className="inner-nav">
+      <div className="inner-nav-logo" onClick={() => navigate('/')}>
+        <span className="inner-nav-dot" />
+        Ly<span>ra</span>
       </div>
-
-      <nav className="nav-center">
-        <button className="nav-link-btn" onClick={() => {
-          const el = document.getElementById('how') || document.getElementById('features');
-          if (el) el.scrollIntoView({ behavior: 'smooth' });
-        }}>How it works</button>
-        <button className="nav-link-btn" onClick={() => {
-          const el = document.getElementById('features');
-          if (el) el.scrollIntoView({ behavior: 'smooth' });
-        }}>Features</button>
-        <button className="nav-link-btn" onClick={() => {
-          const el = document.getElementById('usecases');
-          if (el) el.scrollIntoView({ behavior: 'smooth' });
-        }}>Use cases</button>
-      </nav>
-
-      <div className="nav-right">
+      <div className="inner-nav-right">
         <Show when="signed-out">
-          <button className="auth-btn auth-btn-outline" onClick={() => navigate('/login')}>Sign in</button>
-          <button className="auth-btn auth-btn-solid" onClick={() => navigate('/sign-up')}>Sign up</button>
+          <button className="inner-nav-btn inner-nav-ghost" onClick={() => navigate('/login')}>Sign in</button>
+          <button className="inner-nav-btn inner-nav-fill" onClick={() => navigate('/sign-up')}>Sign up</button>
         </Show>
         <Show when="signed-in">
           <NavLink to="/dashboard">
-            <button className="nav-cta-link" type="button">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-              </svg>
-              AI Chatbot
-            </button>
+            <button className="inner-nav-btn inner-nav-ghost" type="button">Dashboard</button>
           </NavLink>
           <UserButton />
         </Show>
@@ -66,22 +47,23 @@ function NavBar() {
   );
 }
 
-// ─── Inner component — rendered inside <BrowserRouter>, so hooks are safe ───
 function AppRoutes() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { isSignedIn, isLoaded } = useAuth();
   const [view, setView] = useState<'landing' | 'rag'>('landing');
 
-  // After Clerk completes sign-in/sign-up, land on the dashboard
   useEffect(() => {
-    if (isLoaded && isSignedIn) {
+    if (!isLoaded || !isSignedIn) return;
+    const authPaths = ['/login', '/sign-up', '/sign-in'];
+    if (authPaths.some((p) => location.pathname.startsWith(p))) {
       navigate('/dashboard', { replace: true });
     }
-  }, [isLoaded, isSignedIn, navigate]);
+  }, [isLoaded, isSignedIn, navigate, location.pathname]);
 
   return (
     <div className="app-shell">
-      <NavBar />
+      <AppNavBar />
       <SmoothScroll>
         <Routes>
           <Route path="/" element={<Landing onNavigate={setView} />} />
@@ -98,7 +80,6 @@ function AppRoutes() {
   );
 }
 
-// ─── Shell — no hooks here, just creates the Router context ───
 function App() {
   return (
     <BrowserRouter>
