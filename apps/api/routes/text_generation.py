@@ -43,7 +43,7 @@ async def generate_text(request: TextGenerationRequest):
                 }
             ],
             temperature=temperature,
-            max_completion_tokens=max_tokens,
+            max_tokens=max_tokens,
             top_p=top_p,
         )
         

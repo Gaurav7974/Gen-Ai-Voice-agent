@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { transcribeAudio, voiceAgentStream } from '../api';
+import { streamVoiceAgent, transcribeAudio } from '../api';
 import StreamingText from '../components/StreamingText';
 import '../styles/chatbot.css';
 
@@ -66,6 +66,9 @@ export default function ChatbotPage() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const playCtxRef = useRef<AudioContext | null>(null);
+  const nextAudioTimeRef = useRef(0);
+  const activeSourcesRef = useRef<AudioBufferSourceNode[]>([]);
   const chatInputRef = useRef<HTMLInputElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -91,6 +94,12 @@ export default function ChatbotPage() {
   useEffect(() => {
     return () => {
       if (chatAudioUrl) URL.revokeObjectURL(chatAudioUrl);
+      activeSourcesRef.current.forEach((source) => {
+        try {
+          source.stop();
+        } catch { /* source may already be stopped */ }
+      });
+      playCtxRef.current?.close();
     };
   }, [chatAudioUrl]);
 
@@ -140,6 +149,45 @@ export default function ChatbotPage() {
     }
   };
 
+  const resetStreamingAudio = () => {
+    activeSourcesRef.current.forEach((source) => {
+      try {
+        source.stop();
+      } catch { /* source may already be stopped */ }
+    });
+    activeSourcesRef.current = [];
+    nextAudioTimeRef.current = playCtxRef.current?.currentTime ?? 0;
+  };
+
+  const playPcmChunk = async (chunk: ArrayBuffer, sampleRate = 22050) => {
+    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+    const ctx = playCtxRef.current || new AudioCtx();
+    playCtxRef.current = ctx;
+    if (ctx.state === 'suspended') await ctx.resume();
+
+    const samples = new Int16Array(chunk);
+    if (!samples.length) return;
+
+    const audioBuffer = ctx.createBuffer(1, samples.length, sampleRate);
+    const channel = audioBuffer.getChannelData(0);
+    for (let i = 0; i < samples.length; i++) {
+      channel[i] = samples[i] / 32768;
+    }
+
+    const source = ctx.createBufferSource();
+    source.buffer = audioBuffer;
+    source.connect(ctx.destination);
+
+    const startAt = Math.max(ctx.currentTime, nextAudioTimeRef.current);
+    source.start(startAt);
+    nextAudioTimeRef.current = startAt + audioBuffer.duration;
+
+    activeSourcesRef.current.push(source);
+    source.onended = () => {
+      activeSourcesRef.current = activeSourcesRef.current.filter((item) => item !== source);
+    };
+  };
+
   const saveMessagesToSession = (msgs: ChatMessage[]) => {
     if (!activeSession) return;
     const firstUserMsg = msgs.find((m) => m.role === 'user');
@@ -175,6 +223,62 @@ export default function ChatbotPage() {
     if (activeSessionId === id) startNewChat();
   };
 
+  const streamAssistantResponse = async (
+    prompt: string,
+    baseMessages: ChatMessage[],
+    languageCode: string,
+  ) => {
+    const assistantId = genId();
+    let assistantText = '';
+    const initialAssistantMsg: ChatMessage = { role: 'assistant', content: '', id: assistantId };
+    const messagesWithAssistant = [...baseMessages, initialAssistantMsg];
+
+    setChatMessages(messagesWithAssistant);
+    resetStreamingAudio();
+    setChatPhase('thinking');
+
+    const finalText = await streamVoiceAgent(
+      prompt,
+      {
+        onStatus: (status) => {
+          setChatPhase(status === 'speaking' ? 'speaking' : 'thinking');
+        },
+        onTextDelta: (delta) => {
+          assistantText += delta;
+          setChatPhase('speaking');
+          setChatMessages((prev) =>
+            prev.map((msg) =>
+              msg.id === assistantId ? { ...msg, content: assistantText } : msg,
+            ),
+          );
+        },
+        onAudioStart: () => {
+          setChatPhase('speaking');
+          nextAudioTimeRef.current = Math.max(
+            playCtxRef.current?.currentTime ?? 0,
+            nextAudioTimeRef.current,
+          );
+        },
+        onAudioChunk: (chunk) => {
+          void playPcmChunk(chunk).catch((audioError) => {
+            const msg = audioError instanceof Error ? audioError.message : 'Audio playback failed';
+            setError(msg);
+          });
+        },
+      },
+      'default',
+      'default',
+      languageCode,
+    );
+
+    const completedMessages = messagesWithAssistant.map((msg) =>
+      msg.id === assistantId ? { ...msg, content: finalText || assistantText } : msg,
+    );
+    setChatMessages(completedMessages);
+    saveMessagesToSession(completedMessages);
+    setChatPhase('idle');
+  };
+
   const handleVoiceInput = async () => {
     if (chatPhase === 'recording') {
       stopRecording();
@@ -206,23 +310,7 @@ export default function ChatbotPage() {
       saveMessagesToSession(updated);
       setChatInput('');
 
-      setChatPhase('speaking');
-      const { response, generatedText } = await voiceAgentStream(transcript, 'default', 'default', languageCode);
-
-      const replyMsg: ChatMessage = { role: 'assistant', content: generatedText, id: genId() };
-      const updated2 = [...updated, replyMsg];
-      setChatMessages(updated2);
-      saveMessagesToSession(updated2);
-
-      if (audioRef.current && response.body) {
-        if (chatAudioUrl) URL.revokeObjectURL(chatAudioUrl);
-        const audioBlob2 = await response.blob();
-        const url = URL.createObjectURL(audioBlob2);
-        setChatAudioUrl(url);
-        audioRef.current.src = url;
-        audioRef.current.play();
-      }
-      setChatPhase('idle');
+      await streamAssistantResponse(transcript, updated, languageCode);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Something went wrong';
       setError(msg);
@@ -247,21 +335,7 @@ export default function ChatbotPage() {
 
     try {
       const languageCode = LANG_MAP[activeLang];
-      const { response, generatedText } = await voiceAgentStream(text, 'default', 'default', languageCode);
-
-      const replyMsg: ChatMessage = { role: 'assistant', content: generatedText, id: genId() };
-      const updated2 = [...updated, replyMsg];
-      setChatMessages(updated2);
-      saveMessagesToSession(updated2);
-
-      if (audioRef.current && response.body) {
-        if (chatAudioUrl) URL.revokeObjectURL(chatAudioUrl);
-        const audioBlob = await response.blob();
-        const url = URL.createObjectURL(audioBlob);
-        setChatAudioUrl(url);
-        audioRef.current.src = url;
-        audioRef.current.play();
-      }
+      await streamAssistantResponse(text, updated, languageCode);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Failed to get response';
       const errMsg: ChatMessage = { role: 'assistant', content: `Error: ${msg}`, id: genId() };

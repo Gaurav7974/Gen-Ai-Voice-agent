@@ -47,7 +47,7 @@ class VoiceAgentRequest(BaseModel):
     max_tokens: Optional[int] = None
     speaker: Optional[str] = None
     language: Optional[str] = None
-    use_rag: Optional[bool] = False
+    use_rag: Optional[bool] = True
 
 class VoiceAgentResponse(BaseModel):
     """Combined response for voice agent"""

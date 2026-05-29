@@ -9,10 +9,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useScroll, useMotionValueEvent } from 'framer-motion';
-import { VoiceAgentChatPreview } from '../components/nova/VoiceAgentChatPreview';
 import LandingSectionHeader from '../components/landing/LandingSectionHeader';
 import HowItWorksSection from '../components/landing/HowItWorksSection';
 import FeaturesGrid from '../components/landing/FeaturesGrid';
+import { VoiceAgentChatPreview } from '../components/nova/VoiceAgentChatPreview';
 import '../styles/landing.css';
 import '../styles/landing-sections.css';
 
@@ -115,7 +115,7 @@ const useCasesData = [
 export default function Landing({ onNavigate }: { onNavigate?: (v:'landing'|'rag')=>void }) {
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
-  const [activeUseCase, setActiveUseCase] = useState(0);
+  const [activeUseCase, setActiveUseCase] = useState(-1);
   const heroRef = useRef<HTMLElement>(null);
   const { scrollY } = useScroll();
 
@@ -228,11 +228,7 @@ export default function Landing({ onNavigate }: { onNavigate?: (v:'landing'|'rag
               <SlideCta label="Get started today" onClick={() => navigate('/dashboard')} variant="primary" />
             </div>
           </div>
-
-          <div className="hero-dashboard-section" data-animation-on-scroll>
-            <VoiceAgentChatPreview />
-          </div>
-
+          <VoiceAgentChatPreview />
         </div>
       </section>
 
@@ -249,50 +245,40 @@ export default function Landing({ onNavigate }: { onNavigate?: (v:'landing'|'rag
         </div>
       </section>
 
-      {/* == USE CASES == */}
-      <section id="use-cases" className="section section--dark section--use-cases">
-        <div className="usecases-container">
-          <div className="usecases-header">
-            <span className="usecases-eyebrow">USE CASES</span>
-            <h2 className="usecases-title">Built for real conversations</h2>
-          </div>
-          <div className="usecases-row">
-            {useCasesData.map((uc, idx) => {
-              const isActive = activeUseCase === idx;
-              const strokeColor = isActive ? '#00c3c9' : 'rgba(255,255,255,0.18)';
-              return (
-                <div
-                  key={uc.num}
-                  className={`usecase-card ${isActive ? 'usecase-card--active' : ''}`}
-                  onMouseEnter={() => setActiveUseCase(idx)}
-                >
-                  <div className="usecase-card-header">
-                    <span className="usecase-card-badge">{uc.num}</span>
-                    <span className="usecase-card-tag">{uc.tag}</span>
-                  </div>
-                  
-                  <div className="usecase-card-illustration">
-                    {uc.renderSvg(strokeColor)}
-                  </div>
-                  
-                  <div className="usecase-card-footer">
-                    <div className="usecase-card-title">
-                      <strong>{uc.title}</strong> — {uc.desc}
-                    </div>
-                    <div className="usecase-card-action">
-                      {isActive ? (
-                        <span className="usecase-card-learnmore">LEARN MORE →</span>
-                      ) : (
-                        <span className="usecase-card-plus">+</span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+       {/* == USE CASES == */}
+       <section id="use-cases" className="section section--dark section--use-cases">
+         <div className="usecases-container">
+           <div className="usecases-header">
+             <span className="usecases-eyebrow">USE CASES</span>
+             <h2 className="usecases-title">Built for real conversations</h2>
+           </div>
+           <div className="usecases-row" onMouseLeave={() => setActiveUseCase(-1)}>
+             {useCasesData.map((uc, idx) => {
+               const isActive = activeUseCase === idx;
+               const strokeColor = isActive ? '#00c3c9' : 'rgba(255,255,255,0.15)';
+               return (
+                 <div
+                   key={uc.num}
+                   className={`usecase-card ${isActive ? 'usecase-card--active' : ''}`}
+                   onMouseEnter={() => setActiveUseCase(idx)}
+                 >
+                   <span className="usecase-card-badge">{uc.num}</span>
+                   
+                   <div className="usecase-card-illustration">
+                     {uc.renderSvg(strokeColor)}
+                   </div>
+                   
+                   <div className="usecase-card-footer">
+                     <div className="usecase-card-title">{uc.title}</div>
+                     <div className="usecase-card-desc">{uc.desc}</div>
+                     <span className="usecase-card-tag">{uc.tag}</span>
+                   </div>
+                 </div>
+               );
+             })}
+           </div>
+         </div>
+       </section>
 
       <section id="features" className="section section--dark">
         <div className="section-inner">

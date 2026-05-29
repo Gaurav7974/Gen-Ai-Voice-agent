@@ -10,32 +10,11 @@ import { useChatDemo } from './chat-preview/useChatDemo'
 function AmbientGlow() {
   return (
     <div className="absolute inset-0 pointer-events-none z-0">
-      {/* 1. The Localized Grid (Only visible in the glow zone) */}
-      <div className="absolute -top-[300px] left-1/2 -translate-x-1/2 w-[1200px] h-[600px] opacity-40 [mask-image:radial-gradient(ellipse_at_center,black_20%,transparent_70%)]">
-        {/* Dashed Vertical Lines */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_bottom,#ffffff2a_2px,transparent_2px)] bg-[size:1px_6px] [mask-image:linear-gradient(to_right,black_1px,transparent_1px)] [mask-size:48px_100%]" />
-        {/* Dashed Horizontal Lines */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff2a_2px,transparent_2px)] bg-[size:6px_1px] [mask-image:linear-gradient(to_bottom,black_1px,transparent_1px)] [mask-size:100%_48px]" />
-        {/* Intersection Dots */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,#ffffff40_1px,transparent_0)] bg-[size:48px_48px]" />
+      <div className="absolute -top-[320px] left-1/2 -translate-x-1/2 w-[1100px] h-[580px] opacity-40 [mask-image:radial-gradient(ellipse_at_center,black_20%,transparent_75%)]">
+        <div className="absolute inset-0 bg-[linear-gradient(to_bottom,#ffffff20_1px,transparent_1px)] bg-[size:1px_8px] [mask-image:linear-gradient(to_right,black_1px,transparent_1px)] [mask-size:56px_100%]" />
       </div>
-
-      {/* 2. The Concentrated Top Glow */}
-      <div className="absolute -top-[120px] left-1/2 -translate-x-1/2 w-[700px] h-[250px] flex items-center justify-center">
-        {/* Outer Neon Blue Aura */}
-        <div className="absolute w-[600px] h-[200px] bg-brand-primary/30 blur-[90px] rounded-full" />
-        {/* Whitish Blue Core */}
-        <div className="absolute w-[400px] h-[140px] bg-[#d0f5ff]/20 blur-[70px] rounded-full" />
-        {/* Ultra-bright White Flare */}
-        <div className="absolute w-[200px] h-[40px] bg-white/40 blur-[35px] rounded-full" />
-      </div>
-
-      {/* 3. Top Rim Highlight */}
-      <div className="absolute -top-[1px] left-1/2 -translate-x-1/2 w-[60%] h-[1.5px] bg-gradient-to-r from-transparent via-white/80 to-transparent z-10" />
-
-      {/* 4. Subtle Bottom Center Glow */}
-      <div className="absolute -bottom-[80px] left-1/2 -translate-x-1/2 w-[600px] h-[180px] bg-brand-primary/10 blur-[100px] rounded-full pointer-events-none" />
-      <div className="absolute -bottom-[40px] left-1/2 -translate-x-1/2 w-[300px] h-[60px] bg-white/5 blur-[60px] rounded-full pointer-events-none" />
+      <div className="absolute -top-[120px] left-1/2 -translate-x-1/2 w-[640px] h-[240px] bg-brand-primary/20 blur-[100px] rounded-full" />
+      <div className="absolute -top-px left-1/2 -translate-x-1/2 w-[65%] h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
     </div>
   )
 }
@@ -125,7 +104,7 @@ export function VoiceAgentChatPreview() {
   const showThread = messages.length > 0 || listeningPreview || showTyping
 
   return (
-    <div ref={ref} className="relative z-10 w-full max-w-[1100px] h-[660px] mx-auto">
+    <div ref={ref} className="relative z-10 w-full max-w-[1100px] h-[660px]">
       <AmbientGlow />
 
       <div className={`relative z-10 w-full h-full ${CHAT.radius} p-px bg-gradient-to-b from-white/[0.15] via-white/[0.05] to-white/[0.1] shadow-2xl overflow-hidden`}>
@@ -219,7 +198,7 @@ export function VoiceAgentChatPreview() {
                   </button>
                 </div>
               </div>
-...
+
               {/* Messages */}
               <div
                 ref={threadRef}

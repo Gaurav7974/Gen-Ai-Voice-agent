@@ -12,6 +12,7 @@ import RagManager from './pages/RagManager';
 import ChatbotPage from './pages/ChatbotPage';
 import Dashboard from './pages/Dashboard';
 import RealtimeVoicePage from './pages/RealtimeVoicePage';
+import DemoPage from './pages/DemoPage';
 import SmoothScroll from './components/SmoothScroll';
 import './App.css';
 
@@ -20,7 +21,12 @@ function AppNavBar() {
   const location = useLocation();
   const isLanding = location.pathname === '/';
   const isAuth = location.pathname.startsWith('/login') || location.pathname.startsWith('/sign-up');
-  const isDashboard = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/chatbot') || location.pathname.startsWith('/realtime') || location.pathname.startsWith('/rag');
+  const isDashboard = 
+    location.pathname.startsWith('/dashboard') || 
+    location.pathname.startsWith('/chatbot') || 
+    location.pathname.startsWith('/realtime') || 
+    location.pathname.startsWith('/rag') ||
+    location.pathname.startsWith('/demo');
 
   // Landing has its own navbar; dashboard has sidebar; auth pages have none
   if (isLanding || isAuth || isDashboard) return null;
@@ -73,6 +79,7 @@ function AppRoutes() {
           <Route path="/chatbot" element={<ChatbotPage />} />
           <Route path="/realtime" element={<RealtimeVoicePage />} />
           <Route path="/rag" element={<RagManager onNavigate={setView} />} />
+          <Route path="/demo" element={<DemoPage />} />
           <Route path="/sign-in/*" element={<div className="auth-page"><SignIn routing="path" path="/sign-in" /></div>} />
         </Routes>
       </SmoothScroll>

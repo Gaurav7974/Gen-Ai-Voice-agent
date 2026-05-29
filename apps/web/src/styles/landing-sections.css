@@ -336,7 +336,7 @@
   margin: 0;
 }
 .usecases-title {
-  font-size: 36px;
+  font-size: clamp(28px, 4vw, 38px);
   font-weight: 600;
   letter-spacing: -0.03em;
   color: #fff;
@@ -349,122 +349,154 @@
   width: 100%;
   margin-left: auto;
   margin-right: auto;
-  scrollbar-width: none;
+  gap: 0;
 }
 .usecases-row::-webkit-scrollbar {
   display: none;
 }
+/* Desktop: horizontal flex row with expand-on-hover */
 .usecase-card {
   position: relative;
-  flex: 1 1 0%;
+  flex: 1;
   min-width: 0;
-  height: 320px;
-  background: #0a0a0c;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  margin-left: -1px;
+  height: 340px;
+  background: #0c0c0e;
+  border: 1px solid rgba(255, 255, 255, 0.07);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: 24px;
-  transition: border-color 0.25s ease, background-color 0.25s ease;
+  padding: 0;
+  transition: flex 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
+  overflow: hidden;
+  border-radius: 0;
 }
-.usecase-card:first-child {
-  margin-left: 0;
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
-}
-.usecase-card:last-child {
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-}
+/* Expanded state */
 .usecase-card--active {
-  z-index: 2;
+  flex: 3.5;
+  z-index: 10;
   border-color: #00c3c9;
   background: rgba(0, 195, 201, 0.04);
 }
-.usecase-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+/* Compressed state SVG color */
+.usecase-card svg {
+  transition: stroke 0.4s ease;
 }
+/* Badge: positioned absolute top-left */
 .usecase-card-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
   font-size: 10px;
   font-family: var(--f-mono), monospace;
-  padding: 2px 6px;
+  padding: 2px 7px;
   border-radius: 3px;
-  border: 1px solid #00c3c9;
-  color: #00c3c9;
-  background: #0a0a0c;
-  transition: background-color 0.25s ease, color 0.25s ease;
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.3);
+  background: transparent;
+  transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 5;
 }
+/* Expanded card badge styling */
 .usecase-card--active .usecase-card-badge {
   background: #00c3c9;
-  color: #0a0a0c;
+  color: #09090b;
+  font-weight: 600;
+  border: none;
 }
-.usecase-card-tag {
-  font-size: 9px;
-  font-family: var(--f-mono), monospace;
-  color: rgba(255, 255, 255, 0.3);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
+/* Illustration area: centered, fills available space */
 .usecase-card-illustration {
-  height: 140px;
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-.usecase-card-footer {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 12px;
-  text-align: left;
-}
-.usecase-card-title {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.75);
-  line-height: 1.5;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
+  width: 100%;
+  height: 160px;
   overflow: hidden;
 }
-.usecase-card-title strong {
-  color: #fff;
-  font-weight: 600;
-}
-.usecase-card-action {
-  min-height: 18px;
+/* Footer: absolute positioning at bottom */
+.usecase-card-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 4;
 }
-.usecase-card-plus {
-  font-size: 16px;
-  color: rgba(255, 255, 255, 0.3);
-  font-weight: 300;
-  line-height: 1;
-}
-.usecase-card-learnmore {
-  font-size: 10px;
-  font-family: var(--f-mono), monospace;
-  color: #00c3c9;
-  border-left: 2px solid #00c3c9;
-  padding-left: 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+/* Title: only shown when expanded */
+.usecase-card-title {
+  font-size: 14px;
   font-weight: 600;
-  line-height: 1;
+  color: #fff;
+  letter-spacing: -0.02em;
+  line-height: 1.4;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition-delay: 0.15s;
+  pointer-events: none;
+  max-height: 2.8em;
+  overflow: hidden;
+}
+.usecase-card--active .usecase-card-title {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* Description: only shown when expanded */
+.usecase-card-desc {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1.55;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition-delay: 0.2s;
+  pointer-events: none;
+  max-height: 1.55em;
+  overflow: hidden;
+}
+.usecase-card--active .usecase-card-desc {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* Tag pill: only shown when expanded */
+.usecase-card-tag {
+  font-size: 10px;
+  color: #00c3c9;
+  border: 0.5px solid rgba(0, 195, 201, 0.25);
+  background: rgba(0, 195, 201, 0.08);
+  border-radius: 100px;
+  padding: 3px 10px;
+  width: fit-content;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition-delay: 0.25s;
+  pointer-events: none;
+}
+.usecase-card--active .usecase-card-tag {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-@media (max-width: 900px) {
+/* Mobile fallback: vertical stack */
+@media (max-width: 768px) {
   .usecases-row {
-    overflow-x: auto;
-    padding-bottom: 12px;
+    flex-direction: column;
+    gap: 12px;
   }
   .usecase-card {
-    flex: 0 0 240px;
+    flex: none;
+    height: 64px;
+    width: 100%;
+    min-height: 64px;
+    border-radius: 10px;
+    transition: max-height 0.35s ease;
+    max-height: 64px;
   }
   .usecase-card:first-child {
     border-radius: 10px;
@@ -472,8 +504,36 @@
   .usecase-card:last-child {
     border-radius: 10px;
   }
-  .usecase-card:not(:first-child) {
-    margin-left: 12px;
-    border-radius: 10px;
+  .usecase-card--active {
+    flex: none;
+    max-height: 300px;
+  }
+  /* Mobile: show badge + title only when compressed */
+  .usecase-card-title {
+    position: relative;
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.2s ease;
+    transition-delay: 0s;
+    pointer-events: auto;
+    margin-top: 8px;
+  }
+  .usecase-card-desc {
+    opacity: 0;
+    display: none;
+    pointer-events: none;
+  }
+  .usecase-card-tag {
+    opacity: 0;
+    display: none;
+    pointer-events: none;
+  }
+  .usecase-card--active .usecase-card-desc {
+    display: block;
+    opacity: 1;
+  }
+  .usecase-card--active .usecase-card-tag {
+    display: block;
+    opacity: 1;
   }
 }

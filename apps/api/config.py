@@ -15,10 +15,10 @@ class Settings(BaseSettings):
 
     # API Keys
     GROQ_API_KEY: str = ""
-    SARVAM_API_KEY: str
+    SARVAM_API_KEY: str = ""
 
     # Groq LLM Configuration
-    LLM_MODEL: str = "llama-3.3-70b-versatile"
+    LLM_MODEL: str = "meta-llama/llama-4-scout-17b-16e-instruct"
     LLM_TEMPERATURE: float = 0.7
     LLM_MAX_TOKENS: int = 1024
     LLM_TOP_P: float = 1.0
@@ -44,33 +44,33 @@ settings = Settings()
 # Model configurations for different use cases
 MODEL_CONFIGS = {
     "default": {
-        "model": "llama-3.3-70b-versatile",
+        "model": "meta-llama/llama-4-scout-17b-16e-instruct",
         "temperature": 0.7,
-        "max_tokens": 1024,
+        "max_tokens": 250,
         "top_p": 1.0,
     },
     "creative": {
-        "model": "llama-3.3-70b-versatile",
+        "model": "meta-llama/llama-4-scout-17b-16e-instruct",
         "temperature": 0.9,
-        "max_tokens": 2048,
+        "max_tokens": 400,
         "top_p": 0.95,
     },
     "precise": {
-        "model": "llama-3.3-70b-versatile",
+        "model": "meta-llama/llama-4-scout-17b-16e-instruct",
         "temperature": 0.3,
-        "max_tokens": 1024,
+        "max_tokens": 250,
         "top_p": 0.9,
     },
     "fast": {
-        "model": "llama-3.1-8b-instant",
+        "model": "meta-llama/llama-4-scout-17b-16e-instruct",
         "temperature": 0.7,
-        "max_tokens": 512,
+        "max_tokens": 200,
         "top_p": 1.0,
     },
     "detailed": {
-        "model": "llama-3.3-70b-versatile",
+        "model": "meta-llama/llama-4-scout-17b-16e-instruct",
         "temperature": 0.5,
-        "max_tokens": 4096,
+        "max_tokens": 600,
         "top_p": 0.95,
     },
 }

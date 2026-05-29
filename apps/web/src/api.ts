@@ -55,6 +55,103 @@ export async function voiceAgentStream(
   };
 }
 
+export interface VoiceAgentStreamHandlers {
+  onStatus?: (status: string) => void;
+  onTextDelta?: (text: string) => void;
+  onAudioStart?: (meta: { sampleRate: number; codec: string }) => void;
+  onAudioChunk?: (chunk: ArrayBuffer) => void;
+  onAudioEnd?: () => void;
+}
+
+export function streamVoiceAgent(
+  prompt: string,
+  handlers: VoiceAgentStreamHandlers = {},
+  llmConfig = 'default',
+  ttsConfig = 'default',
+  language = 'hi-IN',
+): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const socket = new WebSocket(`${protocol}//${window.location.host}/api/voice-agent-stream/ws`);
+    let fullText = '';
+    let settled = false;
+
+    const fail = (error: Error) => {
+      if (settled) return;
+      settled = true;
+      socket.close();
+      reject(error);
+    };
+
+    socket.binaryType = 'arraybuffer';
+
+    socket.onopen = () => {
+      socket.send(JSON.stringify({
+        prompt,
+        llm_config: llmConfig,
+        tts_config: ttsConfig,
+        language,
+        use_rag: true,
+      }));
+    };
+
+    socket.onmessage = async (event) => {
+      if (event.data instanceof ArrayBuffer) {
+        handlers.onAudioChunk?.(event.data);
+        return;
+      }
+
+      if (event.data instanceof Blob) {
+        handlers.onAudioChunk?.(await event.data.arrayBuffer());
+        return;
+      }
+
+      const message = JSON.parse(event.data);
+      if (message.type === 'agent_status') {
+        handlers.onStatus?.(message.status);
+        return;
+      }
+
+      if (message.type === 'agent_text_delta') {
+        const delta = message.text || '';
+        fullText += delta;
+        handlers.onTextDelta?.(delta);
+        return;
+      }
+
+      if (message.type === 'agent_audio_start') {
+        handlers.onAudioStart?.({
+          sampleRate: message.sample_rate || 22050,
+          codec: message.codec || 'pcm_s16le',
+        });
+        return;
+      }
+
+      if (message.type === 'agent_audio_end') {
+        handlers.onAudioEnd?.();
+        return;
+      }
+
+      if (message.type === 'agent_turn_end') {
+        if (settled) return;
+        settled = true;
+        resolve(message.text || fullText);
+        socket.close();
+        return;
+      }
+
+      if (message.type === 'error') {
+        fail(new Error(message.message || 'Voice agent stream failed'));
+      }
+    };
+
+    socket.onerror = () => fail(new Error('Voice agent WebSocket failed'));
+    socket.onclose = () => {
+      if (!settled) fail(new Error('Voice agent WebSocket closed before completion'));
+    };
+  });
+}
+
 export async function synthesizeSpeechStream(
   text: string,
   language = 'hi-IN',
